@@ -1,0 +1,26 @@
+# Dependensi dan hasil build
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Rahasia dan konfigurasi lokal (jangan pernah di-commit)
+.env
+.env.*
+!.env.example
+
+# Kunci kriptografi dan sertifikat
+*.key
+*.pem
+*.p12
+keys/
+
+# Python (layanan AI, mulai v1.0)
+.venv/
+__pycache__/
+
+# Sistem operasi dan editor
+.DS_Store
+Thumbs.db
+.vscode/
