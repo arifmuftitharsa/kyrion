@@ -215,7 +215,7 @@ npm install
 npm test
 ```
 
-Contoh keluaran (11 tes lulus):
+Cuplikan keluaran (11 tes lulus):
 
 ```
  RUN  v5.0.4 C:/Projects/kyrion/apps/web
