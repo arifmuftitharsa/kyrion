@@ -24,3 +24,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Pengaturan lokal Claude Code (tidak masuk repo)
+.claude/
