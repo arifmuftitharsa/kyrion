@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import Link from "next/link";
+import TautanNav, { type Tautan } from "@/components/TautanNav";
 import { focusRing } from "@/lib/styles";
 
-const navItems = [
+const navItems: Tautan[] = [
   { href: "/", label: "Daftar Regulasi" },
   { href: "/verifikasi", label: "Verifikasi Dokumen" },
   { href: "/masuk", label: "Masuk" },
@@ -19,20 +21,29 @@ export default function SiteHeader() {
         </Link>
         {/* aria-label membedakan navigasi utama dari <nav> lain (mis. filter kategori). */}
         <nav aria-label="Navigasi utama">
-          <ul className="flex flex-wrap gap-4">
-            {navItems.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`rounded font-medium text-slate-700 underline-offset-4 hover:text-blue-800 hover:underline ${focusRing}`}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <Suspense fallback={<TautanPolos tautan={navItems} />}>
+            <TautanNav tautan={navItems} />
+          </Suspense>
         </nav>
       </div>
     </header>
+  );
+}
+
+// Fallback: tautan yang sama tanpa penanda halaman aktif.
+function TautanPolos({ tautan }: { tautan: Tautan[] }) {
+  return (
+    <ul className="flex flex-wrap gap-4">
+      {tautan.map((t) => (
+        <li key={t.href}>
+          <Link
+            href={t.href}
+            className={`rounded font-medium text-slate-700 underline-offset-4 hover:text-blue-800 hover:underline ${focusRing}`}
+          >
+            {t.label}
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }
