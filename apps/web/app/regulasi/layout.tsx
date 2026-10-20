@@ -1,5 +1,4 @@
 import Link from "next/link";
-import KolomCatatan from "@/components/KolomCatatan";
 import { getRegulations } from "@/lib/data/regulations";
 import { focusRing } from "@/lib/styles";
 
@@ -26,7 +25,6 @@ export default function RegulasiLayout({
             </li>
           ))}
         </ul>
-        <KolomCatatan label="Catatan di layout" />
       </aside>
       <div>{children}</div>
     </div>
