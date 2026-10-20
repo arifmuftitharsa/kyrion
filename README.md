@@ -173,6 +173,13 @@ Tangkapan layar diambil pada tiga lebar layar: 375 px (ponsel), 768 px (tablet),
 ![Validasi berkas bukan PDF](docs/tugas-1/screenshots/validasi-file-salah.png)
 *Berkas `test.txt` diunggah dan ditolak dengan pesan "Berkas harus berformat PDF."*
 
+## Dokumen Teknis Praktikum PAW
+
+Dokumen Teknis Praktikum Pengembangan Aplikasi Web (052356) tersebar di dua repository:
+
+- Modul 1–3: [praktikum-paw](https://github.com/arifmuftitharsa/praktikum-paw/tree/main/docs/praktikum)
+- Modul 4 dan seterusnya: [docs/praktikum](docs/praktikum/) di repository ini
+
 ## Penggunaan AI
 
 Antarmuka v0.1 ini dibuat dengan bantuan Claude Code (asisten pemrograman AI dari Anthropic) berdasarkan prompt yang saya susun. Prompt tersebut menetapkan kebutuhan produk, struktur file, aturan aksesibilitas, dan prinsip Clean Code/SOLID. Saya kemudian meninjau, menjalankan, dan menguji hasilnya, termasuk pemeriksaan tipe, lint, build, dan audit Lighthouse. Rincian prompt dan keputusan yang diambil tercatat di [AI_LOG.md](AI_LOG.md).
