@@ -1,11 +1,19 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import VersionTimeline from "@/components/VersionTimeline";
-import { getRegulationBySlug } from "@/lib/data/regulations";
+import { getRegulationBySlug, getRegulations } from "@/lib/data/regulations";
 import { focusRing } from "@/lib/styles";
+
+// Bentuk slug yang sah: huruf kecil/angka, dipisah satu strip.
+const FORMAT_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 interface RegulationDetailPageProps {
   params: Promise<{ slug: string }>;
+}
+
+// Daftar slug yang halamannya dibangun saat build.
+export function generateStaticParams() {
+  return getRegulations().map((regulation) => ({ slug: regulation.slug }));
 }
 
 export default async function RegulationDetailPage({
@@ -13,9 +21,13 @@ export default async function RegulationDetailPage({
 }: RegulationDetailPageProps) {
   // Di Next.js 16 params berupa Promise, jadi wajib di-await.
   const { slug } = await params;
+
+  // Cek bentuk dulu: murah, dan tidak perlu menyentuh data.
+  if (!FORMAT_SLUG.test(slug)) notFound();
+
   const regulation = getRegulationBySlug(slug);
 
-  // Slug tidak dikenal ditangani sebagai 404, bukan halaman kosong.
+  // Slug yang bentuknya wajar tetapi tidak ada di data juga 404.
   if (!regulation) notFound();
 
   return (

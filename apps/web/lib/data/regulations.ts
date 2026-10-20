@@ -1,3 +1,4 @@
+import "server-only";
 import type { Regulation, Version } from "@/lib/types";
 
 // DATA SINTETIS: seluruh regulasi di bawah ini fiktif dan hanya dipakai
