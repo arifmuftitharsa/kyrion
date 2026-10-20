@@ -90,6 +90,7 @@ Di mode dev, `error.tsx` menampilkan pesan asli "Koneksi ke sumber data gagal (g
 
 Kode demo dan rute uji (`KolomCatatan`, `app/uji/`) dihapus setelah bukti diambil, di commit terpisah tanpa mengubah riwayat:
 
+- Pull request: https://github.com/arifmuftitharsa/kyrion/pull/1
 - Commit saat kode demo dan rute uji masih ada: `64dfc7c`
 - Commit hapus `app/uji/`: `f8d1b6f`
 - Commit hapus `KolomCatatan` (sekaligus merapikan `layout.tsx` dan `template.tsx`): `9163b68`
@@ -219,6 +220,8 @@ Dijalankan dari `apps/web` setelah kode demo dan rute uji dihapus.
 ```
 
 Tabel rute dari build yang sama ada di Bagian 1.
+
+Pull request: https://github.com/arifmuftitharsa/kyrion/pull/1
 
 ## 6. Kendala dan Penyelesaian
 
