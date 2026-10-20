@@ -1,8 +1,8 @@
 # Dokumen Teknis Modul 4 — Next.js App Router
 
-Nama/NIM : Arif Mufti Tharsa / 105224041
-Repositori : https://github.com/arifmuftitharsa/kyrion
-Versi Next.js dan mode Cache Components (aktif/tidak) : Next.js 16.4.2, Cache Components tidak aktif (`next.config.ts` tidak memuat `cacheComponents`)
+- **Nama/NIM:** Arif Mufti Tharsa / 105224041
+- **Repositori:** https://github.com/arifmuftitharsa/kyrion
+- **Versi Next.js dan mode Cache Components (aktif/tidak):** Next.js 16.4.2, Cache Components tidak aktif (`next.config.ts` tidak memuat `cacheComponents`)
 
 Dokumen Teknis Modul 1–3 tetap ada di repositori praktikum: https://github.com/arifmuftitharsa/praktikum-paw/tree/main/docs/praktikum
 
