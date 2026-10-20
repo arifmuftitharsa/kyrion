@@ -4,6 +4,7 @@ import { focusRing } from "@/lib/styles";
 const navItems = [
   { href: "/", label: "Daftar Regulasi" },
   { href: "/verifikasi", label: "Verifikasi Dokumen" },
+  { href: "/masuk", label: "Masuk" },
 ];
 
 export default function SiteHeader() {
