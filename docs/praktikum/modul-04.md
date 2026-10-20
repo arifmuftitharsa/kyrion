@@ -221,7 +221,7 @@ Dijalankan dari `apps/web` setelah kode demo dan rute uji dihapus.
 
 Tabel rute dari build yang sama ada di Bagian 1.
 
-Pull request: https://github.com/arifmuftitharsa/kyrion/pull/1
+Pull request: https://github.com/arifmuftitharsa/kyrion/pull/1 (merge commit `4546116`)
 
 ## 6. Kendala dan Penyelesaian
 
