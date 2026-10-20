@@ -68,18 +68,23 @@ C:\PROJECTS\KYRION\APPS\WEB\APP
 **Uji layout dan template.** `KolomCatatan` dipakai sebagai kolom uji di `layout.tsx` dan `template.tsx`.
 
 ![Sebelum navigasi antar-regulasi](img/modul-04-layout-template-sebelum.png)
+*Sebelum pindah halaman: kolom layout berisi `layout-A` dan kolom template berisi `template-A`.*
 
 ![Sesudah navigasi antar-regulasi](img/modul-04-layout-template-sesudah.png)
+*Sesudah pindah ke Tata Tertib Mahasiswa: kolom layout masih `layout-A`, kolom template kosong lagi.*
 
 Di screenshot sebelum (`/regulasi/pedoman-akademik`), aku isi kolom layout dengan `layout-A` dan kolom template dengan `template-A`. Setelah pindah ke Tata Tertib Mahasiswa lewat tautan di panel (`/regulasi/tata-tertib-mahasiswa`), kolom layout masih `layout-A`, sedangkan kolom template kosong lagi. Jadi layout dipertahankan saat halaman anak berganti, sedangkan template dibuat ulang sehingga state input-nya hilang.
 
 **Uji `loading.tsx` dan `error.tsx`** lewat rute sementara `app/uji/`. `loading.tsx` uji ada di `app/uji/lambat/` (bukan di `app/uji/`) dan jedanya 10 detik, bukan 2 detik seperti di modul, supaya tampilan loading sempat difoto.
 
 ![Halaman /uji/lambat saat loading](img/modul-04-uji-lambat-loading.png)
+*`/uji/lambat` saat data masih dimuat: yang tampil keadaan loading dari `loading.tsx`.*
 
 ![Halaman /uji/galat mode dev](img/modul-04-uji-galat-dev.png)
+*Mode dev: `error.tsx` menampilkan pesan asli "Koneksi ke sumber data gagal (galat uji)" dan Kode 1510059194.*
 
 ![Halaman /uji/galat mode produksi (npm start)](img/modul-04-uji-galat-produksi.png)
+*Mode produksi: pesan asli diganti pesan umum "Minified React error #441..." dan Kode 1678782678.*
 
 Di mode dev, `error.tsx` menampilkan pesan asli "Koneksi ke sumber data gagal (galat uji)" dengan Kode (`digest`) 1510059194. Di mode produksi pesan aslinya tidak muncul. Yang tampil pesan umum "Minified React error #441; visit https://react.dev/errors/441 for the full message or use the non-minified dev environment for full errors and additional helpful warnings." dengan Kode 1678782678. Nilai Kode di dua percobaan itu beda, dan aku tidak menganggapnya sama. `digest` berguna untuk mencocokkan galat yang dilaporkan pengguna dengan log di server, tanpa membocorkan pesan asli (yang bisa berisi detail internal) ke browser.
 
@@ -161,13 +166,19 @@ React Developer Tools, tab Components (label Server untuk komponen server, hook 
 
 ![TautanNav](img/modul-04-components-tautannav.png)
 
+*`TautanNav` di tab Components: Client Component, terlihat dari hook yang dipakainya.*
+
 ![KolomCatatan](img/modul-04-components-kolomcatatan.png)
 
+*`KolomCatatan` (komponen demo): Client Component karena punya state input.*
+
 ![VerifyForm](img/modul-04-components-verifyform.png)
+*`VerifyForm`: Client Component untuk formulir, menerima data regulasi lewat props.*
 
 `aria-current` pada tautan aktif, dicek di DevTools (bukan curl):
 
 ![aria-current pada TautanNav](img/modul-04-tautan-nav-aria-current.png)
+*DevTools: tautan yang sedang dibuka punya atribut `aria-current="page"`.*
 
 ## 5. Verifikasi
 
