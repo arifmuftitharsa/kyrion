@@ -1,5 +1,6 @@
 import "server-only";
 import type { Regulation, Version } from "@/lib/types";
+import type { MasukanRegulasi } from "@/lib/skema"; // BARU (Modul 5)
 
 // DATA SINTETIS: seluruh regulasi di bawah ini fiktif dan hanya dipakai
 // untuk demo antarmuka v0.1. Belum ada backend maupun database.
@@ -102,4 +103,35 @@ export function sortVersionsNewestFirst(versions: Version[]): Version[] {
   return [...versions].sort((a, b) =>
     b.effectiveDate.localeCompare(a.effectiveDate),
   );
+}
+
+// ===================== BARU (Modul 5) =====================
+
+/** Ubah nama menjadi slug URL: huruf kecil, tanpa aksen, selain huruf/angka jadi "-". */
+export function createSlug(name: string): string {
+  return name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Validasi semantik: slug tidak boleh sama dengan regulasi lain. */
+export function isSlugTaken(slug: string): boolean {
+  return regulations.some((regulation) => regulation.slug === slug);
+}
+
+/**
+ * Mutasi data tiruan di memori. Data kembali ke isi awal saat server
+ * dimulai ulang; diganti PostgreSQL + Prisma di Modul 6.
+ */
+export function addRegulation(masukan: MasukanRegulasi): Regulation {
+  const regulation: Regulation = {
+    slug: createSlug(masukan.name),
+    ...masukan,
+    versions: [],
+  };
+  regulations.push(regulation);
+  return regulation;
 }
