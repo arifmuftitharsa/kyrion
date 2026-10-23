@@ -194,5 +194,5 @@ Logout dan cookie lama:
 
 ## Pull Request
 
-- Pull request: akan diisi setelah PR dibuat
+- Pull request: https://github.com/arifmuftitharsa/kyrion/pull/2
 - Merge commit: akan diisi setelah PR digabungkan
