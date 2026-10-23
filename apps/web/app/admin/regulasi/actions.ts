@@ -5,13 +5,17 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { skemaRegulasi } from "@/lib/skema";
 import { addRegulation, createSlug, isSlugTaken } from "@/lib/data/regulations";
+import { bacaSesi } from "@/lib/sesi";
 import type { StatusForm } from "@/lib/status-form";
 
 export async function simpanRegulasi(
   _sebelumnya: StatusForm,
   formData: FormData,
 ): Promise<StatusForm> {
-  // 1. Sesi: ditambahkan di Bagian 4
+  // 1. Sesi: aksi ini endpoint POST, jadi wajib memeriksa sesinya sendiri
+  if (!(await bacaSesi())) {
+    return { pesan: "Silakan masuk terlebih dahulu." };
+  }
 
   const mentah = Object.fromEntries(formData);
   const nilai = {
