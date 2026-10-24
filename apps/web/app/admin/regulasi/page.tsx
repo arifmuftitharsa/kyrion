@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { keluar } from "@/app/masuk/actions";
 import { getAdminRegulations } from "@/lib/data/regulations";
 import { wajibAdmin } from "@/lib/sesi";
 
@@ -20,9 +19,6 @@ export default async function HalamanKelolaRegulasi() {
       </div>
       <div className="flex items-center gap-3 text-sm text-gray-600">
         <p>Masuk sebagai {sesi.email}</p>
-        <form action={keluar}>
-          <button type="submit" className="underline">Keluar</button>
-        </form>
       </div>
 
       {regulations.length === 0 ? (

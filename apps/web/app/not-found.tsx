@@ -1,5 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { focusRing } from "@/lib/styles";
+
+// Root layout tidak memakai title.template, jadi judul ditulis lengkap.
+export const metadata: Metadata = { title: "Halaman tidak ditemukan | Kyrion" };
 
 export default function NotFound() {
   return (
