@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum VersionStatus {
+  DRAF
+  SAH
+  DIGANTIKAN
+  DIBATALKAN
+
+  @@map("version_status")
+}
+
+model Regulation {
+  id          String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  slug        String    @unique
+  name        String
+  description String?
+  // Validasi nilai di Zod (KATEGORI); tabel kategori menyusul.
+  category    String
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  versions    Version[]
+
+  @@map("regulations")
+}
+
+// Versi berlaku tidak disimpan; dihitung oleh lapisan domain.
+model Version {
+  id            String        @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  regulationId  String        @map("regulation_id") @db.Uuid
+  versionNumber String        @map("version_number")
+  effectiveDate DateTime      @map("effective_date") @db.Date
+  status        VersionStatus @default(DRAF)
+  // Null untuk versi pertama (tidak ada versi sebelumnya).
+  changeSummary String?       @map("change_summary")
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  // Restrict: regulasi yang punya versi (termasuk Sah) tidak bisa dihapus.
+  regulation    Regulation    @relation(fields: [regulationId], references: [id], onDelete: Restrict)
+
+  @@unique([regulationId, versionNumber])
+  @@map("versions")
+}
