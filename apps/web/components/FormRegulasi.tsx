@@ -1,20 +1,26 @@
 "use client";
 
 import { useActionState } from "react";
-import { simpanRegulasi } from "@/app/admin/regulasi/actions";
 import { KATEGORI } from "@/lib/types";
 import type { StatusForm } from "@/lib/status-form";
 
-const awal: StatusForm = {};
 const kolom = "mt-1 block w-full rounded border px-3 py-2";
 
-export default function FormRegulasi() {
-  const [status, aksi, pending] = useActionState(simpanRegulasi, awal);
+interface FormRegulasiProps {
+  /** Server Action tambah atau ubah (ubah sudah diikat ke ID lewat .bind). */
+  aksi: (sebelumnya: StatusForm, formData: FormData) => Promise<StatusForm>;
+  /** Isi awal untuk formulir ubah; kosong untuk formulir tambah. */
+  nilaiAwal?: Record<string, string>;
+  labelTombol: string;
+}
+
+export default function FormRegulasi({ aksi, nilaiAwal, labelTombol }: FormRegulasiProps) {
+  const [status, kirim, pending] = useActionState(aksi, { nilai: nilaiAwal });
   const g = status.galat;
   const n = status.nilai;
 
   return (
-    <form action={aksi} className="mt-6 space-y-4">
+    <form action={kirim} className="mt-6 space-y-4">
       <div>
         <label htmlFor="name" className="font-medium">Nama regulasi</label>
         <input
@@ -42,10 +48,13 @@ export default function FormRegulasi() {
       </div>
 
       <div>
-        <label htmlFor="description" className="font-medium">Deskripsi</label>
+        <label htmlFor="description" className="font-medium">
+          Deskripsi <span className="font-normal text-slate-600">(opsional)</span>
+        </label>
         <textarea
-          id="description" name="description" required minLength={10} maxLength={300}
-          rows={4} defaultValue={n?.description} className={kolom}
+          id="description" name="description" maxLength={300}
+          rows={4} defaultValue={n?.description}
+          className={kolom}
           aria-invalid={!!g?.description} aria-describedby="galat-description"
         />
         <p id="galat-description" className="text-sm text-red-700">{g?.description?.[0]}</p>
@@ -55,7 +64,7 @@ export default function FormRegulasi() {
         type="submit" disabled={pending}
         className="rounded bg-blue-700 px-4 py-2 text-white disabled:opacity-60"
       >
-        {pending ? "Menyimpan..." : "Simpan"}
+        {pending ? "Menyimpan..." : labelTombol}
       </button>
       <p role="status" aria-live="polite">{status.pesan}</p>
     </form>

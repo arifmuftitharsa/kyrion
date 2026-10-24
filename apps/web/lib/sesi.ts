@@ -1,5 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 type Sesi = { email: string; kedaluwarsa: number };
 
@@ -26,6 +27,16 @@ export async function bacaSesi() {
   const id = (await cookies()).get("sesi")?.value;
   const sesi = id ? penyimpanan.get(id) : undefined;
   if (!sesi || sesi.kedaluwarsa < Date.now()) return null;
+  return sesi;
+}
+
+/**
+ * Wajib di setiap halaman admin dan Server Action (endpoint publik), bukan
+ * hanya di proxy.ts. Panggil di luar try/catch: redirect() bekerja dengan melempar.
+ */
+export async function wajibAdmin(): Promise<Sesi> {
+  const sesi = await bacaSesi();
+  if (!sesi) redirect("/masuk");
   return sesi;
 }
 

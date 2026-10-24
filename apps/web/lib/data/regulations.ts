@@ -1,10 +1,15 @@
 import "server-only";
 import { connection } from "next/server";
-import type { Prisma } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
+import {
+  RegulationHasVersionsError,
+  RegulationNotFoundError,
+  SlugTakenError,
+} from "@/lib/domain/regulasi";
 import { PERNAH_DISAHKAN } from "@/lib/domain/versi";
 import { getPrisma } from "@/lib/prisma";
+import type { MasukanRegulasi } from "@/lib/skema";
 import type { Regulation } from "@/lib/types";
-import type { MasukanRegulasi } from "@/lib/skema"; // BARU (Modul 5)
 
 // Hanya versi yang pernah disahkan yang keluar dari lapisan data (F-02), agar
 // DRAF dan DIBATALKAN tidak pernah terkirim ke halaman publik maupun browser.
@@ -84,37 +89,119 @@ export async function getCategories(): Promise<string[]> {
   return rows.map((row) => row.category);
 }
 
-// ===================== BARU (Modul 5) =====================
+// ===================== Admin (Bagian B2) =====================
 
-// shortcut: array memori hanya agar isSlugTaken/addRegulation tetap terkompilasi;
-// formulir tidak menyimpan ke database, diganti Prisma di Bagian B2.
-const regulations: Regulation[] = [];
-
-/** Ubah nama menjadi slug URL: huruf kecil, tanpa aksen, selain huruf/angka jadi "-". */
-export function createSlug(name: string): string {
-  return name
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+/** Ringkasan regulasi untuk admin; jumlah versi mencakup semua status. */
+export interface AdminRegulation {
+  id: string;
+  slug: string;
+  name: string;
+  category: string;
+  description: string | null;
+  versionCount: number;
 }
 
-/** Validasi semantik: slug tidak boleh sama dengan regulasi lain. */
-export function isSlugTaken(slug: string): boolean {
-  return regulations.some((regulation) => regulation.slug === slug);
+const adminSelect = {
+  id: true,
+  slug: true,
+  name: true,
+  category: true,
+  description: true,
+  _count: { select: { versions: true } },
+} satisfies Prisma.RegulationSelect;
+
+type AdminRegulationRow = Prisma.RegulationGetPayload<{ select: typeof adminSelect }>;
+
+function toAdminRegulation({ _count, ...row }: AdminRegulationRow): AdminRegulation {
+  return { ...row, versionCount: _count.versions };
+}
+
+export async function getAdminRegulations(): Promise<AdminRegulation[]> {
+  await connection();
+  const rows = await getPrisma().regulation.findMany({
+    select: adminSelect,
+    orderBy: { name: "asc" },
+  });
+  return rows.map(toAdminRegulation);
+}
+
+export async function getAdminRegulationBySlug(
+  slug: string,
+): Promise<AdminRegulation | undefined> {
+  await connection();
+  const row = await getPrisma().regulation.findUnique({
+    select: adminSelect,
+    where: { slug },
+  });
+  return row ? toAdminRegulation(row) : undefined;
+}
+
+/** Dipakai Server Action untuk pra-cek; tanpa connection() karena di luar render. */
+export async function getAdminRegulationById(
+  id: string,
+): Promise<AdminRegulation | undefined> {
+  const row = await getPrisma().regulation.findUnique({
+    select: adminSelect,
+    where: { id },
+  });
+  return row ? toAdminRegulation(row) : undefined;
+}
+
+/** Validasi semantik: slug tidak boleh dipakai regulasi lain (kecuali dirinya). */
+export async function isSlugTaken(slug: string, exceptId?: string): Promise<boolean> {
+  const count = await getPrisma().regulation.count({
+    where: { slug, ...(exceptId && { NOT: { id: exceptId } }) },
+  });
+  return count > 0;
 }
 
 /**
- * Mutasi data tiruan di memori. Data kembali ke isi awal saat server
- * dimulai ulang; diganti PostgreSQL + Prisma di Modul 6.
+ * Menerjemahkan galat Prisma ke galat domain. Pra-cek di Server Action bisa
+ * kalah balapan dengan request lain; constraint basis data adalah penjaga akhir.
  */
-export function addRegulation(masukan: MasukanRegulasi): Regulation {
-  const regulation: Regulation = {
-    slug: createSlug(masukan.name),
-    ...masukan,
-    versions: [],
-  };
-  regulations.push(regulation);
-  return regulation;
+function toDomainError(error: unknown): unknown {
+  if (!(error instanceof Prisma.PrismaClientKnownRequestError)) return error;
+  switch (error.code) {
+    // Satu-satunya kolom unik di regulations selain primary key adalah slug.
+    case "P2002":
+      return new SlugTakenError("Slug sudah dipakai", { cause: error });
+    // ON DELETE RESTRICT (PG 23001) dipetakan adapter-pg ke P2003.
+    case "P2003":
+      return new RegulationHasVersionsError("Regulasi masih punya versi", { cause: error });
+    case "P2025":
+      return new RegulationNotFoundError("Regulasi tidak ditemukan", { cause: error });
+    default:
+      return error;
+  }
+}
+
+export async function createRegulation(
+  masukan: MasukanRegulasi,
+  slug: string,
+): Promise<void> {
+  try {
+    await getPrisma().regulation.create({ data: { ...masukan, slug } });
+  } catch (error) {
+    throw toDomainError(error);
+  }
+}
+
+export async function updateRegulation(
+  id: string,
+  masukan: MasukanRegulasi,
+  slug: string,
+): Promise<void> {
+  try {
+    await getPrisma().regulation.update({ where: { id }, data: { ...masukan, slug } });
+  } catch (error) {
+    throw toDomainError(error);
+  }
+}
+
+export async function deleteRegulation(id: string): Promise<void> {
+  try {
+    await getPrisma().regulation.delete({ where: { id } });
+  } catch (error) {
+    throw toDomainError(error);
+  }
 }

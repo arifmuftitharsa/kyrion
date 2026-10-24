@@ -24,7 +24,7 @@ export async function masuk(
 
   // 3. Buat sesi, lalu alihkan ke halaman admin
   await buatSesi(email);
-  redirect("/admin/regulasi/baru");
+  redirect("/admin/regulasi");
 }
 
 export async function keluar() {
