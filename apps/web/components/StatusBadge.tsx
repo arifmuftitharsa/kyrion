@@ -1,4 +1,4 @@
-import type { VersionStatus } from "@/lib/types";
+import { VERSION_STATUS_LABEL, type VersionStatus } from "@/lib/types";
 
 interface StatusBadgeProps {
   status: VersionStatus;
@@ -7,13 +7,21 @@ interface StatusBadgeProps {
 // Status dibedakan lewat warna + simbol + teks sekaligus, sehingga tetap
 // terbaca oleh pengguna buta warna maupun pembaca layar (WCAG 1.4.1).
 const statusStyles: Record<VersionStatus, { symbol: string; className: string }> = {
-  Sah: {
+  DRAF: {
+    symbol: "✎",
+    className: "border-amber-700 bg-amber-50 text-amber-800",
+  },
+  SAH: {
     symbol: "✓",
     className: "border-emerald-700 bg-emerald-50 text-emerald-800",
   },
-  Digantikan: {
+  DIGANTIKAN: {
     symbol: "↺",
     className: "border-slate-500 bg-slate-100 text-slate-700",
+  },
+  DIBATALKAN: {
+    symbol: "✕",
+    className: "border-red-700 bg-red-50 text-red-800",
   },
 };
 
@@ -26,7 +34,7 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
     >
       {/* Simbol hanya dekorasi; teks status sudah cukup untuk pembaca layar. */}
       <span aria-hidden="true">{symbol}</span>
-      {status}
+      {VERSION_STATUS_LABEL[status]}
     </span>
   );
 }

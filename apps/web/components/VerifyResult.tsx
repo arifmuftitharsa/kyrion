@@ -33,10 +33,10 @@ export default function VerifyResult({
           {versionNumber} <StatusBadge status={status} />
         </dd>
       </dl>
-      {/* Penegasan wajib: v0.1 belum memverifikasi isi dokumen secara nyata. */}
+      {/* Penegasan wajib: v0.2 belum memverifikasi isi dokumen secara nyata. */}
       <p className="mt-4 text-sm font-medium text-slate-700">
-        Ini hanya simulasi dengan data tiruan. Pencocokan hash dokumen belum
-        diterapkan di v0.1.
+        Ini hanya simulasi. Regulasi dan versi sudah diambil dari database,
+        tetapi pencocokan hash dokumen belum dihubungkan di v0.2.
       </p>
     </div>
   );

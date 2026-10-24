@@ -2,12 +2,12 @@ import Link from "next/link";
 import { getRegulations } from "@/lib/data/regulations";
 import { focusRing } from "@/lib/styles";
 
-export default function RegulasiLayout({
+export default async function RegulasiLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const regulations = getRegulations();
+  const regulations = await getRegulations();
 
   return (
     <div className="lg:grid lg:grid-cols-[16rem_1fr] lg:gap-8">

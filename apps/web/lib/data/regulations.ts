@@ -1,117 +1,100 @@
 import "server-only";
-import type { Regulation, Version } from "@/lib/types";
+import { connection } from "next/server";
+import type { Prisma } from "@/generated/prisma/client";
+import { PERNAH_DISAHKAN } from "@/lib/domain/versi";
+import { getPrisma } from "@/lib/prisma";
+import type { Regulation } from "@/lib/types";
 import type { MasukanRegulasi } from "@/lib/skema"; // BARU (Modul 5)
 
-// DATA SINTETIS: seluruh regulasi di bawah ini fiktif dan hanya dipakai
-// untuk demo antarmuka v0.1. Belum ada backend maupun database.
-const regulations: Regulation[] = [
-  {
-    slug: "pedoman-akademik",
-    name: "Pedoman Akademik Program Sarjana",
-    category: "Akademik",
-    description:
-      "Aturan beban studi, penilaian, dan masa studi mahasiswa program sarjana.",
-    versions: [
-      {
-        versionNumber: "1.0",
-        effectiveDate: "2023-08-01",
-        status: "Digantikan",
-        changeSummary: "Penetapan awal pedoman akademik.",
-      },
-      {
-        versionNumber: "1.1",
-        effectiveDate: "2024-02-01",
-        status: "Digantikan",
-        changeSummary: "Penyesuaian batas maksimal SKS per semester.",
-      },
-      {
-        versionNumber: "2.0",
-        effectiveDate: "2025-08-01",
-        status: "Sah",
-        changeSummary: "Penambahan ketentuan rekognisi pembelajaran lampau.",
-      },
-    ],
+// Hanya versi yang pernah disahkan yang keluar dari lapisan data (F-02), agar
+// DRAF dan DIBATALKAN tidak pernah terkirim ke halaman publik maupun browser.
+// Urutan createdAt desc adalah tie-break untuk tanggal berlaku yang sama.
+const withPublicVersions = {
+  include: {
+    versions: {
+      where: { status: { in: [...PERNAH_DISAHKAN] } },
+      orderBy: [{ effectiveDate: "desc" }, { createdAt: "desc" }],
+    },
   },
-  {
-    slug: "tata-tertib-mahasiswa",
-    name: "Tata Tertib Mahasiswa",
-    category: "Kemahasiswaan",
-    description:
-      "Hak, kewajiban, dan sanksi bagi mahasiswa di lingkungan kampus.",
-    versions: [
-      {
-        versionNumber: "1.0",
-        effectiveDate: "2022-09-01",
-        status: "Digantikan",
-        changeSummary: "Penetapan awal tata tertib.",
-      },
-      {
-        versionNumber: "1.1",
-        effectiveDate: "2024-09-01",
-        status: "Sah",
-        changeSummary: "Pembaruan ketentuan penggunaan fasilitas kampus.",
-      },
-    ],
-  },
-  {
-    slug: "pedoman-tugas-akhir",
-    name: "Pedoman Penulisan Tugas Akhir",
-    category: "Akademik",
-    description:
-      "Format penulisan, alur bimbingan, dan syarat sidang tugas akhir.",
-    versions: [
-      {
-        versionNumber: "1.0",
-        effectiveDate: "2025-01-15",
-        status: "Sah",
-        changeSummary: "Penetapan awal pedoman tugas akhir.",
-      },
-    ],
-  },
-];
+} satisfies Prisma.RegulationDefaultArgs;
 
-export function getRegulations(): Regulation[] {
-  return regulations;
+type RegulationRow = Prisma.RegulationGetPayload<typeof withPublicVersions>;
+
+/** Memetakan baris Prisma ke tipe domain; komponen tidak pernah melihat tipe Prisma. */
+function toRegulation(row: RegulationRow): Regulation {
+  return {
+    slug: row.slug,
+    name: row.name,
+    category: row.category,
+    description: row.description,
+    versions: row.versions.map((version) => ({
+      versionNumber: version.versionNumber,
+      // Kolom date dibaca sebagai 00.00 UTC, jadi bagian tanggal UTC selalu tepat.
+      effectiveDate: version.effectiveDate.toISOString().slice(0, 10),
+      status: version.status,
+      changeSummary: version.changeSummary,
+    })),
+  };
 }
 
-export function getRegulationBySlug(slug: string): Regulation | undefined {
-  return regulations.find((regulation) => regulation.slug === slug);
+// connection(): halaman yang membaca database dirender saat request, bukan
+// saat build, sehingga build tidak butuh database dan data selalu terbaru.
+
+export async function getRegulations(): Promise<Regulation[]> {
+  await connection();
+  const rows = await getPrisma().regulation.findMany({
+    ...withPublicVersions,
+    orderBy: { name: "asc" },
+  });
+  return rows.map(toRegulation);
+}
+
+export async function getRegulationBySlug(
+  slug: string,
+): Promise<Regulation | undefined> {
+  await connection();
+  const row = await getPrisma().regulation.findUnique({
+    ...withPublicVersions,
+    where: { slug },
+  });
+  return row ? toRegulation(row) : undefined;
 }
 
 /** Mengembalikan regulasi pada kategori tertentu; tanpa kategori berarti semua. */
-export function getRegulationsByCategory(category?: string): Regulation[] {
-  if (!category) return regulations;
-  return regulations.filter((regulation) => regulation.category === category);
+export async function getRegulationsByCategory(
+  category?: string,
+): Promise<Regulation[]> {
+  await connection();
+  const rows = await getPrisma().regulation.findMany({
+    ...withPublicVersions,
+    where: category ? { category } : {},
+    orderBy: { name: "asc" },
+  });
+  return rows.map(toRegulation);
 }
 
-/** Versi berlaku adalah satu-satunya versi berstatus "Sah". */
-export function getCurrentVersion(regulation: Regulation): Version | undefined {
-  return regulation.versions.find((version) => version.status === "Sah");
-}
-
-/** Daftar kategori unik; Set dipakai agar kategori tidak muncul ganda di filter. */
-export function getCategories(): string[] {
-  return [...new Set(regulations.map((regulation) => regulation.category))];
-}
-
-/**
- * Mengurutkan versi dari yang terbaru. Membuat salinan array agar data
- * sumber tidak ikut berubah (fungsi murni). Perbandingan string aman
- * karena format ISO "YYYY-MM-DD" terurut secara leksikografis.
- */
-export function sortVersionsNewestFirst(versions: Version[]): Version[] {
-  return [...versions].sort((a, b) =>
-    b.effectiveDate.localeCompare(a.effectiveDate),
-  );
+/** Daftar kategori unik yang dipakai regulasi, urut abjad. */
+export async function getCategories(): Promise<string[]> {
+  await connection();
+  const rows = await getPrisma().regulation.findMany({
+    distinct: ["category"],
+    select: { category: true },
+    orderBy: { category: "asc" },
+  });
+  return rows.map((row) => row.category);
 }
 
 // ===================== BARU (Modul 5) =====================
+
+// shortcut: array memori hanya agar isSlugTaken/addRegulation tetap terkompilasi;
+// formulir tidak menyimpan ke database, diganti Prisma di Bagian B2.
+const regulations: Regulation[] = [];
 
 /** Ubah nama menjadi slug URL: huruf kecil, tanpa aksen, selain huruf/angka jadi "-". */
 export function createSlug(name: string): string {
   return name
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");

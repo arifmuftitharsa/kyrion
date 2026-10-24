@@ -1,13 +1,19 @@
 import StatusBadge from "@/components/StatusBadge";
-import { sortVersionsNewestFirst } from "@/lib/data/regulations";
+import { sortVersionsNewestFirst } from "@/lib/domain/versi";
 import { formatDate } from "@/lib/format";
 import type { Version } from "@/lib/types";
 
 interface VersionTimelineProps {
   versions: Version[];
+  /** Tanggal acuan WIB (ISO "YYYY-MM-DD") dari halaman, untuk membedakan versi yang belum berlaku. */
+  today: string;
 }
 
-export default function VersionTimeline({ versions }: VersionTimelineProps) {
+export default function VersionTimeline({ versions, today }: VersionTimelineProps) {
+  if (versions.length === 0) {
+    return <p className="text-slate-700">Belum ada versi.</p>;
+  }
+
   // Versi terbaru di atas karena pengguna paling sering mencari aturan yang berlaku.
   const sortedVersions = sortVersionsNewestFirst(versions);
 
@@ -27,12 +33,14 @@ export default function VersionTimeline({ versions }: VersionTimelineProps) {
             <StatusBadge status={version.status} />
           </div>
           <p className="text-sm text-slate-600">
-            Berlaku sejak{" "}
+            {version.effectiveDate > today ? "Mulai berlaku" : "Berlaku sejak"}{" "}
             <time dateTime={version.effectiveDate}>
               {formatDate(version.effectiveDate)}
             </time>
           </p>
-          <p className="mt-1 text-slate-700">{version.changeSummary}</p>
+          {version.changeSummary && (
+            <p className="mt-1 text-slate-700">{version.changeSummary}</p>
+          )}
         </li>
       ))}
     </ol>

@@ -5,7 +5,11 @@
 import { useState, type FormEvent } from "react";
 import VerifyResult from "@/components/VerifyResult";
 import { focusRing } from "@/lib/styles";
-import type { Regulation, VersionStatus } from "@/lib/types";
+import {
+  VERSION_STATUS_LABEL,
+  type Regulation,
+  type VersionStatus,
+} from "@/lib/types";
 import {
   MAX_SIZE_MB,
   hasErrors,
@@ -142,7 +146,7 @@ export default function VerifyForm({ regulations }: VerifyFormProps) {
             </option>
             {selectedRegulation?.versions.map((version) => (
               <option key={version.versionNumber} value={version.versionNumber}>
-                {version.versionNumber} ({version.status})
+                {version.versionNumber} ({VERSION_STATUS_LABEL[version.status]})
               </option>
             ))}
           </select>
