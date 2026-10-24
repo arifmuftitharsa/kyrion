@@ -3,23 +3,24 @@
 import { useActionState } from "react";
 import type { StatusForm } from "@/lib/status-form";
 
-interface FormHapusRegulasiProps {
+interface FormHapusProps {
   /** Server Action hapus yang sudah diikat ke ID lewat .bind. */
   aksi: (sebelumnya: StatusForm) => Promise<StatusForm>;
-  namaRegulasi: string;
+  /** Teks tombol yang menyebut objeknya, mis. "Hapus regulasi X", agar jelas bagi pembaca layar. */
+  labelTombol: string;
 }
 
-export default function FormHapusRegulasi({ aksi, namaRegulasi }: FormHapusRegulasiProps) {
+/** Konfirmasi hapus generik: dipakai hapus regulasi dan hapus versi. */
+export default function FormHapus({ aksi, labelTombol }: FormHapusProps) {
   const [status, kirim, pending] = useActionState(aksi, {});
 
   return (
     <form action={kirim} className="mt-6 space-y-4">
-      {/* Teks tombol menyebut nama regulasi agar jelas bagi pembaca layar. */}
       <button
         type="submit" disabled={pending}
         className="rounded bg-red-700 px-4 py-2 text-white disabled:opacity-60"
       >
-        {pending ? "Menghapus..." : `Hapus regulasi ${namaRegulasi}`}
+        {pending ? "Menghapus..." : labelTombol}
       </button>
       <p role="status" aria-live="polite" className="font-medium text-red-800">
         {status.pesan}

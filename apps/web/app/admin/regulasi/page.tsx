@@ -51,6 +51,13 @@ export default async function HalamanKelolaRegulasi() {
                 <td className="flex gap-3 py-2">
                   {/* aria-label menyebut nama regulasi agar tautan berbeda bagi pembaca layar. */}
                   <Link
+                    href={`/admin/regulasi/${regulation.slug}/versi`}
+                    aria-label={`Versi ${regulation.name}`}
+                    className="underline"
+                  >
+                    Versi
+                  </Link>
+                  <Link
                     href={`/admin/regulasi/${regulation.slug}/ubah`}
                     aria-label={`Ubah ${regulation.name}`}
                     className="underline"

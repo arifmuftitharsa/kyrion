@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import FormHapusRegulasi from "@/components/FormHapusRegulasi";
+import FormHapus from "@/components/FormHapus";
 import { hapusRegulasi } from "@/app/admin/regulasi/actions";
 import { getAdminRegulationBySlug } from "@/lib/data/regulations";
 import { wajibAdmin } from "@/lib/sesi";
@@ -29,9 +29,9 @@ export default async function HalamanHapusRegulasi({ params }: HalamanHapusRegul
         Regulasi ini memiliki {regulation.versionCount} versi; hanya regulasi
         tanpa versi yang dapat dihapus.
       </p>
-      <FormHapusRegulasi
+      <FormHapus
         aksi={hapusRegulasi.bind(null, regulation.id)}
-        namaRegulasi={regulation.name}
+        labelTombol={`Hapus regulasi ${regulation.name}`}
       />
       <Link href="/admin/regulasi" className="inline-block underline">
         Batal
