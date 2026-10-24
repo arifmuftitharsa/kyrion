@@ -3,6 +3,7 @@
 import { loadEnvConfig } from "@next/env";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, type VersionStatus } from "../generated/prisma/client";
+import { createSlug } from "../lib/domain/slug";
 
 loadEnvConfig(process.cwd());
 
@@ -14,8 +15,9 @@ interface SeedVersion {
   changeSummary: string | null;
 }
 
+// Slug tidak ditulis manual: selalu createSlug(name), sama dengan aplikasi,
+// agar cek unik slug juga mendeteksi nama kembar.
 interface SeedRegulation {
-  slug: string;
   name: string;
   description: string | null;
   category: string;
@@ -24,8 +26,7 @@ interface SeedRegulation {
 
 const regulations: SeedRegulation[] = [
   {
-    slug: "pedoman-akademik",
-    name: "Pedoman Akademik Program Sarjana",
+    name: "Pedoman Akademik",
     description:
       "[DATA SINTETIS] Aturan beban studi, penilaian, dan masa studi mahasiswa program sarjana.",
     category: "Akademik",
@@ -52,7 +53,6 @@ const regulations: SeedRegulation[] = [
     ],
   },
   {
-    slug: "tata-tertib-mahasiswa",
     name: "Tata Tertib Mahasiswa",
     description:
       "[DATA SINTETIS] Hak, kewajiban, dan sanksi bagi mahasiswa di lingkungan kampus.",
@@ -73,8 +73,7 @@ const regulations: SeedRegulation[] = [
     ],
   },
   {
-    slug: "pedoman-tugas-akhir",
-    name: "Pedoman Penulisan Tugas Akhir",
+    name: "Pedoman Tugas Akhir",
     description:
       "[DATA SINTETIS] Format penulisan, alur bimbingan, dan syarat sidang tugas akhir.",
     category: "Akademik",
@@ -101,7 +100,6 @@ const regulations: SeedRegulation[] = [
   },
   {
     // Sengaja tanpa versi dan tanpa deskripsi.
-    slug: "pedoman-magang-mahasiswa",
     name: "Pedoman Magang Mahasiswa",
     description: null,
     category: "Kemahasiswaan",
@@ -114,7 +112,8 @@ const prisma = new PrismaClient({
 });
 
 /** Upsert berdasarkan kunci unik agar seed aman dijalankan berulang. */
-async function seedRegulation({ versions, ...regulation }: SeedRegulation) {
+async function seedRegulation({ versions, ...fields }: SeedRegulation) {
+  const regulation = { ...fields, slug: createSlug(fields.name) };
   const { id: regulationId } = await prisma.regulation.upsert({
     where: { slug: regulation.slug },
     create: regulation,
