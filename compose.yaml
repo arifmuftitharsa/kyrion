@@ -1,0 +1,24 @@
+name: kyrion
+
+services:
+  db:
+    # glibc (trixie), bukan alpine (musl), agar perilaku collation konsisten.
+    image: postgres:18.6-trixie
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER wajib diisi di .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD wajib diisi di .env}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB wajib diisi di .env}
+    ports:
+      # Hanya loopback; 5433 karena 5432 dipakai PostgreSQL lokal.
+      - "127.0.0.1:5433:5432"
+    volumes:
+      # PostgreSQL 18+: volume di /var/lib/postgresql, bukan .../data.
+      - kyrion-pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  kyrion-pgdata:
