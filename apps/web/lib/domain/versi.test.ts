@@ -6,7 +6,14 @@ const version = (
   versionNumber: string,
   effectiveDate: string,
   status: VersionStatus,
-): Version => ({ versionNumber, effectiveDate, status, changeSummary: null });
+): Version => ({
+  id: `id-${versionNumber}`,
+  versionNumber,
+  effectiveDate,
+  status,
+  changeSummary: null,
+  fileSize: null,
+});
 
 // DATA SINTETIS untuk uji.
 const A = version("2024/2025", "2024-08-01", "DIGANTIKAN");

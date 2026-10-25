@@ -63,7 +63,11 @@ export default async function RegulationDetailPage({
         <h2 id="riwayat-versi" className="mb-4 text-xl font-semibold text-slate-900">
           Riwayat Versi
         </h2>
-        <VersionTimeline versions={regulation.versions} today={today} />
+        <VersionTimeline
+          versions={regulation.versions}
+          regulationSlug={regulation.slug}
+          today={today}
+        />
       </section>
     </div>
   );

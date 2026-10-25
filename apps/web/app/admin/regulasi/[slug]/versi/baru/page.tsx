@@ -25,8 +25,7 @@ export default async function HalamanTambahVersi({ params }: HalamanTambahVersiP
       </Link>
       <h1 className="mt-2 text-3xl font-bold">Tambah Versi</h1>
       <p className="mt-2 text-sm text-gray-600">
-        {regulation.name}. Versi baru selalu berstatus Draf. Unggah dokumen PDF belum
-        tersedia di v0.2.
+        {regulation.name}. Versi baru selalu berstatus Draf.
       </p>
       <FormVersi aksi={simpanVersi.bind(null, regulation.id)} labelTombol="Simpan" />
     </div>

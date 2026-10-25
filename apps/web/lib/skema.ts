@@ -69,6 +69,12 @@ export type MasukanVersi = z.infer<typeof skemaVersi>;
 
 export const skemaIdVersi = z.uuid({ error: "ID versi tidak valid" });
 
+// Parameter URL unduhan berkas (Route Handler): tidak valid diperlakukan sebagai 404.
+export const skemaParamBerkas = z.object({
+  slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  versionId: skemaIdVersi,
+});
+
 // Dipakai halaman /masuk di Bagian 4 (sama dengan modul)
 export const skemaMasuk = z.object({
   // Dinormalisasi huruf kecil agar cocok dengan email tersimpan di tabel users.

@@ -5,7 +5,7 @@ import StatusBadge from "@/components/StatusBadge";
 import { getAdminRegulationBySlug } from "@/lib/data/regulations";
 import { getAdminVersions } from "@/lib/data/versions";
 import { versiBolehDihapus, versiBolehDiubah } from "@/lib/domain/versi-admin";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatUkuranBerkas } from "@/lib/format";
 import { wajibAdmin } from "@/lib/sesi";
 
 export const metadata: Metadata = { title: "Kelola Versi | Kyrion" };
@@ -50,6 +50,7 @@ export default async function HalamanKelolaVersi({ params }: HalamanKelolaVersiP
               <th scope="col" className="py-2 pr-4">Mulai berlaku</th>
               <th scope="col" className="py-2 pr-4">Status</th>
               <th scope="col" className="py-2 pr-4">Ringkasan</th>
+              <th scope="col" className="py-2 pr-4">Berkas</th>
               <th scope="col" className="py-2">Aksi</th>
             </tr>
           </thead>
@@ -62,6 +63,19 @@ export default async function HalamanKelolaVersi({ params }: HalamanKelolaVersiP
                 </td>
                 <td className="py-2 pr-4"><StatusBadge status={version.status} /></td>
                 <td className="py-2 pr-4">{version.changeSummary ?? "—"}</td>
+                <td className="py-2 pr-4">
+                  {version.fileSize !== null ? (
+                    <Link
+                      href={`${dasar}/${version.id}/berkas`}
+                      aria-label={`Unduh PDF versi ${version.versionNumber}`}
+                      className="underline"
+                    >
+                      Unduh PDF ({formatUkuranBerkas(version.fileSize)})
+                    </Link>
+                  ) : (
+                    "—"
+                  )}
+                </td>
                 <td className="flex gap-3 py-2">
                   {/* Tombol hanya untuk DRAF; server tetap menolak status lain. */}
                   {versiBolehDiubah(version.status) && (

@@ -68,17 +68,26 @@ model Regulation {
 
 // Versi berlaku tidak disimpan; dihitung oleh lapisan domain.
 model Version {
-  id            String        @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  regulationId  String        @map("regulation_id") @db.Uuid
-  versionNumber String        @map("version_number")
-  effectiveDate DateTime      @map("effective_date") @db.Date
-  status        VersionStatus @default(DRAF)
+  id             String        @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  regulationId   String        @map("regulation_id") @db.Uuid
+  versionNumber  String        @map("version_number")
+  effectiveDate  DateTime      @map("effective_date") @db.Date
+  status         VersionStatus @default(DRAF)
   // Null untuk versi pertama (tidak ada versi sebelumnya).
-  changeSummary String?       @map("change_summary")
-  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  changeSummary  String?       @map("change_summary")
+  // Berkas PDF (F-12). Null untuk versi tanpa berkas (mis. versi seed).
+  // Kelima kolom selalu ditulis bersama dalam satu pernyataan.
+  // Nama asli tersanitasi, hanya untuk tampilan dan header unduhan.
+  fileName       String?       @map("file_name")
+  // Nama berkas di disk, dibuat server (UUID); unik agar satu berkas milik satu versi.
+  fileKey        String?       @unique @map("file_key")
+  fileSize       Int?          @map("file_size")
+  fileSha256     String?       @map("file_sha256") @db.Char(64)
+  fileUploadedAt DateTime?     @map("file_uploaded_at") @db.Timestamptz(3)
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
   // Restrict: regulasi yang punya versi (termasuk Sah) tidak bisa dihapus.
-  regulation    Regulation    @relation(fields: [regulationId], references: [id], onDelete: Restrict)
+  regulation     Regulation    @relation(fields: [regulationId], references: [id], onDelete: Restrict)
 
   @@unique([regulationId, versionNumber])
   @@map("versions")

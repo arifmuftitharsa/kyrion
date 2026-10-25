@@ -6,6 +6,7 @@ import { ubahVersi } from "@/app/admin/regulasi/[slug]/versi/actions";
 import { getAdminRegulationBySlug } from "@/lib/data/regulations";
 import { findVersion } from "@/lib/data/versions";
 import { pecahTanggalIso } from "@/lib/domain/tanggal";
+import { formatUkuranBerkas } from "@/lib/format";
 import { pesanTolakUbahVersi, versiBolehDiubah } from "@/lib/domain/versi-admin";
 import { skemaIdVersi } from "@/lib/skema";
 import { wajibAdmin } from "@/lib/sesi";
@@ -44,6 +45,11 @@ export default async function HalamanUbahVersi({ params }: HalamanUbahVersiProps
             effectiveYear: String(tahun),
             changeSummary: version.changeSummary ?? "",
           }}
+          berkasSaatIni={
+            version.fileName && version.fileSize !== null
+              ? { nama: version.fileName, ukuran: formatUkuranBerkas(version.fileSize) }
+              : undefined
+          }
           labelTombol="Simpan perubahan"
         />
       ) : (

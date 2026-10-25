@@ -1,8 +1,9 @@
 import { createHash, timingSafeEqual } from "node:crypto";
+import { MAX_INPUT_BYTES } from "./batas";
 
-// Batas sama dengan batas unggah formulir (10 MB). Membatasi input mencegah
-// server menghabiskan memori/CPU untuk berkas yang tidak wajar besarnya.
-export const MAX_INPUT_BYTES = 10 * 1024 * 1024;
+// Diekspor ulang dari batas.ts (satu sumber, aman untuk klien); pemakai lama tetap
+// bisa mengimpornya dari sini.
+export { MAX_INPUT_BYTES };
 
 // Format sidik jari yang sah: tepat 64 karakter hex huruf kecil (SHA-256 = 32 byte).
 const SHA256_HEX_PATTERN = /^[0-9a-f]{64}$/;

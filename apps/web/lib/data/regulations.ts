@@ -10,7 +10,7 @@ import {
 import { PERNAH_DISAHKAN } from "@/lib/domain/versi";
 import { getPrisma } from "@/lib/prisma";
 import type { MasukanRegulasi } from "@/lib/skema";
-import type { Regulation } from "@/lib/types";
+import type { BerkasTersimpan, Regulation } from "@/lib/types";
 
 // Hanya versi yang pernah disahkan yang keluar dari lapisan data (F-02), agar
 // DRAF dan DIBATALKAN tidak pernah terkirim ke halaman publik maupun browser.
@@ -35,11 +35,13 @@ function toRegulation(row: RegulationRow): Regulation {
     category: row.category.name,
     description: row.description,
     versions: row.versions.map((version) => ({
+      id: version.id,
       versionNumber: version.versionNumber,
       // Kolom date dibaca sebagai 00.00 UTC, jadi bagian tanggal UTC selalu tepat.
       effectiveDate: version.effectiveDate.toISOString().slice(0, 10),
       status: version.status,
       changeSummary: version.changeSummary,
+      fileSize: version.fileSize,
     })),
   };
 }
@@ -65,6 +67,22 @@ export async function getRegulationBySlug(
     where: { slug },
   });
   return row ? toRegulation(row) : undefined;
+}
+
+/**
+ * Berkas versi untuk unduhan publik (F-05): hanya versi yang pernah disahkan
+ * (SAH/DIGANTIKAN) milik regulasi `slug`. Draf dan Dibatalkan tidak pernah keluar.
+ */
+export async function findPublicVersionFile(
+  slug: string,
+  versionId: string,
+): Promise<BerkasTersimpan | undefined> {
+  const row = await getPrisma().version.findFirst({
+    select: { fileKey: true, fileName: true, fileSha256: true },
+    where: { id: versionId, regulation: { slug }, status: { in: [...PERNAH_DISAHKAN] } },
+  });
+  if (!row?.fileKey || !row.fileName || !row.fileSha256) return undefined;
+  return { key: row.fileKey, name: row.fileName, sha256: row.fileSha256 };
 }
 
 /** Mengembalikan regulasi pada kategori (slug) tertentu; tanpa kategori berarti semua. */

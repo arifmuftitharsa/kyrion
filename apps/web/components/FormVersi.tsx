@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState, type ChangeEvent, type FormEvent } from "react";
+import { PESAN_UKURAN_MAKS, melebihiBatasUkuran } from "@/lib/domain/berkas-pdf";
 import { NAMA_BULAN } from "@/lib/domain/tanggal";
 import type { StatusForm } from "@/lib/status-form";
 
@@ -11,10 +12,12 @@ interface FormVersiProps {
   aksi: (sebelumnya: StatusForm, formData: FormData) => Promise<StatusForm>;
   /** Isi awal untuk formulir ubah; kosong untuk formulir tambah. */
   nilaiAwal?: Record<string, string>;
+  /** Berkas yang sudah tersimpan (formulir ubah); ukuran sudah diformat oleh halaman. */
+  berkasSaatIni?: { nama: string; ukuran: string };
   labelTombol: string;
 }
 
-export default function FormVersi({ aksi, nilaiAwal, labelTombol }: FormVersiProps) {
+export default function FormVersi({ aksi, nilaiAwal, berkasSaatIni, labelTombol }: FormVersiProps) {
   const [status, kirim, pending] = useActionState(aksi, { nilai: nilaiAwal });
   const g = status.galat;
   const n = status.nilai;
@@ -24,8 +27,30 @@ export default function FormVersi({ aksi, nilaiAwal, labelTombol }: FormVersiPro
     g?.effectiveDay?.[0] ?? g?.effectiveMonth?.[0] ?? g?.effectiveYear?.[0] ?? galatTanggalUtuh;
   const tidakValid = (kolom: string) => !!g?.[kolom] || !!galatTanggalUtuh;
 
+  // Cek ukuran di klien memakai batas dan teks yang sama dengan server. Tanpa ini, berkas
+  // di atas batas proxy terpotong sebelum validasi server berjalan (galat 500, bukan galat field).
+  const [galatUkuran, setGalatUkuran] = useState<string>();
+  const pesanBerkas = galatUkuran ?? g?.berkas?.[0];
+
+  /** Memperbarui galat ukuran; true bila berkas (atau tidak ada berkas) lolos. */
+  function periksaUkuran(berkas: File | undefined): boolean {
+    const melebihi = berkas !== undefined && melebihiBatasUkuran(berkas.size);
+    setGalatUkuran(melebihi ? PESAN_UKURAN_MAKS : undefined);
+    return !melebihi;
+  }
+
+  function saatBerkasDipilih(event: ChangeEvent<HTMLInputElement>) {
+    periksaUkuran(event.target.files?.[0]);
+  }
+
+  function saatKirim(event: FormEvent<HTMLFormElement>) {
+    const input = event.currentTarget.elements.namedItem("berkas") as HTMLInputElement | null;
+    // preventDefault membatalkan pengiriman; React tidak menjalankan action bila submit dicegah.
+    if (!periksaUkuran(input?.files?.[0])) event.preventDefault();
+  }
+
   return (
-    <form action={kirim} className="mt-6 space-y-4">
+    <form action={kirim} onSubmit={saatKirim} className="mt-6 space-y-4">
       <div>
         <label htmlFor="versionNumber" className="font-medium">Nomor versi</label>
         <input
@@ -90,6 +115,22 @@ export default function FormVersi({ aksi, nilaiAwal, labelTombol }: FormVersiPro
           aria-invalid={!!g?.changeSummary} aria-describedby="galat-changeSummary"
         />
         <p id="galat-changeSummary" className="text-sm text-red-700">{g?.changeSummary?.[0]}</p>
+      </div>
+
+      <div>
+        <label htmlFor="berkas" className="font-medium">
+          Berkas PDF <span className="font-normal text-slate-600">(opsional)</span>
+        </label>
+        <input
+          id="berkas" name="berkas" type="file" accept="application/pdf,.pdf"
+          onChange={saatBerkasDipilih} className={kolom}
+          aria-invalid={!!pesanBerkas} aria-describedby="petunjuk-berkas galat-berkas"
+        />
+        <p id="petunjuk-berkas" className="text-sm text-slate-600">
+          PDF, maksimal 10 MB.
+          {berkasSaatIni && ` Berkas saat ini: ${berkasSaatIni.nama} (${berkasSaatIni.ukuran}); pilih berkas baru untuk menggantinya.`}
+        </p>
+        <p id="galat-berkas" className="text-sm text-red-700">{pesanBerkas}</p>
       </div>
 
       <button
