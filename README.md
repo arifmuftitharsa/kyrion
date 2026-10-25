@@ -4,6 +4,20 @@ Kyrion, dari kata Yunani *kyrion* yang berarti "yang sah, yang berlaku", adalah 
 
 > Status: **v0.2 (Tugas 2 PAW)**: antarmuka publik dan halaman admin dengan data dari PostgreSQL. Rilis sebelumnya, v0.1 (Tugas 1 PAW, Milestone 1), dibekukan pada tag `v0.1`.
 
+## Daftar Isi
+
+- [Permasalahan](#permasalahan)
+- [Sasaran Pengguna](#sasaran-pengguna)
+- [Fitur](#fitur)
+- [Teknologi](#teknologi)
+- [Struktur Aplikasi](#struktur-aplikasi)
+- [Cara Menjalankan](#cara-menjalankan)
+- [Tugas 2 (v0.2): PostgreSQL, Prisma, dan CRUD Admin](#tugas-2-v02-postgresql-prisma-dan-crud-admin)
+- [Bukti Tugas 1](#bukti-tugas-1)
+- [Kriptografi (Tugas 1)](#kriptografi-tugas-1)
+- [Dokumen Teknis Praktikum PAW](#dokumen-teknis-praktikum-paw)
+- [Penggunaan AI](#penggunaan-ai)
+
 ## Permasalahan
 
 Regulasi kampus dirilis sebagai berkas PDF terpisah yang direvisi setiap tahun akademik. Berkas-berkas itu tidak disertai riwayat versi, tanggal berlaku, maupun bukti keabsahan. Akibatnya mahasiswa berisiko mengikuti ketentuan yang sudah tidak berlaku.
@@ -152,139 +166,9 @@ npm run lint
 npm test
 ```
 
-## Bukti Tugas 1
-
-### a. Lighthouse Accessibility
-
-Kondisi uji (tanggal, versi Lighthouse dan Chrome, perangkat emulasi, mode server) tercatat di [KONDISI-UJI.md](docs/tugas-1/lighthouse/KONDISI-UJI.md).
-
-| Halaman | URL | Skor Accessibility | Laporan |
-|---|---|---|---|
-| Beranda | `/` | 100 | [beranda.html](docs/tugas-1/lighthouse/beranda.html) |
-| Detail regulasi | `/regulasi/pedoman-akademik` | 100 | [detail.html](docs/tugas-1/lighthouse/detail.html) |
-| Verifikasi | `/verifikasi` | 100 | [verifikasi.html](docs/tugas-1/lighthouse/verifikasi.html) |
-
-### b. Tangkapan Layar
-
-Tangkapan layar diambil pada tiga lebar layar: 375 px (ponsel), 768 px (tablet), dan 1280 px (desktop).
-
-**Beranda (Daftar Regulasi)**
-
-![Beranda pada lebar 375 px](docs/tugas-1/screenshots/beranda-375.png)
-*Beranda di ponsel (375 px): kartu regulasi tersusun satu kolom.*
-
-![Beranda pada lebar 768 px](docs/tugas-1/screenshots/beranda-768.png)
-*Beranda di tablet (768 px): kartu regulasi tersusun dua kolom.*
-
-![Beranda pada lebar 1280 px](docs/tugas-1/screenshots/beranda-1280.png)
-*Beranda di desktop (1280 px): kartu regulasi tersusun tiga kolom.*
-
-**Detail Regulasi**
-
-![Detail regulasi pada lebar 375 px](docs/tugas-1/screenshots/detail-375.png)
-*Detail regulasi di ponsel (375 px) beserta linimasa riwayat versi.*
-
-![Detail regulasi pada lebar 768 px](docs/tugas-1/screenshots/detail-768.png)
-*Detail regulasi di tablet (768 px).*
-
-![Detail regulasi pada lebar 1280 px](docs/tugas-1/screenshots/detail-1280.png)
-*Detail regulasi di desktop (1280 px).*
-
-**Verifikasi Dokumen**
-
-![Halaman verifikasi pada lebar 375 px](docs/tugas-1/screenshots/verifikasi-375.png)
-*Formulir verifikasi di ponsel (375 px).*
-
-![Halaman verifikasi pada lebar 768 px](docs/tugas-1/screenshots/verifikasi-768.png)
-*Formulir verifikasi di tablet (768 px).*
-
-![Halaman verifikasi pada lebar 1280 px](docs/tugas-1/screenshots/verifikasi-1280.png)
-*Formulir verifikasi di desktop (1280 px).*
-
-**Validasi Formulir**
-
-![Validasi formulir kosong](docs/tugas-1/screenshots/validasi-formulir-kosong.png)
-*Formulir dikirim dalam keadaan kosong. Setiap field menampilkan pesan galat: "Regulasi wajib dipilih.", "Versi wajib dipilih.", dan "Dokumen PDF wajib diunggah."*
-
-![Validasi berkas bukan PDF](docs/tugas-1/screenshots/validasi-file-salah.png)
-*Berkas `test.txt` diunggah dan ditolak dengan pesan "Berkas harus berformat PDF."*
-
-## Dokumen Teknis Praktikum PAW
-
-Dokumen Teknis Praktikum Pengembangan Aplikasi Web (052356) tersebar di dua repository:
-
-- Modul 1–3: [praktikum-paw](https://github.com/arifmuftitharsa/praktikum-paw/tree/main/docs/praktikum)
-- Modul 4 dan seterusnya: [docs/praktikum](docs/praktikum/) di repository ini
-
-## Penggunaan AI
-
-Antarmuka v0.1 ini dibuat dengan bantuan Claude Code (asisten pemrograman AI dari Anthropic) berdasarkan prompt yang saya susun. Prompt tersebut menetapkan kebutuhan produk, struktur file, aturan aksesibilitas, dan prinsip Clean Code/SOLID. Saya kemudian meninjau, menjalankan, dan menguji hasilnya, termasuk pemeriksaan tipe, lint, build, dan audit Lighthouse. Rincian prompt dan keputusan yang diambil tercatat di [AI_LOG.md](AI_LOG.md).
-
-**Pemilik produk:** Arif Mufti Tharsa
-
-## Kriptografi (Tugas 1)
-
-Komponen yang dikerjakan: sidik data berkas versi regulasi (fitur F-30), berupa SHA-256 di `apps/web/lib/crypto/fingerprint.ts`.
-
-### Kebutuhan keamanan data
-
-| Data | Tujuan keamanan | Prioritas | Kebutuhan yang dapat diuji | Ditangani di |
-| --- | --- | --- | --- | --- |
-| Berkas versi regulasi | Integritas (deteksi perubahan) | Tinggi (kalau isinya berubah diam-diam, pengguna bakal ngikutin aturan yang salah) | `verifyFingerprint` mengembalikan `false` jika data berubah satu byte atau format sidik tidak valid, dan melempar `InputTooLargeError` jika input melebihi 10 MB. | T1 |
-| Metadata status versi | Integritas dan autentisitas | Sedang (kalau statusnya tertukar, regulasi usang bisa dikira masih berlaku) | Sistem menolak pembaruan metadata jika verifikasi HMAC atas metadata gagal. | T2 (rencana) |
-| Kredensial admin | Kerahasiaan dan autentisitas | Tinggi (kalau bocor, orang luar bisa seenaknya mengubah isi aturan) | Sistem menolak sesi masuk dan mengembalikan status 401 kalau kombinasi identitas dan hash kata sandi (scrypt + salt acak) tidak cocok. | T2/T3 (rencana) |
-| Log audit | Integritas | Sedang (kalau riwayat bisa diedit, jejak aksi manipulasi bakal hilang) | Verifikasi rantai hash gagal kalau satu entri diubah atau dihapus. | T2/T3 (rencana) |
-
-Hash tanpa kunci (seperti SHA-256) hanya bisa mendeteksi apakah data pernah berubah, tetapi tidak bisa membuktikan siapa yang mengubahnya, karena siapa pun bisa menghitung ulang hash baru. Pembuktian asal-usul dan keaslian pembuat data (autentisitas) baru terjamin ketika ditambahkan kunci rahasia, misalnya lewat HMAC atau tanda tangan digital.
-
-Batas Tugas 1: yang dikerjakan baru fungsi sidik dan verifikasinya beserta tes. Penyimpanan sidik di database dan pemanggilan dari alur unggah berkas dikerjakan di tugas berikutnya.
-
-### Rancangan komponen sidik berkas
-
-- Masukan, proses, keluaran: bytes berkas (`Uint8Array`, maksimum 10 MB) -> SHA-256 -> string hex huruf kecil sepanjang 64 karakter. `verifyFingerprint` menerima bytes dan sidik yang diharapkan, lalu mengembalikan `true` hanya jika keduanya sama persis.
-- Hex adalah encoding, bukan enkripsi: hex hanya cara menulis byte sebagai teks, dan siapa pun bisa membalikkannya tanpa kunci. Keamanan sidik berasal dari sifat SHA-256 yang satu arah dan tahan tabrakan, bukan dari kerahasiaan hex.
-- Alasan memakai `node:crypto`: pustaka bawaan Node.js yang terpelihara dan memakai OpenSSL di belakangnya, sehingga tidak perlu dependensi tambahan dan tidak ada algoritma buatan sendiri.
-- Perbandingan memakai `timingSafeEqual` (waktu konstan) dan format sidik divalidasi lebih dulu, sehingga input salah format gagal tertutup (`false`) dan tidak memicu galat tak terduga.
-- Sumber keacakan: SHA-256 tidak membutuhkan kunci, jadi Tugas 1 tidak memakai nilai acak. Nilai rahasia di tugas berikutnya (kunci HMAC, nonce) akan dibangkitkan dengan CSPRNG (`crypto.randomBytes`), bukan `Math.random`.
-- Sandi klasik hanya bahan belajar dan tidak dipakai untuk melindungi data produk.
-
-### Cara menjalankan tes
-
-Dari klon bersih, jalankan di folder `apps/web` (bukan di root repo):
-
-```bash
-cd apps/web
-npm install
-npm test
-```
-
-Cuplikan keluaran (11 tes lulus):
-
-```
- RUN  v5.0.4 C:/Projects/kyrion/apps/web
-
- ✓ lib/crypto/fingerprint.test.ts (11 tests) 10ms
-   ✓ fingerprint (4)
-     ✓ menghasilkan SHA-256 sesuai vektor uji resmi FIPS 180-2 untuk "abc" 1ms
-     ✓ menghasilkan SHA-256 yang benar untuk input kosong 0ms
-     ✓ menerima input tepat sebesar MAX_INPUT_BYTES 7ms
-     ✓ melempar InputTooLargeError untuk input sebesar MAX_INPUT_BYTES + 1 0ms
-   ✓ verifyFingerprint (7)
-     ✓ mengembalikan true untuk data asli dan false bila satu byte diubah 0ms
-     ✓ mengembalikan false untuk expectedHex berformat salah: string bukan hex (64 karakter z) 0ms
-     ✓ mengembalikan false untuk expectedHex berformat salah: hex 63 karakter 0ms
-     ✓ mengembalikan false untuk expectedHex berformat salah: hex 65 karakter 0ms
-     ✓ mengembalikan false untuk expectedHex berformat salah: hex huruf besar dari hash yang benar 0ms
-     ✓ mengembalikan false untuk expectedHex berformat salah: string kosong 0ms
-     ✓ melempar InputTooLargeError (bukan mengembalikan false) untuk data di atas MAX_INPUT_BYTES 0ms
-
- Test Files  1 passed (1)
-      Tests  11 passed (11)
-```
-
 ## Tugas 2 (v0.2): PostgreSQL, Prisma, dan CRUD Admin
 
-> Bagian umum di atas sudah mengikuti v0.2. Bagian "Bukti Tugas 1" dan "Kriptografi (Tugas 1)" tetap menggambarkan v0.1 (tag `v0.1`). Bagian ini merinci pengujian v0.2.
+> Bagian umum di awal README sudah mengikuti v0.2. Bagian "Bukti Tugas 1" dan "Kriptografi (Tugas 1)" di bawah tetap menggambarkan v0.1 (tag `v0.1`). Bagian ini merinci pengujian v0.2.
 
 ### 1. Ringkasan
 
@@ -367,7 +251,7 @@ Tanggal uji: 25 Oktober 2026. Bukti ada di [docs/tugas-2/screenshots](docs/tugas
 | 3 | Regulasi | Update | Mengubah deskripsi | Deskripsi diganti teks baru | Tersimpan, deskripsi baru tampil | Deskripsi baru tampil di halaman publik; updated_at lebih baru dari created_at | Lulus | [skenario-03-regulasi-update-ui.png](docs/tugas-2/screenshots/skenario-03-regulasi-update-ui.png), [skenario-03-regulasi-update-db.png](docs/tugas-2/screenshots/skenario-03-regulasi-update-db.png) |
 | 4 | Regulasi | Delete | Menghapus regulasi tanpa versi | Hapus Pedoman Cuti Akademik | Terhapus | Hilang dari daftar; count di DB = 0 | Lulus | [skenario-04-regulasi-delete-ui.png](docs/tugas-2/screenshots/skenario-04-regulasi-delete-ui.png), [skenario-04-regulasi-delete-db.png](docs/tugas-2/screenshots/skenario-04-regulasi-delete-db.png) |
 | 5 | Versi | Create | Menambah versi | Versi 15 Pedoman Tugas Akhir, 1 Agustus 2027, ringkasan | Tersimpan sebagai Draf | Tampil paling atas sebagai Draf; DB: 15, DRAF, 2027-08-01 | Lulus | [skenario-05-versi-create-ui.png](docs/tugas-2/screenshots/skenario-05-versi-create-ui.png), [skenario-05-versi-create-db.png](docs/tugas-2/screenshots/skenario-05-versi-create-db.png) |
-| 6 | Versi | Read | Daftar versi admin | Buka daftar versi Pedoman Akademik | Terurut dari tanggal terbaru, status tampil | Lima versi terurut 1 Agu 2027 → 15 Jan 2025 dengan label status | Lulus | [skenario-06-versi-read-ui.png](docs/tugas-2/screenshots/skenario-06-versi-read-ui.png) |
+| 6 | Versi | Read | Daftar versi admin | Buka daftar versi Pedoman Akademik | Terurut dari tanggal terbaru, status tampil | Tiga versi terurut 1 Agu 2027 → 1 Agu 2024 dengan label status Sah dan Digantikan | Lulus | [skenario-06-versi-read-ui.png](docs/tugas-2/screenshots/skenario-06-versi-read-ui.png) |
 | 7 | Versi | Update | Mengubah versi Draf | Ringkasan versi 15 diganti | Tersimpan, status tetap Draf | Ringkasan baru tampil; DB: status DRAF, updated_at lebih baru | Lulus | [skenario-07-versi-update-ui.png](docs/tugas-2/screenshots/skenario-07-versi-update-ui.png), [skenario-07-versi-update-db.png](docs/tugas-2/screenshots/skenario-07-versi-update-db.png) |
 | 8 | Versi | Delete | Menghapus versi Draf | Hapus versi 15 | Terhapus, versi lain utuh | Versi 15 hilang; DB tinggal 14, 13, 12, 11 | Lulus | [skenario-08-versi-delete-ui.png](docs/tugas-2/screenshots/skenario-08-versi-delete-ui.png), [skenario-08-versi-delete-db.png](docs/tugas-2/screenshots/skenario-08-versi-delete-db.png) |
 | 9 | Relasi | Read | Publik hanya melihat versi yang pernah disahkan | Buka /regulasi/pedoman-tugas-akhir | Hanya versi 11; Draf dan Dibatalkan tidak tampil | Versi berlaku 11 dan riwayat hanya versi 11, padahal DB berisi 4 versi | Lulus | [skenario-09-relasi-read-ui.png](docs/tugas-2/screenshots/skenario-09-relasi-read-ui.png), [skenario-08-versi-delete-db.png](docs/tugas-2/screenshots/skenario-08-versi-delete-db.png) |
@@ -410,3 +294,154 @@ Uji otomatis: `npm test` menjalankan **43 uji Vitest**. Berkas ujinya: `lib/doma
 - Login masih akun demo dari `.env.local` dengan pembandingan kata sandi apa adanya. Pada rilis berikutnya diganti akun Admin dari seed dengan hash kata sandi.
 - Pengesahan versi dan unggah PDF belum tersedia.
 - Kategori masih teks tetap.
+
+## Bukti Tugas 1
+
+### a. Lighthouse Accessibility
+
+Kondisi uji (tanggal, versi Lighthouse dan Chrome, perangkat emulasi, mode server) tercatat di [KONDISI-UJI.md](docs/tugas-1/lighthouse/KONDISI-UJI.md).
+
+| Halaman | URL | Skor Accessibility | Laporan |
+|---|---|---|---|
+| Beranda | `/` | 100 | [beranda.html](docs/tugas-1/lighthouse/beranda.html) |
+| Detail regulasi | `/regulasi/pedoman-akademik` | 100 | [detail.html](docs/tugas-1/lighthouse/detail.html) |
+| Verifikasi | `/verifikasi` | 100 | [verifikasi.html](docs/tugas-1/lighthouse/verifikasi.html) |
+
+### b. Tangkapan Layar
+
+Tangkapan layar diambil pada tiga lebar layar: 375 px (ponsel), 768 px (tablet), dan 1280 px (desktop).
+
+**Beranda (Daftar Regulasi)**
+
+![Beranda pada lebar 375 px](docs/tugas-1/screenshots/beranda-375.png)
+*Beranda di ponsel (375 px): kartu regulasi tersusun satu kolom.*
+
+![Beranda pada lebar 768 px](docs/tugas-1/screenshots/beranda-768.png)
+*Beranda di tablet (768 px): kartu regulasi tersusun dua kolom.*
+
+![Beranda pada lebar 1280 px](docs/tugas-1/screenshots/beranda-1280.png)
+*Beranda di desktop (1280 px): kartu regulasi tersusun tiga kolom.*
+
+**Detail Regulasi**
+
+![Detail regulasi pada lebar 375 px](docs/tugas-1/screenshots/detail-375.png)
+*Detail regulasi di ponsel (375 px) beserta linimasa riwayat versi.*
+
+![Detail regulasi pada lebar 768 px](docs/tugas-1/screenshots/detail-768.png)
+*Detail regulasi di tablet (768 px).*
+
+![Detail regulasi pada lebar 1280 px](docs/tugas-1/screenshots/detail-1280.png)
+*Detail regulasi di desktop (1280 px).*
+
+**Verifikasi Dokumen**
+
+![Halaman verifikasi pada lebar 375 px](docs/tugas-1/screenshots/verifikasi-375.png)
+*Formulir verifikasi di ponsel (375 px).*
+
+![Halaman verifikasi pada lebar 768 px](docs/tugas-1/screenshots/verifikasi-768.png)
+*Formulir verifikasi di tablet (768 px).*
+
+![Halaman verifikasi pada lebar 1280 px](docs/tugas-1/screenshots/verifikasi-1280.png)
+*Formulir verifikasi di desktop (1280 px).*
+
+**Validasi Formulir**
+
+![Validasi formulir kosong](docs/tugas-1/screenshots/validasi-formulir-kosong.png)
+*Formulir dikirim dalam keadaan kosong. Setiap field menampilkan pesan galat: "Regulasi wajib dipilih.", "Versi wajib dipilih.", dan "Dokumen PDF wajib diunggah."*
+
+![Validasi berkas bukan PDF](docs/tugas-1/screenshots/validasi-file-salah.png)
+*Berkas `test.txt` diunggah dan ditolak dengan pesan "Berkas harus berformat PDF."*
+
+## Kriptografi (Tugas 1)
+
+Komponen yang dikerjakan: sidik data berkas versi regulasi (fitur F-30), berupa SHA-256 di `apps/web/lib/crypto/fingerprint.ts`.
+
+### Kebutuhan keamanan data
+
+| Data | Tujuan keamanan | Prioritas | Kebutuhan yang dapat diuji | Ditangani di |
+| --- | --- | --- | --- | --- |
+| Berkas versi regulasi | Integritas (deteksi perubahan) | Tinggi (kalau isinya berubah diam-diam, pengguna bakal ngikutin aturan yang salah) | `verifyFingerprint` mengembalikan `false` jika data berubah satu byte atau format sidik tidak valid, dan melempar `InputTooLargeError` jika input melebihi 10 MB. | T1 |
+| Metadata status versi | Integritas dan autentisitas | Sedang (kalau statusnya tertukar, regulasi usang bisa dikira masih berlaku) | Sistem menolak pembaruan metadata jika verifikasi HMAC atas metadata gagal. | T2 (rencana) |
+| Kredensial admin | Kerahasiaan dan autentisitas | Tinggi (kalau bocor, orang luar bisa seenaknya mengubah isi aturan) | Sistem menolak sesi masuk dan mengembalikan status 401 kalau kombinasi identitas dan hash kata sandi (scrypt + salt acak) tidak cocok. | T2/T3 (rencana) |
+| Log audit | Integritas | Sedang (kalau riwayat bisa diedit, jejak aksi manipulasi bakal hilang) | Verifikasi rantai hash gagal kalau satu entri diubah atau dihapus. | T2/T3 (rencana) |
+
+Hash tanpa kunci (seperti SHA-256) hanya bisa mendeteksi apakah data pernah berubah, tetapi tidak bisa membuktikan siapa yang mengubahnya, karena siapa pun bisa menghitung ulang hash baru. Pembuktian asal-usul dan keaslian pembuat data (autentisitas) baru terjamin ketika ditambahkan kunci rahasia, misalnya lewat HMAC atau tanda tangan digital.
+
+Batas Tugas 1: yang dikerjakan baru fungsi sidik dan verifikasinya beserta tes. Penyimpanan sidik di database dan pemanggilan dari alur unggah berkas dikerjakan di tugas berikutnya.
+
+### Rancangan komponen sidik berkas
+
+- Masukan, proses, keluaran: bytes berkas (`Uint8Array`, maksimum 10 MB) -> SHA-256 -> string hex huruf kecil sepanjang 64 karakter. `verifyFingerprint` menerima bytes dan sidik yang diharapkan, lalu mengembalikan `true` hanya jika keduanya sama persis.
+- Hex adalah encoding, bukan enkripsi: hex hanya cara menulis byte sebagai teks, dan siapa pun bisa membalikkannya tanpa kunci. Keamanan sidik berasal dari sifat SHA-256 yang satu arah dan tahan tabrakan, bukan dari kerahasiaan hex.
+- Alasan memakai `node:crypto`: pustaka bawaan Node.js yang terpelihara dan memakai OpenSSL di belakangnya, sehingga tidak perlu dependensi tambahan dan tidak ada algoritma buatan sendiri.
+- Perbandingan memakai `timingSafeEqual` (waktu konstan) dan format sidik divalidasi lebih dulu, sehingga input salah format gagal tertutup (`false`) dan tidak memicu galat tak terduga.
+- Sumber keacakan: SHA-256 tidak membutuhkan kunci, jadi Tugas 1 tidak memakai nilai acak. Nilai rahasia di tugas berikutnya (kunci HMAC, nonce) akan dibangkitkan dengan CSPRNG (`crypto.randomBytes`), bukan `Math.random`.
+- Sandi klasik hanya bahan belajar dan tidak dipakai untuk melindungi data produk.
+
+### Cara menjalankan tes
+
+Dari klon bersih, jalankan di folder `apps/web` (bukan di root repo):
+
+```bash
+cd apps/web
+npm install
+npm test
+```
+
+Cuplikan keluaran (11 tes lulus):
+
+```
+ RUN  v5.0.4 C:/Projects/kyrion/apps/web
+
+ ✓ lib/crypto/fingerprint.test.ts (11 tests) 10ms
+   ✓ fingerprint (4)
+     ✓ menghasilkan SHA-256 sesuai vektor uji resmi FIPS 180-2 untuk "abc" 1ms
+     ✓ menghasilkan SHA-256 yang benar untuk input kosong 0ms
+     ✓ menerima input tepat sebesar MAX_INPUT_BYTES 7ms
+     ✓ melempar InputTooLargeError untuk input sebesar MAX_INPUT_BYTES + 1 0ms
+   ✓ verifyFingerprint (7)
+     ✓ mengembalikan true untuk data asli dan false bila satu byte diubah 0ms
+     ✓ mengembalikan false untuk expectedHex berformat salah: string bukan hex (64 karakter z) 0ms
+     ✓ mengembalikan false untuk expectedHex berformat salah: hex 63 karakter 0ms
+     ✓ mengembalikan false untuk expectedHex berformat salah: hex 65 karakter 0ms
+     ✓ mengembalikan false untuk expectedHex berformat salah: hex huruf besar dari hash yang benar 0ms
+     ✓ mengembalikan false untuk expectedHex berformat salah: string kosong 0ms
+     ✓ melempar InputTooLargeError (bukan mengembalikan false) untuk data di atas MAX_INPUT_BYTES 0ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+```
+
+## Dokumen Teknis Praktikum PAW
+
+Dokumen Teknis Praktikum Pengembangan Aplikasi Web (052356) tersebar di dua repository:
+
+- Modul 1–3: [praktikum-paw](https://github.com/arifmuftitharsa/praktikum-paw/tree/main/docs/praktikum)
+- Modul 4 dan seterusnya: [docs/praktikum](docs/praktikum/) di repository ini
+
+## Penggunaan AI
+
+Pengembangan Kyrion dibantu oleh Claude, asisten AI dari Anthropic. Bagian ini menjelaskan untuk apa Claude dipakai, apa yang tetap menjadi tanggung jawab saya, dan bagaimana hasilnya diverifikasi. Catatan per sesi tercatat di [AI_LOG.md](AI_LOG.md).
+
+### Peran Claude
+
+1. **Memahami konsep dan tugas.** Claude membantu saya memahami konsep yang baru bagi saya, seperti Next.js App Router, Server Component dan Server Action, Prisma, validasi Zod, serta sesi berbasis cookie. Claude juga membantu menafsirkan ketentuan setiap tugas dari RPS, slide, dan halaman LMS.
+2. **Merencanakan alur pengerjaan.** Claude membantu memecah setiap tugas menjadi langkah kecil yang berurutan, sehingga saya dapat mengeksekusi dan memeriksa hasilnya satu per satu.
+3. **Menyusun dan menyesuaikan PRD.** Claude membantu menyusun dokumen kebutuhan produk Kyrion dan menyesuaikannya ketika ada keputusan baru.
+4. **Menulis kode.** Sebagian besar kode v0.1 dan v0.2 ditulis oleh Claude berdasarkan instruksi dan rencana yang terlebih dahulu saya telaah dan setujui. Claude juga menjalankan pemeriksaan otomatis, yaitu uji Vitest, pemeriksaan tipe, lint, dan build.
+5. **Merancang pengujian.** Claude membantu merancang skenario uji manual, termasuk kasus penolakan dan uji keamanan, yang kemudian saya jalankan sendiri.
+
+### Peran dan tanggung jawab saya
+
+- **Menetapkan keputusan.** Kebutuhan produk dan keputusan teknis ditetapkan oleh saya. Setiap rencana perubahan kode saya telaah sebelum dijalankan, lalu saya setujui, revisi, atau tolak. Contohnya, masukan tanggal diganti menjadi tiga kolom setelah saya menilai format tanggal bawaan browser membingungkan.
+- **Menjalankan pengujian.** Pada v0.1 saya menjalankan audit Lighthouse dan memeriksa tampilan di tiga ukuran layar. Pada v0.2 saya menjalankan 10 skenario CRUD dan relasi, 3 uji penolakan Zod, serta pengecekan langsung ke basis data dengan `psql`. Uji manual ini menemukan dua bug yang lolos dari uji otomatis (lihat Tugas 2, bagian 8).
+- **Memahami kode.** Saya memastikan dapat menjelaskan setiap bagian kode yang dikumpulkan, termasuk alasan di balik setiap keputusan rancangan.
+
+### Batasan penggunaan
+
+- Claude tidak menerima isi berkas `.env`, kata sandi, token, maupun kredensial lain.
+- Semua hasil uji, tangkapan layar, dan skor Lighthouse berasal dari pengujian saya sendiri. Claude tidak membuat data bukti.
+- Commit memakai identitas saya, tanpa mencantumkan Claude sebagai kontributor.
+- Penggunaan AI mengikuti ketentuan setiap mata kuliah. Kuis dan ujian dikerjakan tanpa AI.
+
+**Pemilik produk:** Arif Mufti Tharsa
