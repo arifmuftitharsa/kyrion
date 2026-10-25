@@ -21,6 +21,8 @@ export interface AdminVersion {
   fileKey: string | null;
   fileName: string | null;
   fileSize: number | null;
+  /** Jumlah butir perubahan (F-04). */
+  changeCount: number;
 }
 
 /** Berkas yang baru disimpan ke disk, siap dicatat di DB. */
@@ -40,6 +42,7 @@ const versionSelect = {
   fileKey: true,
   fileName: true,
   fileSize: true,
+  _count: { select: { changes: true } },
 } satisfies Prisma.VersionSelect;
 
 /** Kelima kolom berkas selalu ditulis bersama. */
@@ -56,8 +59,9 @@ function toFileData(berkas: DataBerkas) {
 type VersionRow = Prisma.VersionGetPayload<{ select: typeof versionSelect }>;
 
 function toAdminVersion(row: VersionRow): AdminVersion {
+  const { _count, ...kolom } = row;
   // Kolom date dibaca sebagai 00.00 UTC, jadi bagian tanggal UTC selalu tepat.
-  return { ...row, effectiveDate: row.effectiveDate.toISOString().slice(0, 10) };
+  return { ...kolom, effectiveDate: row.effectiveDate.toISOString().slice(0, 10), changeCount: _count.changes };
 }
 
 /** Data yang ditulis dari masukan form; tanggal ISO dibaca sebagai UTC. */

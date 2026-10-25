@@ -69,6 +69,38 @@ export type MasukanVersi = z.infer<typeof skemaVersi>;
 
 export const skemaIdVersi = z.uuid({ error: "ID versi tidak valid" });
 
+const PESAN_HALAMAN = "Halaman harus bilangan bulat 1 sampai 10000";
+
+// Dipakai untuk tambah dan ubah Change (F-04). Versi induk tidak ada di sini:
+// ID-nya datang dari argumen terikat dan dicek terhadap data tersimpan.
+export const skemaPerubahan = z.object({
+  description: z.string({ error: "Deskripsi perubahan wajib diisi" }).trim()
+    .min(1, "Deskripsi perubahan wajib diisi")
+    .max(500, "Deskripsi perubahan maksimal 500 karakter"),
+  source: z.enum(["CHANGELOG", "PERBANDINGAN"], { error: "Pilih sumber perubahan" }),
+  // Opsional: input kosong dikirim sebagai "" lalu disimpan null.
+  page: z.string().trim().optional().transform((nilai, ctx) => {
+    if (!nilai) return null;
+    const halaman = /^\d{1,5}$/.test(nilai) ? Number(nilai) : 0;
+    if (halaman < 1 || halaman > 10000) {
+      ctx.issues.push({ code: "custom", message: PESAN_HALAMAN, input: nilai });
+      return z.NEVER;
+    }
+    return halaman;
+  }),
+});
+
+export type MasukanPerubahan = z.infer<typeof skemaPerubahan>;
+
+export const skemaIdPerubahan = z.uuid({ error: "ID perubahan tidak valid" });
+
+const PESAN_PILIH_VERSI = "Pilih versi lama dan versi baru.";
+const pilihanVersi = z.string({ error: PESAN_PILIH_VERSI }).min(1, PESAN_PILIH_VERSI)
+  .pipe(z.uuid("Pilihan versi tidak valid."));
+
+// Query string perbandingan di halaman publik (F-04): dari = versi lama, ke = versi baru.
+export const skemaBanding = z.object({ dari: pilihanVersi, ke: pilihanVersi });
+
 // Parameter URL unduhan berkas (Route Handler): tidak valid diperlakukan sebagai 404.
 export const skemaParamBerkas = z.object({
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),

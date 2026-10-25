@@ -50,6 +50,7 @@ export default async function HalamanKelolaVersi({ params }: HalamanKelolaVersiP
               <th scope="col" className="py-2 pr-4">Mulai berlaku</th>
               <th scope="col" className="py-2 pr-4">Status</th>
               <th scope="col" className="py-2 pr-4">Ringkasan</th>
+              <th scope="col" className="py-2 pr-4">Perubahan</th>
               <th scope="col" className="py-2 pr-4">Berkas</th>
               <th scope="col" className="py-2">Aksi</th>
             </tr>
@@ -63,6 +64,15 @@ export default async function HalamanKelolaVersi({ params }: HalamanKelolaVersiP
                 </td>
                 <td className="py-2 pr-4"><StatusBadge status={version.status} /></td>
                 <td className="py-2 pr-4">{version.changeSummary ?? "—"}</td>
+                <td className="py-2 pr-4">
+                  <Link
+                    href={`${dasar}/${version.id}/perubahan`}
+                    aria-label={`Perubahan versi ${version.versionNumber}`}
+                    className="underline"
+                  >
+                    {version.changeCount} perubahan
+                  </Link>
+                </td>
                 <td className="py-2 pr-4">
                   {version.fileSize !== null ? (
                     <Link

@@ -2,7 +2,7 @@
 // dari data tiruan lib/data/regulations.ts, hanya untuk pengembangan.
 import { loadEnvConfig } from "@next/env";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient, type VersionStatus } from "../generated/prisma/client";
+import { PrismaClient, type ChangeSource, type VersionStatus } from "../generated/prisma/client";
 import { hashPassword } from "../lib/crypto/password";
 import { createSlug } from "../lib/domain/slug";
 
@@ -14,6 +14,8 @@ interface SeedVersion {
   effectiveDate: string;
   status: VersionStatus;
   changeSummary: string | null;
+  /** Butir perubahan sintetis (F-04); hanya untuk versi SAH/DIGANTIKAN. */
+  changes?: { description: string; source: ChangeSource; page: number | null }[];
 }
 
 // Slug tidak ditulis manual: selalu createSlug(name), sama dengan aplikasi,
@@ -44,6 +46,10 @@ const regulations: SeedRegulation[] = [
         effectiveDate: "2025-08-01",
         status: "SAH",
         changeSummary: "Penyesuaian batas maksimal SKS per semester.",
+        changes: [
+          { description: "[DATA SINTETIS] Batas maksimal SKS per semester dinaikkan dari 22 menjadi 24 SKS.", source: "CHANGELOG", page: 4 },
+          { description: "[DATA SINTETIS] Syarat IPK untuk mengambil SKS maksimal diperjelas.", source: "PERBANDINGAN", page: 12 },
+        ],
       },
       // Sah tetapi belum berlaku; versi 2025/2026 tetap Sah sampai tanggal ini.
       {
@@ -51,6 +57,10 @@ const regulations: SeedRegulation[] = [
         effectiveDate: "2027-08-01",
         status: "SAH",
         changeSummary: "Penambahan ketentuan rekognisi pembelajaran lampau.",
+        changes: [
+          { description: "[DATA SINTETIS] Bab baru tentang rekognisi pembelajaran lampau.", source: "CHANGELOG", page: 18 },
+          { description: "[DATA SINTETIS] Definisi masa studi maksimal disesuaikan dengan ketentuan rekognisi.", source: "PERBANDINGAN", page: 7 },
+        ],
       },
     ],
   },
@@ -71,6 +81,10 @@ const regulations: SeedRegulation[] = [
         effectiveDate: "2024-09-01",
         status: "SAH",
         changeSummary: "Pembaruan ketentuan penggunaan fasilitas kampus.",
+        changes: [
+          { description: "[DATA SINTETIS] Jam operasional laboratorium diperpanjang sampai pukul 21.00.", source: "CHANGELOG", page: 9 },
+          { description: "[DATA SINTETIS] Sanksi keterlambatan pengembalian peralatan dirinci ulang.", source: "PERBANDINGAN", page: null },
+        ],
       },
     ],
   },
@@ -172,12 +186,12 @@ async function seedRegulation(
     update: regulation,
   });
 
-  for (const version of versions) {
+  for (const { changes, ...version } of versions) {
     const data = {
       ...version,
       effectiveDate: new Date(version.effectiveDate),
     };
-    await prisma.version.upsert({
+    const { id: versionId } = await prisma.version.upsert({
       where: {
         regulationId_versionNumber: {
           regulationId,
@@ -187,6 +201,14 @@ async function seedRegulation(
       create: { ...data, regulationId },
       update: data,
     });
+    // Tanpa kunci unik alami: kosongkan lalu isi ulang per versi seed (idempoten).
+    // Aman karena versi seed bukan Draf, jadi Admin tidak bisa menambah Change di sana.
+    if (changes) {
+      await prisma.$transaction([
+        prisma.change.deleteMany({ where: { versionId } }),
+        prisma.change.createMany({ data: changes.map((c) => ({ ...c, versionId })) }),
+      ]);
+    }
   }
 }
 

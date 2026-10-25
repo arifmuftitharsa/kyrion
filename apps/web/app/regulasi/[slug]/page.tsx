@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import BandingVersi from "@/components/BandingVersi";
 import CurrentVersionInfo from "@/components/CurrentVersionInfo";
 import VersionTimeline from "@/components/VersionTimeline";
 import { getRegulationBySlug } from "@/lib/data/regulations";
@@ -12,13 +13,17 @@ const FORMAT_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 interface RegulationDetailPageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ dari?: string | string[]; ke?: string | string[] }>;
 }
 
 export default async function RegulationDetailPage({
   params,
+  searchParams,
 }: RegulationDetailPageProps) {
   // Di Next.js 16 params berupa Promise, jadi wajib di-await.
   const { slug } = await params;
+  // searchParams juga Promise; dibaca untuk perbandingan versi (F-04).
+  const { dari, ke } = await searchParams;
 
   // Cek bentuk dulu: murah, dan tidak perlu menyentuh data.
   if (!FORMAT_SLUG.test(slug)) notFound();
@@ -69,6 +74,11 @@ export default async function RegulationDetailPage({
           today={today}
         />
       </section>
+
+      {/* Perbandingan butuh minimal dua versi yang pernah disahkan. */}
+      {regulation.versions.length >= 2 && (
+        <BandingVersi slug={regulation.slug} versions={regulation.versions} dari={dari} ke={ke} />
+      )}
     </div>
   );
 }

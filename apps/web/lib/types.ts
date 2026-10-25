@@ -38,3 +38,12 @@ export interface Regulation {
   description: string | null;
   versions: Version[];
 }
+
+/** Sama dengan enum change_source di database. */
+export type ChangeSource = "CHANGELOG" | "PERBANDINGAN";
+
+/** Label tampilan sumber perubahan; satu sumber untuk admin dan halaman publik. */
+export const SUMBER_PERUBAHAN_LABEL: Record<ChangeSource, string> = {
+  CHANGELOG: "Changelog",
+  PERBANDINGAN: "Perbandingan",
+};

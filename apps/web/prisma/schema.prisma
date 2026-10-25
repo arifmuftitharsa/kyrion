@@ -88,7 +88,32 @@ model Version {
   updatedAt      DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
   // Restrict: regulasi yang punya versi (termasuk Sah) tidak bisa dihapus.
   regulation     Regulation    @relation(fields: [regulationId], references: [id], onDelete: Restrict)
+  changes        Change[]
 
   @@unique([regulationId, versionNumber])
   @@map("versions")
+}
+
+enum ChangeSource {
+  CHANGELOG
+  PERBANDINGAN
+
+  @@map("change_source")
+}
+
+// Butir perubahan sebuah versi terhadap pendahulunya (F-04), dicatat manual oleh Admin.
+model Change {
+  id          String       @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  versionId   String       @map("version_id") @db.Uuid
+  description String
+  source      ChangeSource
+  // Halaman di dokumen sumber; opsional, bilangan bulat >= 1 (dijaga Zod).
+  page        Int?
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  // Cascade: hanya versi Draf yang bisa dihapus, jadi hanya Change Draf yang ikut hilang.
+  version     Version      @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  @@index([versionId])
+  @@map("changes")
 }
