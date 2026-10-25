@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum VersionStatus {
+  DRAF
+  SAH
+  DIGANTIKAN
+  DIBATALKAN
+
+  @@map("version_status")
+}
+
+enum UserRole {
+  ADMIN
+  SIVITAS
+
+  @@map("user_role")
+}
+
+model User {
+  id           String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  // Selalu huruf kecil; dinormalisasi oleh skema Zod dan seed sebelum disimpan.
+  email        String   @unique
+  // Default SIVITAS: baris tanpa peran eksplisit tidak otomatis menjadi Admin.
+  role         UserRole @default(SIVITAS)
+  // Null untuk akun SSO (v0.3) yang tidak memakai kata sandi.
+  passwordHash String?  @map("password_hash")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("users")
+}
+
+model Category {
+  id          String       @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  name        String
+  // Selalu createSlug(name); unik sehingga nama mirip (beda kapital/spasi) ditolak.
+  slug        String       @unique
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  regulations Regulation[]
+
+  @@map("categories")
+}
+
+model Regulation {
+  id          String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  slug        String    @unique
+  name        String
+  description String?
+  categoryId  String    @map("category_id") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  // Restrict: kategori yang masih punya regulasi tidak bisa dihapus.
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  versions    Version[]
+
+  @@index([categoryId])
+  @@map("regulations")
+}
+
+// Versi berlaku tidak disimpan; dihitung oleh lapisan domain.
+model Version {
+  id             String        @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  regulationId   String        @map("regulation_id") @db.Uuid
+  versionNumber  String        @map("version_number")
+  effectiveDate  DateTime      @map("effective_date") @db.Date
+  status         VersionStatus @default(DRAF)
+  // Null untuk versi pertama (tidak ada versi sebelumnya).
+  changeSummary  String?       @map("change_summary")
+  // Berkas PDF (F-12). Null untuk versi tanpa berkas (mis. versi seed).
+  // Kelima kolom selalu ditulis bersama dalam satu pernyataan.
+  // Nama asli tersanitasi, hanya untuk tampilan dan header unduhan.
+  fileName       String?       @map("file_name")
+  // Nama berkas di disk, dibuat server (UUID); unik agar satu berkas milik satu versi.
+  fileKey        String?       @unique @map("file_key")
+  fileSize       Int?          @map("file_size")
+  fileSha256     String?       @map("file_sha256") @db.Char(64)
+  fileUploadedAt DateTime?     @map("file_uploaded_at") @db.Timestamptz(3)
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  // Restrict: regulasi yang punya versi (termasuk Sah) tidak bisa dihapus.
+  regulation     Regulation    @relation(fields: [regulationId], references: [id], onDelete: Restrict)
+  changes        Change[]
+
+  @@unique([regulationId, versionNumber])
+  @@map("versions")
+}
+
+enum ChangeSource {
+  CHANGELOG
+  PERBANDINGAN
+
+  @@map("change_source")
+}
+
+// Butir perubahan sebuah versi terhadap pendahulunya (F-04), dicatat manual oleh Admin.
+model Change {
+  id          String       @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  versionId   String       @map("version_id") @db.Uuid
+  description String
+  source      ChangeSource
+  // Halaman di dokumen sumber; opsional, bilangan bulat >= 1 (dijaga Zod).
+  page        Int?
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  // Cascade: hanya versi Draf yang bisa dihapus, jadi hanya Change Draf yang ikut hilang.
+  version     Version      @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  @@index([versionId])
+  @@map("changes")
+}

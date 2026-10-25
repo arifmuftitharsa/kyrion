@@ -23,6 +23,7 @@ __pycache__/
 # Sistem operasi dan editor
 .DS_Store
 Thumbs.db
+desktop.ini
 .vscode/
 
 # Pengaturan lokal Claude Code (tidak masuk repo)

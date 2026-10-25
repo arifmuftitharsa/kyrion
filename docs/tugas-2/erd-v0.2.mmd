@@ -1,0 +1,58 @@
+erDiagram
+    categories ||--o{ regulations : "memiliki (Restrict)"
+    regulations ||--o{ versions : "memiliki (Restrict)"
+    versions ||--o{ changes : "memiliki (Cascade)"
+
+    categories {
+        uuid id PK "default uuidv7()"
+        text name "wajib"
+        text slug UK "createSlug(name), unik"
+        timestamptz created_at "default now()"
+        timestamptz updated_at "default now()"
+    }
+
+    regulations {
+        uuid id PK "default uuidv7()"
+        text slug UK "unik"
+        text name "wajib"
+        text description "opsional (null)"
+        uuid category_id FK "ke categories, indeks"
+        timestamptz created_at "default now()"
+        timestamptz updated_at "default now()"
+    }
+
+    versions {
+        uuid id PK "default uuidv7()"
+        uuid regulation_id FK "unik gabungan dengan version_number"
+        text version_number UK "unik per regulasi"
+        date effective_date "tanggal mulai berlaku"
+        version_status status "DRAF, SAH, DIGANTIKAN, DIBATALKAN"
+        text change_summary "opsional (null)"
+        text file_name "opsional, nama tampilan"
+        text file_key UK "opsional, nama berkas di disk"
+        int file_size "opsional, byte"
+        char64 file_sha256 "opsional, SHA-256 heksadesimal"
+        timestamptz file_uploaded_at "opsional"
+        timestamptz created_at "default now()"
+        timestamptz updated_at "default now()"
+    }
+
+    changes {
+        uuid id PK "default uuidv7()"
+        uuid version_id FK "ke versions, indeks"
+        text description "wajib"
+        change_source source "CHANGELOG, PERBANDINGAN"
+        int page "opsional, 1 sampai 10000 (dijaga Zod)"
+        timestamptz created_at "default now()"
+        timestamptz updated_at "default now()"
+    }
+
+    users {
+        uuid id PK "default uuidv7()"
+        text email UK "unik (huruf kecil dijaga aplikasi)"
+        user_role role "ADMIN, SIVITAS (bawaan SIVITAS)"
+        text password_hash "opsional, hash scrypt"
+        boolean is_active "default true"
+        timestamptz created_at "default now()"
+        timestamptz updated_at "default now()"
+    }

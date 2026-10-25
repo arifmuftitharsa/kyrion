@@ -2,7 +2,8 @@ import Link from "next/link";
 import { focusRing } from "@/lib/styles";
 
 interface CategoryFilterProps {
-  categories: string[];
+  categories: { slug: string; name: string }[];
+  /** Slug kategori aktif. */
   active?: string;
 }
 
@@ -14,13 +15,16 @@ interface FilterOption {
 
 // Filter memakai tautan biasa (?kategori=...) alih-alih state React, sehingga
 // tetap Server Component, URL bisa dibagikan, dan berfungsi tanpa JavaScript.
-function buildOptions(categories: string[], active?: string): FilterOption[] {
+function buildOptions(
+  categories: CategoryFilterProps["categories"],
+  active?: string,
+): FilterOption[] {
   return [
     { label: "Semua", href: "/", isActive: !active },
     ...categories.map((category) => ({
-      label: category,
-      href: `/?kategori=${encodeURIComponent(category)}`,
-      isActive: category === active,
+      label: category.name,
+      href: `/?kategori=${encodeURIComponent(category.slug)}`,
+      isActive: category.slug === active,
     })),
   ];
 }

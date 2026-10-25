@@ -3,56 +3,155 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { skemaRegulasi } from "@/lib/skema";
-import { addRegulation, createSlug, isSlugTaken } from "@/lib/data/regulations";
-import { bacaSesi } from "@/lib/sesi";
+import { findCategoryById } from "@/lib/data/categories";
+import {
+  createRegulation,
+  deleteRegulation,
+  getAdminRegulationById,
+  isSlugTaken,
+  updateRegulation,
+} from "@/lib/data/regulations";
+import { CategoryNotFoundError } from "@/lib/domain/kategori";
+import {
+  RegulationHasVersionsError,
+  RegulationNotFoundError,
+  SlugTakenError,
+  pesanTolakHapus,
+  regulasiBolehDihapus,
+} from "@/lib/domain/regulasi";
+import { createSlug } from "@/lib/domain/slug";
+import { skemaIdRegulasi, skemaRegulasi, type MasukanRegulasi } from "@/lib/skema";
+import { wajibAdmin } from "@/lib/sesi";
 import type { StatusForm } from "@/lib/status-form";
+
+const GALAT_SLUG_TERPAKAI = { name: ["Regulasi dengan nama ini sudah ada"] };
+const GALAT_KATEGORI_HILANG = { categoryId: ["Kategori tidak ditemukan"] };
+const PESAN_TIDAK_DITEMUKAN = "Regulasi tidak ditemukan atau sudah dihapus.";
+
+type HasilMasukan =
+  | { ok: true; masukan: MasukanRegulasi; slug: string; nilai: Record<string, string> }
+  | { ok: false; status: StatusForm };
+
+/**
+ * Validasi bentuk (Zod) lalu semantik (slug) yang sama untuk tambah dan ubah.
+ * `exceptId` dikecualikan saat cek slug agar regulasi tidak bentrok dengan dirinya.
+ */
+async function periksaMasukan(formData: FormData, exceptId?: string): Promise<HasilMasukan> {
+  const mentah = Object.fromEntries(formData);
+  const nilai = {
+    name: String(mentah.name ?? ""),
+    categoryId: String(mentah.categoryId ?? ""),
+    description: String(mentah.description ?? ""),
+  };
+
+  const hasil = skemaRegulasi.safeParse(mentah);
+  if (!hasil.success) {
+    return {
+      ok: false,
+      status: {
+        galat: z.flattenError(hasil.error).fieldErrors,
+        pesan: "Periksa kembali isian formulir.",
+        nilai,
+      },
+    };
+  }
+
+  const slug = createSlug(hasil.data.name);
+  if (slug === "") {
+    return { ok: false, status: { galat: { name: ["Nama harus mengandung huruf atau angka"] }, nilai } };
+  }
+  if (await isSlugTaken(slug, exceptId)) {
+    return { ok: false, status: { galat: GALAT_SLUG_TERPAKAI, nilai } };
+  }
+  // categoryId dari form bisa dimanipulasi: pastikan kategorinya ada.
+  if (!(await findCategoryById(hasil.data.categoryId))) {
+    return { ok: false, status: { galat: GALAT_KATEGORI_HILANG, nilai } };
+  }
+
+  return { ok: true, masukan: hasil.data, slug, nilai };
+}
 
 export async function simpanRegulasi(
   _sebelumnya: StatusForm,
   formData: FormData,
 ): Promise<StatusForm> {
-  // 1. Sesi: aksi ini endpoint POST, jadi wajib memeriksa sesinya sendiri
-  if (!(await bacaSesi())) {
-    return { pesan: "Silakan masuk terlebih dahulu." };
-  }
+  // Server Action adalah endpoint publik: sesi dicek di sini, di luar try.
+  await wajibAdmin();
 
-  const mentah = Object.fromEntries(formData);
-  const nilai = {
-    name: String(mentah.name ?? ""),
-    category: String(mentah.category ?? ""),
-    description: String(mentah.description ?? ""),
-  };
+  const hasil = await periksaMasukan(formData);
+  if (!hasil.ok) return hasil.status;
 
-  // 2. Validasi bentuk (skema Zod)
-  const hasil = skemaRegulasi.safeParse(mentah);
-  if (!hasil.success) {
-    return {
-      galat: z.flattenError(hasil.error).fieldErrors,
-      pesan: "Periksa kembali isian formulir.",
-      nilai,
-    };
-  }
-
-  // 3. Validasi semantik (butuh data tersimpan)
-  const slug = createSlug(hasil.data.name);
-  if (slug === "") {
-    return { galat: { name: ["Nama harus mengandung huruf atau angka"] }, nilai };
-  }
-  if (isSlugTaken(slug)) {
-    return { galat: { name: ["Regulasi dengan nama ini sudah ada"] }, nilai };
-  }
-
-  // 4. Mutasi
-  let slugBaru: string;
   try {
-    slugBaru = addRegulation(hasil.data).slug;
+    await createRegulation(hasil.masukan, hasil.slug);
   } catch (e) {
+    // Slug bisa direbut request lain setelah pra-cek; tetap jadi galat field.
+    if (e instanceof SlugTakenError) return { galat: GALAT_SLUG_TERPAKAI, nilai: hasil.nilai };
+    // Kategori bisa dihapus request lain setelah pra-cek (FK menolak).
+    if (e instanceof CategoryNotFoundError) return { galat: GALAT_KATEGORI_HILANG, nilai: hasil.nilai };
     console.error("simpanRegulasi gagal:", e);
-    return { pesan: "Regulasi gagal disimpan. Coba lagi.", nilai };
+    return { pesan: "Regulasi gagal disimpan. Coba lagi.", nilai: hasil.nilai };
   }
 
-  // 5. Revalidasi lalu redirect, sengaja DI LUAR try
-  revalidatePath("/");
-  redirect(`/regulasi/${slugBaru}`);
+  // redirect() melempar, jadi sengaja di luar try.
+  revalidatePath("/", "layout");
+  redirect("/admin/regulasi");
+}
+
+export async function ubahRegulasi(
+  id: string,
+  _sebelumnya: StatusForm,
+  formData: FormData,
+): Promise<StatusForm> {
+  await wajibAdmin();
+
+  const idValid = skemaIdRegulasi.safeParse(id);
+  if (!idValid.success) return { pesan: PESAN_TIDAK_DITEMUKAN };
+
+  // Slug ikut nama baru; regulasi ini sendiri dikecualikan dari cek unik.
+  const hasil = await periksaMasukan(formData, idValid.data);
+  if (!hasil.ok) return hasil.status;
+
+  try {
+    await updateRegulation(idValid.data, hasil.masukan, hasil.slug);
+  } catch (e) {
+    if (e instanceof SlugTakenError) return { galat: GALAT_SLUG_TERPAKAI, nilai: hasil.nilai };
+    if (e instanceof RegulationNotFoundError) return { pesan: PESAN_TIDAK_DITEMUKAN, nilai: hasil.nilai };
+    if (e instanceof CategoryNotFoundError) return { galat: GALAT_KATEGORI_HILANG, nilai: hasil.nilai };
+    console.error("ubahRegulasi gagal:", e);
+    return { pesan: "Regulasi gagal disimpan. Coba lagi.", nilai: hasil.nilai };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/admin/regulasi");
+}
+
+// Dipakai lewat useActionState; status sebelumnya dan FormData tidak dibutuhkan.
+export async function hapusRegulasi(id: string): Promise<StatusForm> {
+  await wajibAdmin();
+
+  const idValid = skemaIdRegulasi.safeParse(id);
+  if (!idValid.success) return { pesan: PESAN_TIDAK_DITEMUKAN };
+
+  // Pra-cek memberi pesan yang tepat (jumlah versi) sebelum menyentuh constraint.
+  const regulasi = await getAdminRegulationById(idValid.data);
+  if (!regulasi) return { pesan: PESAN_TIDAK_DITEMUKAN };
+  if (!regulasiBolehDihapus(regulasi.versionCount)) {
+    return { pesan: pesanTolakHapus(regulasi.versionCount) };
+  }
+
+  try {
+    await deleteRegulation(idValid.data);
+  } catch (e) {
+    // Versi bisa ditambahkan request lain setelah pra-cek; Restrict di DB menolak.
+    if (e instanceof RegulationHasVersionsError) {
+      const terbaru = await getAdminRegulationById(idValid.data);
+      return { pesan: pesanTolakHapus(terbaru?.versionCount ?? 1) };
+    }
+    if (e instanceof RegulationNotFoundError) return { pesan: PESAN_TIDAK_DITEMUKAN };
+    console.error("hapusRegulasi gagal:", e);
+    return { pesan: "Regulasi gagal dihapus. Coba lagi." };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/admin/regulasi");
 }
