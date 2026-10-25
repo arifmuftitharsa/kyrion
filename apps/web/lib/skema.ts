@@ -1,13 +1,13 @@
 import { z } from "zod";
 import { susunTanggalIso } from "@/lib/domain/tanggal";
-import { KATEGORI } from "@/lib/types";
 
 // Dipakai untuk tambah dan ubah regulasi (field yang bisa diisi sama).
+// Keberadaan kategori dicek terpisah di Server Action (butuh data tersimpan).
 export const skemaRegulasi = z.object({
   name: z.string({ error: "Nama regulasi wajib diisi" }).trim()
     .min(5, "Nama regulasi minimal 5 karakter")
     .max(120, "Nama regulasi maksimal 120 karakter"),
-  category: z.enum(KATEGORI, { error: "Pilih salah satu kategori" }),
+  categoryId: z.uuid({ error: "Pilih salah satu kategori" }),
   // Opsional: textarea kosong dikirim sebagai "" lalu disimpan null.
   description: z.string().trim()
     .max(300, "Deskripsi maksimal 300 karakter")
@@ -19,6 +19,15 @@ export type MasukanRegulasi = z.infer<typeof skemaRegulasi>;
 
 // ID dari argumen terikat (.bind) bisa dimanipulasi klien, jadi tetap divalidasi.
 export const skemaIdRegulasi = z.uuid({ error: "ID regulasi tidak valid" });
+
+// Dipakai untuk tambah dan ganti nama kategori (PRD F-10).
+export const skemaKategori = z.object({
+  name: z.string({ error: "Nama kategori wajib diisi" }).trim()
+    .min(3, "Nama kategori minimal 3 karakter")
+    .max(50, "Nama kategori maksimal 50 karakter"),
+});
+
+export const skemaIdKategori = z.uuid({ error: "ID kategori tidak valid" });
 
 const PESAN_HARI = "Tanggal harus angka 1 sampai 31";
 const PESAN_BULAN = "Pilih bulan";

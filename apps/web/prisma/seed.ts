@@ -20,6 +20,7 @@ interface SeedVersion {
 interface SeedRegulation {
   name: string;
   description: string | null;
+  /** Nama kategori; baris kategori dibuat dengan slug createSlug(nama). */
   category: string;
   versions: SeedVersion[];
 }
@@ -111,9 +112,27 @@ const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
 });
 
+/** Upsert kategori per slug; mengembalikan peta slug ke id untuk regulasi. */
+async function seedCategories(names: string[]): Promise<Map<string, string>> {
+  const idBySlug = new Map<string, string>();
+  for (const name of new Set(names)) {
+    const slug = createSlug(name);
+    const { id } = await prisma.category.upsert({
+      where: { slug },
+      create: { name, slug },
+      update: { name },
+    });
+    idBySlug.set(slug, id);
+  }
+  return idBySlug;
+}
+
 /** Upsert berdasarkan kunci unik agar seed aman dijalankan berulang. */
-async function seedRegulation({ versions, ...fields }: SeedRegulation) {
-  const regulation = { ...fields, slug: createSlug(fields.name) };
+async function seedRegulation(
+  { name, description, versions }: SeedRegulation,
+  categoryId: string,
+) {
+  const regulation = { name, description, slug: createSlug(name), categoryId };
   const { id: regulationId } = await prisma.regulation.upsert({
     where: { slug: regulation.slug },
     create: regulation,
@@ -139,10 +158,13 @@ async function seedRegulation({ versions, ...fields }: SeedRegulation) {
 }
 
 async function main() {
+  const idBySlug = await seedCategories(regulations.map((r) => r.category));
   for (const regulation of regulations) {
-    await seedRegulation(regulation);
+    const categoryId = idBySlug.get(createSlug(regulation.category));
+    if (!categoryId) throw new Error(`Kategori seed tidak ditemukan: ${regulation.category}`);
+    await seedRegulation(regulation, categoryId);
   }
-  console.log(`Seed selesai: ${regulations.length} regulasi.`);
+  console.log(`Seed selesai: ${idBySlug.size} kategori, ${regulations.length} regulasi.`);
 }
 
 main()

@@ -16,17 +16,31 @@ enum VersionStatus {
   @@map("version_status")
 }
 
+model Category {
+  id          String       @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  name        String
+  // Selalu createSlug(name); unik sehingga nama mirip (beda kapital/spasi) ditolak.
+  slug        String       @unique
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  regulations Regulation[]
+
+  @@map("categories")
+}
+
 model Regulation {
   id          String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
   slug        String    @unique
   name        String
   description String?
-  // Validasi nilai di Zod (KATEGORI); tabel kategori menyusul.
-  category    String
+  categoryId  String    @map("category_id") @db.Uuid
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  // Restrict: kategori yang masih punya regulasi tidak bisa dihapus.
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   versions    Version[]
 
+  @@index([categoryId])
   @@map("regulations")
 }
 

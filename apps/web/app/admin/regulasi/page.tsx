@@ -13,9 +13,14 @@ export default async function HalamanKelolaRegulasi() {
     <div className="mx-auto max-w-4xl space-y-6 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-bold">Kelola Regulasi</h1>
-        <Link href="/admin/regulasi/baru" className="rounded bg-blue-700 px-4 py-2 text-white">
-          Tambah Regulasi
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link href="/admin/kategori" className="rounded border border-blue-700 px-4 py-2 text-blue-800">
+            Kelola Kategori
+          </Link>
+          <Link href="/admin/regulasi/baru" className="rounded bg-blue-700 px-4 py-2 text-white">
+            Tambah Regulasi
+          </Link>
+        </div>
       </div>
       <div className="flex items-center gap-3 text-sm text-gray-600">
         <p>Masuk sebagai {sesi.email}</p>

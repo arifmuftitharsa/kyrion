@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import FormRegulasi from "@/components/FormRegulasi";
 import { ubahRegulasi } from "@/app/admin/regulasi/actions";
+import { getCategoryOptions } from "@/lib/data/categories";
 import { getAdminRegulationBySlug } from "@/lib/data/regulations";
 import { wajibAdmin } from "@/lib/sesi";
 
@@ -17,6 +18,7 @@ export default async function HalamanUbahRegulasi({ params }: HalamanUbahRegulas
   const { slug } = await params;
   const regulation = await getAdminRegulationBySlug(slug);
   if (!regulation) notFound();
+  const kategori = await getCategoryOptions();
 
   return (
     <div className="mx-auto max-w-2xl p-4">
@@ -29,9 +31,10 @@ export default async function HalamanUbahRegulasi({ params }: HalamanUbahRegulas
       </p>
       <FormRegulasi
         aksi={ubahRegulasi.bind(null, regulation.id)}
+        kategori={kategori}
         nilaiAwal={{
           name: regulation.name,
-          category: regulation.category,
+          categoryId: regulation.categoryId,
           description: regulation.description ?? "",
         }}
         labelTombol="Simpan perubahan"

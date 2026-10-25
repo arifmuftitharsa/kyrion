@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { findCategoryById } from "@/lib/data/categories";
 import {
   createRegulation,
   deleteRegulation,
@@ -10,6 +11,7 @@ import {
   isSlugTaken,
   updateRegulation,
 } from "@/lib/data/regulations";
+import { CategoryNotFoundError } from "@/lib/domain/kategori";
 import {
   RegulationHasVersionsError,
   RegulationNotFoundError,
@@ -23,6 +25,7 @@ import { wajibAdmin } from "@/lib/sesi";
 import type { StatusForm } from "@/lib/status-form";
 
 const GALAT_SLUG_TERPAKAI = { name: ["Regulasi dengan nama ini sudah ada"] };
+const GALAT_KATEGORI_HILANG = { categoryId: ["Kategori tidak ditemukan"] };
 const PESAN_TIDAK_DITEMUKAN = "Regulasi tidak ditemukan atau sudah dihapus.";
 
 type HasilMasukan =
@@ -37,7 +40,7 @@ async function periksaMasukan(formData: FormData, exceptId?: string): Promise<Ha
   const mentah = Object.fromEntries(formData);
   const nilai = {
     name: String(mentah.name ?? ""),
-    category: String(mentah.category ?? ""),
+    categoryId: String(mentah.categoryId ?? ""),
     description: String(mentah.description ?? ""),
   };
 
@@ -60,6 +63,10 @@ async function periksaMasukan(formData: FormData, exceptId?: string): Promise<Ha
   if (await isSlugTaken(slug, exceptId)) {
     return { ok: false, status: { galat: GALAT_SLUG_TERPAKAI, nilai } };
   }
+  // categoryId dari form bisa dimanipulasi: pastikan kategorinya ada.
+  if (!(await findCategoryById(hasil.data.categoryId))) {
+    return { ok: false, status: { galat: GALAT_KATEGORI_HILANG, nilai } };
+  }
 
   return { ok: true, masukan: hasil.data, slug, nilai };
 }
@@ -79,6 +86,8 @@ export async function simpanRegulasi(
   } catch (e) {
     // Slug bisa direbut request lain setelah pra-cek; tetap jadi galat field.
     if (e instanceof SlugTakenError) return { galat: GALAT_SLUG_TERPAKAI, nilai: hasil.nilai };
+    // Kategori bisa dihapus request lain setelah pra-cek (FK menolak).
+    if (e instanceof CategoryNotFoundError) return { galat: GALAT_KATEGORI_HILANG, nilai: hasil.nilai };
     console.error("simpanRegulasi gagal:", e);
     return { pesan: "Regulasi gagal disimpan. Coba lagi.", nilai: hasil.nilai };
   }
@@ -107,6 +116,7 @@ export async function ubahRegulasi(
   } catch (e) {
     if (e instanceof SlugTakenError) return { galat: GALAT_SLUG_TERPAKAI, nilai: hasil.nilai };
     if (e instanceof RegulationNotFoundError) return { pesan: PESAN_TIDAK_DITEMUKAN, nilai: hasil.nilai };
+    if (e instanceof CategoryNotFoundError) return { galat: GALAT_KATEGORI_HILANG, nilai: hasil.nilai };
     console.error("ubahRegulasi gagal:", e);
     return { pesan: "Regulasi gagal disimpan. Coba lagi.", nilai: hasil.nilai };
   }

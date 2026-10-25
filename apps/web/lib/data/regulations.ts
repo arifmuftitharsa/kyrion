@@ -1,6 +1,7 @@
 import "server-only";
 import { connection } from "next/server";
 import { Prisma } from "@/generated/prisma/client";
+import { CategoryNotFoundError } from "@/lib/domain/kategori";
 import {
   RegulationHasVersionsError,
   RegulationNotFoundError,
@@ -16,6 +17,7 @@ import type { Regulation } from "@/lib/types";
 // Urutan createdAt desc adalah tie-break untuk tanggal berlaku yang sama.
 const withPublicVersions = {
   include: {
+    category: { select: { name: true } },
     versions: {
       where: { status: { in: [...PERNAH_DISAHKAN] } },
       orderBy: [{ effectiveDate: "desc" }, { createdAt: "desc" }],
@@ -30,7 +32,7 @@ function toRegulation(row: RegulationRow): Regulation {
   return {
     slug: row.slug,
     name: row.name,
-    category: row.category,
+    category: row.category.name,
     description: row.description,
     versions: row.versions.map((version) => ({
       versionNumber: version.versionNumber,
@@ -65,28 +67,17 @@ export async function getRegulationBySlug(
   return row ? toRegulation(row) : undefined;
 }
 
-/** Mengembalikan regulasi pada kategori tertentu; tanpa kategori berarti semua. */
+/** Mengembalikan regulasi pada kategori (slug) tertentu; tanpa kategori berarti semua. */
 export async function getRegulationsByCategory(
-  category?: string,
+  categorySlug?: string,
 ): Promise<Regulation[]> {
   await connection();
   const rows = await getPrisma().regulation.findMany({
     ...withPublicVersions,
-    where: category ? { category } : {},
+    where: categorySlug ? { category: { slug: categorySlug } } : {},
     orderBy: { name: "asc" },
   });
   return rows.map(toRegulation);
-}
-
-/** Daftar kategori unik yang dipakai regulasi, urut abjad. */
-export async function getCategories(): Promise<string[]> {
-  await connection();
-  const rows = await getPrisma().regulation.findMany({
-    distinct: ["category"],
-    select: { category: true },
-    orderBy: { category: "asc" },
-  });
-  return rows.map((row) => row.category);
 }
 
 // ===================== Admin (Bagian B2) =====================
@@ -96,7 +87,10 @@ export interface AdminRegulation {
   id: string;
   slug: string;
   name: string;
+  /** Nama kategori, untuk tampilan. */
   category: string;
+  /** ID kategori, untuk nilai awal formulir ubah. */
+  categoryId: string;
   description: string | null;
   versionCount: number;
 }
@@ -105,15 +99,16 @@ const adminSelect = {
   id: true,
   slug: true,
   name: true,
-  category: true,
+  categoryId: true,
+  category: { select: { name: true } },
   description: true,
   _count: { select: { versions: true } },
 } satisfies Prisma.RegulationSelect;
 
 type AdminRegulationRow = Prisma.RegulationGetPayload<{ select: typeof adminSelect }>;
 
-function toAdminRegulation({ _count, ...row }: AdminRegulationRow): AdminRegulation {
-  return { ...row, versionCount: _count.versions };
+function toAdminRegulation({ _count, category, ...row }: AdminRegulationRow): AdminRegulation {
+  return { ...row, category: category.name, versionCount: _count.versions };
 }
 
 export async function getAdminRegulations(): Promise<AdminRegulation[]> {
@@ -158,22 +153,33 @@ export async function isSlugTaken(slug: string, exceptId?: string): Promise<bool
 /**
  * Menerjemahkan galat Prisma ke galat domain. Pra-cek di Server Action bisa
  * kalah balapan dengan request lain; constraint basis data adalah penjaga akhir.
+ * P2003 bermakna berbeda per operasi, jadi pemanggil menentukan galatnya.
  */
-function toDomainError(error: unknown): unknown {
+function toDomainError(
+  error: unknown,
+  pelanggaranForeignKey: (cause: Error) => Error,
+): unknown {
   if (!(error instanceof Prisma.PrismaClientKnownRequestError)) return error;
   switch (error.code) {
     // Satu-satunya kolom unik di regulations selain primary key adalah slug.
     case "P2002":
       return new SlugTakenError("Slug sudah dipakai", { cause: error });
-    // ON DELETE RESTRICT (PG 23001) dipetakan adapter-pg ke P2003.
     case "P2003":
-      return new RegulationHasVersionsError("Regulasi masih punya versi", { cause: error });
+      return pelanggaranForeignKey(error);
     case "P2025":
       return new RegulationNotFoundError("Regulasi tidak ditemukan", { cause: error });
     default:
       return error;
   }
 }
+
+// Saat simpan: FK kategori gagal berarti kategorinya dihapus setelah pra-cek.
+const kategoriHilang = (cause: Error) =>
+  new CategoryNotFoundError("Kategori tidak ditemukan", { cause });
+
+// Saat hapus: ON DELETE RESTRICT (PG 23001) dipetakan adapter-pg ke P2003.
+const masihPunyaVersi = (cause: Error) =>
+  new RegulationHasVersionsError("Regulasi masih punya versi", { cause });
 
 export async function createRegulation(
   masukan: MasukanRegulasi,
@@ -182,7 +188,7 @@ export async function createRegulation(
   try {
     await getPrisma().regulation.create({ data: { ...masukan, slug } });
   } catch (error) {
-    throw toDomainError(error);
+    throw toDomainError(error, kategoriHilang);
   }
 }
 
@@ -194,7 +200,7 @@ export async function updateRegulation(
   try {
     await getPrisma().regulation.update({ where: { id }, data: { ...masukan, slug } });
   } catch (error) {
-    throw toDomainError(error);
+    throw toDomainError(error, kategoriHilang);
   }
 }
 
@@ -202,6 +208,6 @@ export async function deleteRegulation(id: string): Promise<void> {
   try {
     await getPrisma().regulation.delete({ where: { id } });
   } catch (error) {
-    throw toDomainError(error);
+    throw toDomainError(error, masihPunyaVersi);
   }
 }

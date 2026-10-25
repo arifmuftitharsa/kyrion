@@ -1,12 +1,6 @@
 // Tipe domain dipusatkan di satu file agar data, komponen, dan halaman
 // memakai kontrak yang sama (satu sumber kebenaran).
 
-// Daftar kategori untuk validasi formulir. Di database kategori masih kolom
-// teks; tabelnya menyusul karena kategori dikelola admin (PRD F-10).
-export const KATEGORI = ["Akademik", "Kemahasiswaan"] as const;
-
-export type Kategori = (typeof KATEGORI)[number];
-
 /** Sama dengan enum version_status di database; label tampilan di VERSION_STATUS_LABEL. */
 export type VersionStatus = "DRAF" | "SAH" | "DIGANTIKAN" | "DIBATALKAN";
 

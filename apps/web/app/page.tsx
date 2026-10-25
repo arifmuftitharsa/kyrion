@@ -1,6 +1,7 @@
 import CategoryFilter from "@/components/CategoryFilter";
 import RegulationCard from "@/components/RegulationCard";
-import { getCategories, getRegulationsByCategory } from "@/lib/data/regulations";
+import { getPublicCategories, type PublicCategory } from "@/lib/data/categories";
+import { getRegulationsByCategory } from "@/lib/data/regulations";
 import { todayInJakarta } from "@/lib/domain/tanggal";
 import { findEffectiveVersion } from "@/lib/domain/versi";
 
@@ -9,20 +10,21 @@ interface HomePageProps {
 }
 
 /**
- * Hanya menerima kategori yang benar-benar ada. Nilai lain (mis. ketikan manual
- * di URL atau parameter ganda berupa array) diabaikan sehingga tampil "Semua".
+ * Hanya menerima slug kategori yang benar-benar ada. Nilai lain (mis. ketikan manual
+ * di URL, slug lama setelah ganti nama, atau parameter ganda berupa array)
+ * diabaikan sehingga tampil "Semua".
  */
 function resolveCategory(
   raw: string | string[] | undefined,
-  categories: string[],
+  categories: PublicCategory[],
 ): string | undefined {
-  return typeof raw === "string" && categories.includes(raw) ? raw : undefined;
+  return typeof raw === "string" && categories.some((c) => c.slug === raw) ? raw : undefined;
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
   // Di Next.js 16 searchParams berupa Promise, jadi wajib di-await.
   const { kategori } = await searchParams;
-  const categories = await getCategories();
+  const categories = await getPublicCategories();
   const activeCategory = resolveCategory(kategori, categories);
   const regulations = await getRegulationsByCategory(activeCategory);
   // Satu tanggal acuan untuk semua kartu dalam satu request.
