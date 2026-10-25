@@ -16,6 +16,28 @@ enum VersionStatus {
   @@map("version_status")
 }
 
+enum UserRole {
+  ADMIN
+  SIVITAS
+
+  @@map("user_role")
+}
+
+model User {
+  id           String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  // Selalu huruf kecil; dinormalisasi oleh skema Zod dan seed sebelum disimpan.
+  email        String   @unique
+  // Default SIVITAS: baris tanpa peran eksplisit tidak otomatis menjadi Admin.
+  role         UserRole @default(SIVITAS)
+  // Null untuk akun SSO (v0.3) yang tidak memakai kata sandi.
+  passwordHash String?  @map("password_hash")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("users")
+}
+
 model Category {
   id          String       @id @default(dbgenerated("uuidv7()")) @db.Uuid
   name        String

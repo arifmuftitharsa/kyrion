@@ -3,6 +3,7 @@
 import { loadEnvConfig } from "@next/env";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, type VersionStatus } from "../generated/prisma/client";
+import { hashPassword } from "../lib/crypto/password";
 import { createSlug } from "../lib/domain/slug";
 
 loadEnvConfig(process.cwd());
@@ -112,6 +113,38 @@ const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
 });
 
+// NIST SP 800-63B-4: minimal 15 karakter untuk kata sandi sebagai faktor tunggal.
+const PANJANG_MINIMAL_SANDI = 15;
+
+/**
+ * Kredensial admin dari .env.local. Pesan galat sengaja tidak memuat nilai
+ * apa pun (termasuk panjang kata sandi) agar rahasia tidak masuk log terminal.
+ */
+function bacaKredensialAdmin(): { email: string; password: string } {
+  const email = process.env.ADMIN_SEED_EMAIL?.trim().toLowerCase();
+  const password = process.env.ADMIN_SEED_PASSWORD;
+  if (!email || !password) {
+    throw new Error("ADMIN_SEED_EMAIL dan ADMIN_SEED_PASSWORD wajib diisi di apps/web/.env.local");
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    throw new Error("ADMIN_SEED_EMAIL bukan alamat email yang valid");
+  }
+  if (password.length < PANJANG_MINIMAL_SANDI) {
+    throw new Error(`ADMIN_SEED_PASSWORD minimal ${PANJANG_MINIMAL_SANDI} karakter (NIST SP 800-63B-4)`);
+  }
+  return { email, password };
+}
+
+/** Upsert akun Admin per email; kata sandi hanya disimpan sebagai hash scrypt. */
+async function seedAdmin({ email, password }: { email: string; password: string }) {
+  const passwordHash = await hashPassword(password);
+  await prisma.user.upsert({
+    where: { email },
+    create: { email, role: "ADMIN", isActive: true, passwordHash },
+    update: { role: "ADMIN", isActive: true, passwordHash },
+  });
+}
+
 /** Upsert kategori per slug; mengembalikan peta slug ke id untuk regulasi. */
 async function seedCategories(names: string[]): Promise<Map<string, string>> {
   const idBySlug = new Map<string, string>();
@@ -158,13 +191,16 @@ async function seedRegulation(
 }
 
 async function main() {
+  // Divalidasi lebih dulu: bila env belum diisi, seed berhenti sebelum menulis apa pun.
+  const kredensialAdmin = bacaKredensialAdmin();
   const idBySlug = await seedCategories(regulations.map((r) => r.category));
   for (const regulation of regulations) {
     const categoryId = idBySlug.get(createSlug(regulation.category));
     if (!categoryId) throw new Error(`Kategori seed tidak ditemukan: ${regulation.category}`);
     await seedRegulation(regulation, categoryId);
   }
-  console.log(`Seed selesai: ${idBySlug.size} kategori, ${regulations.length} regulasi.`);
+  await seedAdmin(kredensialAdmin);
+  console.log(`Seed selesai: ${idBySlug.size} kategori, ${regulations.length} regulasi, 1 akun admin.`);
 }
 
 main()

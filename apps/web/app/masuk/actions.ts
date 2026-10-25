@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
+import { verifikasiKredensialAdmin } from "@/lib/autentikasi";
 import { skemaMasuk } from "@/lib/skema";
 import { buatSesi, hapusSesi } from "@/lib/sesi";
 import type { StatusForm } from "@/lib/status-form";
@@ -16,14 +17,15 @@ export async function masuk(
     return { galat: z.flattenError(hasil.error).fieldErrors };
   }
 
-  // 2. Cocokkan dengan akun demo (sementara; autentikasi sebenarnya di Modul 10-11)
-  const { email, kataSandi } = hasil.data;
-  if (email !== process.env.DEMO_EMAIL || kataSandi !== process.env.DEMO_KATA_SANDI) {
+  // 2. Verifikasi terhadap hash scrypt di tabel users. Satu pesan untuk semua
+  //    kegagalan agar tidak membocorkan email mana yang terdaftar.
+  const admin = await verifikasiKredensialAdmin(hasil.data.email, hasil.data.kataSandi);
+  if (!admin) {
     return { pesan: "Email atau kata sandi salah." };
   }
 
   // 3. Buat sesi, lalu alihkan ke halaman admin
-  await buatSesi(email);
+  await buatSesi(admin.id, admin.role);
   redirect("/admin/regulasi");
 }
 

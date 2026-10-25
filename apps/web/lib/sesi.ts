@@ -1,8 +1,10 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { findActiveAdminById } from "@/lib/data/users";
 
-type Sesi = { email: string; kedaluwarsa: number };
+// Peran di sesi hanya petunjuk; sumber kebenarannya baris users (dicek di wajibAdmin).
+type Sesi = { userId: string; role: "ADMIN"; kedaluwarsa: number };
 
 const DELAPAN_JAM = 60 * 60 * 8; // dalam detik
 
@@ -11,9 +13,9 @@ const DELAPAN_JAM = 60 * 60 * 8; // dalam detik
 const g = globalThis as unknown as { sesiTiruan?: Map<string, Sesi> };
 const penyimpanan = (g.sesiTiruan ??= new Map<string, Sesi>());
 
-export async function buatSesi(email: string) {
+export async function buatSesi(userId: string, role: "ADMIN") {
   const id = crypto.randomUUID();
-  penyimpanan.set(id, { email, kedaluwarsa: Date.now() + DELAPAN_JAM * 1000 });
+  penyimpanan.set(id, { userId, role, kedaluwarsa: Date.now() + DELAPAN_JAM * 1000 });
   (await cookies()).set("sesi", id, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -33,11 +35,14 @@ export async function bacaSesi() {
 /**
  * Wajib di setiap halaman admin dan Server Action (endpoint publik), bukan
  * hanya di proxy.ts. Panggil di luar try/catch: redirect() bekerja dengan melempar.
+ * Status aktif dan peran ADMIN dicek ulang di DB setiap permintaan, sehingga
+ * akun yang dinonaktifkan langsung kehilangan akses meski sesinya masih hidup.
  */
-export async function wajibAdmin(): Promise<Sesi> {
+export async function wajibAdmin(): Promise<{ id: string; email: string }> {
   const sesi = await bacaSesi();
-  if (!sesi) redirect("/masuk");
-  return sesi;
+  const admin = sesi ? await findActiveAdminById(sesi.userId) : undefined;
+  if (!admin) redirect("/masuk");
+  return admin;
 }
 
 export async function hapusSesi() {

@@ -71,6 +71,10 @@ export const skemaIdVersi = z.uuid({ error: "ID versi tidak valid" });
 
 // Dipakai halaman /masuk di Bagian 4 (sama dengan modul)
 export const skemaMasuk = z.object({
-  email: z.email("Format email tidak valid"),
-  kataSandi: z.string().min(8, "Kata sandi minimal 8 karakter"),
+  // Dinormalisasi huruf kecil agar cocok dengan email tersimpan di tabel users.
+  email: z.string().trim().toLowerCase().pipe(z.email("Format email tidak valid")),
+  // Batas atas membatasi ukuran masukan yang diproses scrypt.
+  kataSandi: z.string()
+    .min(8, "Kata sandi minimal 8 karakter")
+    .max(256, "Kata sandi maksimal 256 karakter"),
 });
