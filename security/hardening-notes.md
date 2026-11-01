@@ -26,7 +26,7 @@ Catatan keputusan, bukti, dan keterbatasan untuk hardening VM staging dan contai
 
 ## 3. Hardening VM
 
-- **SSH** (config/00-hardening.conf, bukti nilai efektif di bukti/sshd-T-final.txt): `PasswordAuthentication no`, `KbdInteractiveAuthentication no`, `PermitRootLogin no`, `PubkeyAuthentication yes`, `AllowUsers arif`, `MaxAuthTries 3`, `LoginGraceTime 30`, `X11Forwarding no`, `PermitEmptyPasswords no`, `AllowTcpForwarding local`.
+- **SSH** (config/00-hardening.conf; nilai efektif di bukti/sshd-T-final.txt, daftar lengkap di bukti/sshd-T-after.txt): `PasswordAuthentication no`, `KbdInteractiveAuthentication no`, `PermitRootLogin no`, `PubkeyAuthentication yes`, `AllowUsers arif`, `MaxAuthTries 3`, `LoginGraceTime 30`, `X11Forwarding no`, `PermitEmptyPasswords no`, `AllowTcpForwarding local`, ditambah `AllowAgentForwarding no`, `LogLevel VERBOSE`, `ClientAliveInterval 300`, `ClientAliveCountMax 2`, `MaxSessions 2`, `TCPKeepAlive no`, dan `Banner /etc/issue.net`.
 - `AllowTcpForwarding local` sengaja dipertahankan karena aplikasi dibuka dari laptop lewat SSH tunnel (`-L`); forwarding lain tidak diizinkan.
 - Berkas drop-in diberi awalan `00-` karena pada sshd nilai pertama yang terbaca yang menang, sehingga berkas ini mengalahkan `50-cloud-init.conf`. Karena itu bukti yang dipakai adalah `sshd -T` (konfigurasi efektif), bukan isi berkas konfigurasi saja.
 - **Sysctl** (config/99-zz-kyrion-hardening.conf): antara lain `kernel.kptr_restrict = 2`, `kernel.sysrq = 0`, `fs.suid_dumpable = 0`, `fs.protected_fifos = 2`, `net.ipv4.conf.all.rp_filter = 1`. Berkas dinamai `99-zz-` agar dibaca terakhir; sebelumnya `fs.protected_fifos` tetap 1 karena berkas lain (`99-protect-links.conf`) menang, dan `fs.suid_dumpable` kembali ke 2 setelah reboot karena apport.
@@ -66,10 +66,11 @@ Peringatan tersisa: **FIRE-4512** (modul iptables dimuat tetapi belum ada aturan
 | DEB-0880 | fail2ban | Tidak dipasang; login kata sandi sudah dimatikan dan `MaxAuthTries` 3, sehingga tebakan kata sandi via SSH tidak berlaku; komponen tambahan dihindari. |
 | BOOT-5122 | Kata sandi GRUB | Tidak diterapkan; akses fisik atau konsol VirtualBox berada di luar model ancaman staging ini, dan mengunci GRUB berisiko mengunci diri sendiri. |
 | BOOT-5264 | Hardening layanan sistemd | Belum dikerjakan; dapat menjadi pekerjaan lanjutan. |
-| AUTH-9229, AUTH-9230, AUTH-9262, AUTH-9282, AUTH-9286 | Kebijakan hash, kekuatan, dan umur kata sandi akun | Tidak diterapkan; hanya satu akun dan login jarak jauh memakai kunci. Kata sandi akun masih dipakai untuk `sudo`, sehingga ini tetap sisa risiko rendah. |
+| AUTH-9229, AUTH-9230 | Putaran hash kata sandi di PAM dan /etc/login.defs | Tidak diubah; kata sandi akun sudah di-hash dengan yescrypt bawaan Ubuntu dan login jarak jauh tidak memakai kata sandi. |
+| AUTH-9262, AUTH-9282, AUTH-9286 | Modul kekuatan kata sandi, tanggal kedaluwarsa, umur minimum dan maksimum kata sandi | Tidak diterapkan; rotasi paksa berkala tidak dianjurkan oleh NIST SP 800-63B, hanya ada satu akun, dan login jarak jauh memakai kunci. Kata sandi akun masih dipakai untuk `sudo`, sehingga ini tetap sisa risiko rendah. |
 | FILE-6310 | Partisi terpisah untuk /home, /tmp, /var | Tidak diterapkan; partisi harus ditentukan saat instalasi dan VM staging ini memakai satu disk. |
 | NAME-4028 | Domain DNS | Tidak relevan pada jaringan host-only. |
-| NETW-3200 | Protokol dccp, sctp, rds, tipc | Sebagian modul sudah diblokir (config/kyrion-disable-modules.conf). Mengapa Lynis tetap menampilkannya belum diperiksa. |
+| NETW-3200 | Protokol dccp, sctp, rds, tipc | Modul-modul itu sudah diblokir lewat config/kyrion-disable-modules.conf; `modprobe -n -v` menghasilkan `install /bin/false` (bukti/os-hardening-after.txt). Lynis 3.0.9 tetap menampilkan saran ini; penyebabnya (kemungkinan cara pemeriksaannya) belum diverifikasi. |
 | SSH-7408 (dua butir) | Saran hardening SSH tambahan | Dua butir masih tersisa; rinciannya ada pada bagian detail lynis-after.txt dan belum ditinjau satu per satu. |
 | LOGG-2154 | Log ke host eksternal | Ditunda ke sec-0.3 bagian B (log terpusat). |
 | BANN-7126, BANN-7130 | Banner hukum di /etc/issue dan /etc/issue.net | Banner peringatan sudah tampil saat login SSH; mengapa Lynis tetap menyarankannya belum diperiksa. |
@@ -88,7 +89,7 @@ Peringatan tersisa: **FIRE-4512** (modul iptables dimuat tetapi belum ada aturan
 - Kata sandi basis data dibaca aplikasi lewat variabel lingkungan `DATABASE_URL`, sehingga nilainya terlihat bagi siapa pun yang dapat menjalankan `docker inspect` (yaitu root atau pengguna sudo di VM).
 - Wording tugas "port app dan db tidak dipublikasikan": db memang tidak mempublikasikan port apa pun; app terikat ke `127.0.0.1:3000` di VM dan dibuka dari laptop lewat SSH tunnel. Apakah ini memenuhi syarat sedang ditanyakan ke dosen; bila tidak, cadangannya adalah menghapus `ports:` dan membuka aplikasi lewat tunnel ke alamat container.
 - VM sesekali mengalami henti sementara dari sisi host (log kernel menunjukkan soft lockup pada keempat vCPU) yang memutus koneksi SSH; penyebabnya belum dipastikan.
-- Kunci induk HMAC juga memiliki salinan di laptop pengembangan; lokasinya belum dicatat di dokumen ini.
+- Kunci induk HMAC di VM dibuat khusus di VM (bukan salinan kunci laptop) dan dimiliki UID 10001 dengan izin 0400. Kunci pengembangan di laptop adalah kunci yang berbeda; lokasi berkas kunci laptop belum dicatat di dokumen ini.
 - Tahap `tools` pada Dockerfile (dipakai untuk migrasi dan seed) belum memiliki `ENV PATH` permanen; saat ini dijalankan dengan `-e PATH=...`. Perbaikan permanen ditunda.
 - Mode `standalone` pada Next.js ditunda ke pekerjaan PAW.
 
