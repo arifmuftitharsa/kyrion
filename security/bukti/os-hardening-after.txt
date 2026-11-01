@@ -1,0 +1,25 @@
+== tanggal UTC
+Sun Nov  1 01:30:18 PM UTC 2026
+== id
+uid=1000(arif) gid=1000(arif) groups=1000(arif),4(adm),27(sudo)
+== sshd -T (disaring)
+maxsessions 2
+permitrootlogin no
+passwordauthentication no
+kbdinteractiveauthentication no
+allowtcpforwarding local
+allowusers arif
+== sysctl
+kernel.kptr_restrict = 2
+kernel.sysrq = 0
+fs.suid_dumpable = 0
+fs.protected_fifos = 2
+net.ipv4.conf.all.rp_filter = 1
+== apport
+disabled
+== modul diblokir (root)
+install /bin/false 
+== sysctl yang masih berbeda (Lynis)
+[4C- kernel.modules_disabled (exp: 1)[23C [ DIFFERENT ]
+== hardening index
+hardening_index=77

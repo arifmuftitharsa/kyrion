@@ -1,0 +1,7 @@
+# hash-kata-sandi.txt (sec-0.2), UTC: 2026-11-01T16:14:48Z
+# Bukti: kata sandi tersimpan sebagai hash scrypt. Hanya parameter dan panjang yang ditampilkan; nilai hash dan salt TIDAK.
+                email                 | role  | is_active | algoritma |   n   | r | p | len_salt | len_hash 
+--------------------------------------+-------+-----------+-----------+-------+---+---+----------+----------
+ admin.uji@universitaspertamina.ac.id | ADMIN | t         | scrypt    | 65536 | 8 | 2 |       24 |       44
+(1 row)
+

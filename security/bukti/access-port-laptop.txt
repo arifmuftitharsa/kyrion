@@ -1,0 +1,12 @@
+﻿# access-port-laptop.txt (sec-0.2), UTC: 2026-11-01T16:11:15Z
+# Uji dari laptop ke VM 192.168.56.101 (host-only)
+
+
+Port Harapan  TcpTerbuka
+---- -------  ----------
+  22 terbuka        True
+3000 tertutup      False
+5432 tertutup      False
+
+
+
