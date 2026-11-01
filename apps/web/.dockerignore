@@ -1,0 +1,9 @@
+node_modules
+.next
+.vitest
+storage
+.env*
+!.env.example
+*.tsbuildinfo
+generated
+coverage

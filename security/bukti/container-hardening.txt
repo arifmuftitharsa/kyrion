@@ -1,0 +1,28 @@
+# container-hardening.txt (sec-0.2), UTC: 2026-11-01T16:05:28Z
+
+## kyrion-vm-app-1
+image=sha256:cbb9946bce20c20db24d45fafc9bac2181b4843f002f2d7e713b4e66cfc25d40 user=10001:10001 readonly_rootfs=true privileged=false
+cap_drop=[ALL] cap_add=[] security_opt=[no-new-privileges:true]
+published_ports={"3000/tcp":[{"HostIp":"127.0.0.1","HostPort":"3000"}]}
+
+## kyrion-vm-db-1
+image=sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81 user= readonly_rootfs=false privileged=false
+cap_drop=[ALL] cap_add=[CAP_CHOWN CAP_DAC_OVERRIDE CAP_FOWNER CAP_SETGID CAP_SETUID] security_opt=[no-new-privileges:true]
+published_ports={}
+
+## proses di dalam app
+uid=10001(kyrion) gid=10001(kyrion) groups=10001(kyrion)
+CapEff:	0000000000000000
+CapBnd:	0000000000000000
+NoNewPrivs:	1
+
+## uji tulis
+touch: /app/uji-tulis: Read-only file system
+exit=1
+storage: tulis OK
+
+## jaringan
+backend internal=true
+
+## soket di VM
+LISTEN 0      4096       127.0.0.1:3000      0.0.0.0:*    users:(("docker-proxy",pid=98934,fd=8))               

@@ -100,3 +100,57 @@ flowchart LR
   E03 -.->|"DF-18"| P03
   P01 -.->|"DF-19"| E01
 ```
+
+## Pembaruan sec-0.2
+
+Bagian di atas tidak diubah (menggambarkan kondisi sec-0.1). Tugas 2 menambah lingkungan penerapan di VM staging. Pemetaan penerapan: P-01 sampai P-04 berjalan di dalam container app; D-02 diwujudkan sebagai volume Docker kyrion-storage; D-03, D-04, dan D-05 diwujudkan sebagai tabel di container db (PostgreSQL) dengan volume kyrion-pgdata.
+
+### Elemen baru
+
+| ID | Nama | Tipe | Status |
+|----|------|------|--------|
+| E-04 | Operator sistem (Arif): terminal SSH dan peramban dari laptop | Entitas Eksternal | Berjalan |
+| P-05 | Layanan SSH di VM (sshd: hanya kunci publik, hanya akun arif) | Proses | Berjalan |
+| P-06 | Container app kyrion-web:hardened (non-root, rootfs read-only, semua kapabilitas dilepas) | Proses | Berjalan |
+| D-06 | Berkas konfigurasi dan secret di host VM (/srv/kyrion/env/ dan /srv/kyrion/secrets/) | Data Store | Berjalan |
+
+### Trust boundary baru
+
+- TB-04 Laptop Arif vs VM staging. Luar: E-04. Dalam: P-05 dan semua yang ada di VM. Alasan: VM hanya dapat dijangkau lewat SSH dengan kunci (port 22); aplikasi hanya terikat ke 127.0.0.1 di VM dan dibuka dari laptop lewat SSH tunnel.
+- TB-05 Host VM vs container. Luar: sistem operasi VM dan D-06. Dalam: P-06 dan container db. Alasan: proses di dalam container berjalan tanpa hak istimewa (non-root, tanpa kapabilitas, no-new-privileges), sehingga kompromi aplikasi tidak otomatis menjadi kompromi host.
+- TB-06 Jaringan frontend vs jaringan backend internal. Alasan: container db hanya berada di jaringan backend yang bersifat internal dan tidak mempublikasikan port ke host, sehingga hanya container app yang dapat menjangkaunya.
+
+### Aliran data baru
+
+| ID | Dari | Ke | Data | Menyeberang TB | Status |
+|----|------|----|------|----------------|--------|
+| DF-20 | E-04 | P-05 | Login SSH dengan kunci publik (kata sandi dimatikan) | TB-04 | Berjalan |
+| DF-21 | E-04 | P-06 | Permintaan HTTP lewat SSH tunnel ke 127.0.0.1:3000 di VM | TB-04, TB-05 | Berjalan |
+| DF-22 | P-06 | D-03, D-04, D-05 (container db) | Kueri basis data lewat jaringan backend internal | TB-06 | Berjalan |
+| DF-23 | D-06 | P-06 | Kunci induk HMAC sebagai secret hanya-baca | TB-05 | Berjalan |
+| DF-24 | P-06 | D-02 | Baca dan tulis berkas PDF versi di volume kyrion-storage | TB-05 | Berjalan |
+
+### Diagram lingkungan VM
+
+```mermaid
+flowchart LR
+  subgraph LAP["Laptop Arif (TB-04: luar)"]
+    E04["E-04 Operator: terminal SSH dan peramban"]
+  end
+
+  subgraph VM["VM staging: hanya port 22 terbuka ke luar"]
+    P05("P-05 sshd: kunci publik, akun arif")
+    D06[("D-06 Berkas env dan secret di /srv/kyrion")]
+    subgraph DK["Docker (TB-05)"]
+      P06("P-06 Container app: non-root, rootfs read-only")
+      DB[("Container db: PostgreSQL, tanpa port ke host")]
+      V1[("Volume kyrion-storage")]
+    end
+  end
+
+  E04 -->|"DF-20 SSH kunci publik"| P05
+  E04 -->|"DF-21 HTTP lewat tunnel ke 127.0.0.1:3000"| P06
+  P06 -->|"DF-22 jaringan backend internal (TB-06)"| DB
+  D06 -->|"DF-23 secret hanya-baca"| P06
+  P06 -->|"DF-24 baca dan tulis PDF"| V1
+```

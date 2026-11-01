@@ -1,0 +1,13 @@
+﻿Waktu UTC: 2026-11-01T16:27:08Z
+Peran: Admin Akademik (cookie sesi sah, nilai tidak dicatat)
+Target: http://localhost:13000 (SSH tunnel ke VM)
+
+
+ID   Harapan Kode Arah Path                
+--   ------- ---- ---- ----                
+D-P6 200     200       /admin/kategori/baru
+D-P7 200     200       /                   
+D-P8 200     200       /verifikasi         
+
+
+

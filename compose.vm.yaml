@@ -1,0 +1,103 @@
+# Compose untuk VM staging Kyrion (sec-0.2). compose.yaml di root tetap konfigurasi pengembangan.
+# Jalankan: sudo docker compose --env-file /srv/kyrion/env/kyrion.env -f compose.vm.yaml up -d
+name: kyrion-vm
+
+services:
+  db:
+    image: postgres:18.6-trixie
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER wajib diisi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD wajib diisi}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB wajib diisi}
+    volumes:
+      - kyrion-pgdata:/var/lib/postgresql
+    networks:
+      - backend
+    cap_drop:
+      - ALL
+    # Capability yang dijustifikasi: entrypoint PostgreSQL mengatur kepemilikan folder data lalu turun hak ke pengguna postgres.
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # Tanpa "ports": basis data tidak dipublikasikan ke host.
+
+  app:
+    image: kyrion-web:hardened
+    restart: unless-stopped
+    user: "10001:10001"
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/.next/cache:uid=10001,gid=10001
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL wajib diisi}
+      KYRION_STORAGE_DIR: ${KYRION_STORAGE_DIR:?KYRION_STORAGE_DIR wajib diisi}
+      KYRION_MASTER_KEY_FILE: ${KYRION_MASTER_KEY_FILE:?KYRION_MASTER_KEY_FILE wajib diisi}
+    ports:
+      - "127.0.0.1:3000:3000"
+    secrets:
+      - kyrion_master_key
+    volumes:
+      - kyrion-storage:/app/storage
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:3000/masuk || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  tools:
+    image: kyrion-web:tools
+    profiles: ["tools"]
+    user: "10001:10001"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL wajib diisi}
+    env_file:
+      - /srv/kyrion/env/seed.env
+    networks:
+      - backend
+    depends_on:
+      db:
+        condition: service_healthy
+
+secrets:
+  kyrion_master_key:
+    file: /srv/kyrion/secrets/kyrion_master_key
+
+volumes:
+  kyrion-pgdata:
+  kyrion-storage:
+
+networks:
+  backend:
+    internal: true
+  frontend: {}

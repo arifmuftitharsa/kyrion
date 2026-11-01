@@ -1,0 +1,11 @@
+# sshd-T-final.txt (sec-0.2), UTC: 2026-11-01T16:05:54Z
+logingracetime 30
+maxauthtries 3
+permitrootlogin no
+pubkeyauthentication yes
+passwordauthentication no
+kbdinteractiveauthentication no
+x11forwarding no
+permitemptypasswords no
+allowtcpforwarding local
+allowusers arif

@@ -1,0 +1,16 @@
+﻿# access-server-action-tanpa-sesi.txt (sec-0.2), uji A-N7
+# Observasi peramban: Login sebagai admin uji, buka /admin/kategori/baru dan isi nama uji-tanpa-sesi tanpa menyimpan, restart container app di VM sehingga sesi hilang, lalu klik simpan: dialihkan ke /masuk dan jumlah kategori tetap 2.
+# Tangkapan layar: img/sec02-admin-aksi-tanpa-sesi.png
+# Di bawah ini salinan keluaran terminal VM yang dijalankan Arif, 1 Nov 2026 sekitar 22.53 waktu lokal.
+
+arif@kyrion-staging:~$ dc exec -T db psql -U kyrion -d kyrion -t -A -c "select count(*) from categories;"
+2
+arif@kyrion-staging:~$ dc restart app
+[+] restart 0/1
+ Container kyrion-vm-app-1 Restarting
+arif@kyrion-staging:~$ dc ps
+NAME              IMAGE                  SERVICE   STATUS                       PORTS
+kyrion-vm-app-1   kyrion-web:hardened    app       Up 25 seconds (healthy)      127.0.0.1:3000->3000/tcp
+kyrion-vm-db-1    postgres:18.6-trixie   db        Up About an hour (healthy)   5432/tcp
+arif@kyrion-staging:~$ dc exec -T db psql -U kyrion -d kyrion -t -A -c "select count(*) from categories;"
+2
