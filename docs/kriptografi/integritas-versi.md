@@ -1,7 +1,7 @@
 # F-31: Integritas catatan versi (HMAC-SHA256)
 
-Dokumen ini hanya memuat hal yang dapat dicocokkan dengan kode di `apps/web`. Hal yang
-belum diuji ditandai `[diisi setelah uji manual]` atau `[diisi setelah dijalankan]`.
+Dokumen ini hanya memuat hal yang dapat dicocokkan dengan kode di `apps/web`. Hasil uji
+manual (bagian 11) dilaporkan oleh pemilik repo; hal yang tidak diuji manual dicatat di bagian itu.
 
 ## 1. Tujuan dan ancaman
 
@@ -209,25 +209,46 @@ Uji sambungannya: `verifikasi.test.ts` memuat uji yang gagal bila panggilan
 
 ## 11. Hasil uji manual
 
-Belum dijalankan. Setiap baris diisi dengan keluaran asli.
+Hasil di bagian ini dilaporkan oleh pemilik repo dari pengujian pada 1 November 2026, di
+lingkungan lokal Windows dengan PostgreSQL 18 di Docker. Bukan keluaran yang dihasilkan ulang
+untuk dokumen ini.
 
-| Uji | Hasil |
-|---|---|
-| Membuat kunci dengan `buat-kunci.ts` | [diisi setelah uji manual] |
-| Menjalankan `buat-kunci.ts` lagi (berkas sudah ada, tidak ditimpa, kode keluar 1) | [diisi setelah uji manual] |
-| `buat-kunci.ts` dengan lokasi di dalam repository (ditolak) | [diisi setelah uji manual] |
-| `backfill-integritas.ts` pada data lama (ringkasan) | [diisi setelah uji manual] |
-| `backfill-integritas.ts` dijalankan ulang (idempoten) | [diisi setelah uji manual] |
-| Unduh PDF normal | [diisi setelah uji manual] |
-| Ubah satu byte PDF di `storage/` | [diisi setelah uji manual] |
-| Ubah PDF dan `file_sha256` di DB bersamaan | [diisi setelah uji manual] |
-| Ubah `version_number` di DB | [diisi setelah uji manual] |
-| Kunci dihapus atau dipindah | [diisi setelah uji manual] |
+| ID | Kondisi | Hasil diharapkan | Hasil nyata |
+|---|---|---|---|
+| M-01 | Unggah PDF lewat aplikasi, lalu unduh | Tag dibuat saat tulis dan unduhan lolos | PDF terbuka; kolom `integrity_tag` berawalan `v1$` dengan panjang 67 |
+| M-02 | Ubah nomor versi langsung di basis data, lalu unduh | Ditolak | Respons 500 dengan teks tetap "Berkas gagal diverifikasi: isinya tidak sama dengan yang tercatat."; log server hanya memuat `file_key` dan nama galat `IntegritasGagal`. Setelah nilai dikembalikan, unduhan berhasil kembali (200) |
+| M-03 (serangan utama) | PDF di `storage/`, `file_sha256`, dan `file_size` diganti bersamaan di basis data | Ditolak oleh HMAC walau hash polos cocok | Hash berkas di disk sama dengan `file_sha256` di basis data (pemeriksaan hash polos saja akan meloloskan), tetapi unduhan ditolak: 500, teks tetap, log `IntegritasGagal`. Setelah PDF dan nilai asli dikembalikan, PDF asli terbuka kembali |
+| M-04 | Ubah tanggal berlaku Draf berberkas lewat aplikasi tanpa PDF baru | Tag dihitung ulang dan unduhan lolos | Ringkasan MD5 tag berubah (`6368c05517bd47a488abfc6ae93151aa` menjadi `7cc9ee1a250c16e1fd4bacce874f456d`) dan PDF tetap terbuka |
+| M-05 | Buat Draf tanpa PDF, lalu ubah tanggalnya lewat aplikasi | Berhasil tersimpan | Berhasil tanpa galat; `integrity_tag` dan `file_key` bernilai `NULL` |
+| M-06 | Tambahkan PDF ke Draf yang semula tanpa berkas lewat Ubah | Tag dibuat | `integrity_tag` terisi dan unduhan terbuka |
+| M-07 | Kosongkan `integrity_tag` (meniru data lama), coba unduh, jalankan backfill, unduh lagi | Ditolak, lalu lolos setelah backfill | Unduhan ditolak; backfill menampilkan "1 versi diperiksa, ditandatangani 1"; unduhan berhasil. Diulang dua kali dengan hasil sama |
+| M-08 | Jalankan backfill kedua kali tanpa perubahan data | Tidak menimpa tag | "0 versi diperiksa" |
 
 ### Flag `--conditions=react-server`
 
-Cara kerja flag ini pada `tsx` belum diverifikasi. Hal yang perlu dicek: apakah `tsx`
-meneruskan flag ke Node, apakah `server-only` benar-benar menunjuk ke `empty.js`, dan
-apakah kondisi itu mengubah resolusi modul lain yang diimpor skrip.
+Dilaporkan oleh pemilik repo: skrip dijalankan dengan perintah
+`npx tsx --conditions=react-server prisma/backfill-integritas.ts` dan berjalan tanpa galat
+`server-only`. Skrip membaca berkas dari storage lewat modul penyimpanan, terbukti karena
+menandatangani 1 versi (M-07). Dijalankan tanpa flag: tidak diuji.
 
-[diisi setelah dijalankan]
+Pengujian ini hanya mengamati hasil akhirnya; mekanisme di baliknya (cara `tsx` meneruskan flag
+dan pengaruh kondisi itu terhadap modul lain yang diimpor skrip) tidak diperiksa secara terpisah.
+
+### Bukti pengelolaan kunci
+
+Dilaporkan oleh pemilik repo:
+
+- Berkas kunci berukuran 65 byte (64 karakter hex dan satu karakter baris baru).
+- Folder kunci hanya dapat diakses akun pemilik, SYSTEM, dan Administrators (diperiksa dengan `icacls`).
+- Salinan cadangan di drive terpisah punya hash identik dengan berkas asli, dan aksesnya dibatasi dengan `icacls`.
+
+### Yang tidak diuji manual
+
+- Kunci salah hanya diuji otomatis (lihat [tabel-skenario.md](tabel-skenario.md)).
+- Rute unduh publik (versi berstatus pernah disahkan) tidak diuji karena versi uji berstatus Draf.
+- Uji izin POSIX tidak berjalan di Windows.
+- Pengaruh perubahan status langsung di basis data tidak diuji karena status memang di luar tag.
+
+Skenario pada kerangka awal bagian ini yang tidak termasuk laporan di atas, sehingga tidak diklaim
+hasilnya di sini: menjalankan `buat-kunci.ts` kedua kali, `buat-kunci.ts` dengan lokasi di dalam
+repository, mengubah satu byte PDF di `storage/`, dan kunci dihapus atau dipindah.

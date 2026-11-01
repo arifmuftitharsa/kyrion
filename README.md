@@ -15,6 +15,7 @@ Kyrion, dari kata Yunani *kyrion* yang berarti "yang sah, yang berlaku", adalah 
 - [Tugas 2 (v0.2): PostgreSQL, Prisma, dan CRUD Admin](#tugas-2-v02-postgresql-prisma-dan-crud-admin)
 - [Bukti Tugas 1](#bukti-tugas-1)
 - [Kriptografi (Tugas 1)](#kriptografi-tugas-1)
+- [Kriptografi: krip-0.2 (F-31)](#kriptografi-krip-02-f-31)
 - [Dokumen Teknis Praktikum PAW](#dokumen-teknis-praktikum-paw)
 - [Penggunaan AI](#penggunaan-ai)
 
@@ -112,6 +113,11 @@ kyrion/
     │   ├── crypto/
     │   │   ├── fingerprint.ts      # Sidik SHA-256 berkas (F-30); dipakai saat unggah dan unduh PDF
     │   │   ├── password.ts         # Hash dan verifikasi kata sandi dengan scrypt dan salt acak
+    │   │   ├── kanonis.ts          # Byte kanonis tujuh field versi (F-31); uji: kanonis.test.ts
+    │   │   ├── mac.ts              # HMAC-SHA256, HKDF, dan tag v1$<hex64> (F-31); uji: mac.test.ts
+    │   │   ├── kunci.ts            # Baca dan buat berkas kunci induk (F-31); uji: kunci.test.ts
+    │   │   ├── verifikasi.ts       # Periksa hash berkas dan tag saat unduh (F-31); uji: verifikasi.test.ts
+    │   │   ├── data-terlindung.ts  # Baris versi ke data yang ditandatangani (F-31); uji: data-terlindung.test.ts
     │   │   └── batas.ts            # MAX_INPUT_BYTES (10 MB); tanpa impor, aman dibundel ke klien
     │   ├── validation/
     │   │   └── verify-form.ts      # Validasi formulir verifikasi (fungsi murni, tanpa React)
@@ -331,7 +337,7 @@ Dilakukan manual pada 24 Oktober 2026, tanpa tangkapan layar terlampir:
 - Hapus versi yang statusnya diubah menjadi Sah setelah halaman konfirmasi dibuka ditolak oleh server.
 - Saat DB mati, halaman galat ramah tampil (diuji di mode produksi) dengan kode galat yang cocok dengan digest di log server.
 
-Uji otomatis: `npm test` menjalankan **106 uji Vitest di 12 berkas** (semua lulus). Berkas ujinya: `lib/domain/regulasi.test.ts`, `lib/domain/slug.test.ts`, `lib/domain/tanggal.test.ts`, `lib/domain/versi-admin.test.ts`, `lib/domain/versi.test.ts`, dan `lib/crypto/fingerprint.test.ts` (dari Tugas 1), ditambah berkas yang datang bersama C1–C4: `lib/domain/kategori.test.ts`, `lib/crypto/password.test.ts`, `lib/domain/berkas-pdf.test.ts`, `lib/format.test.ts`, `lib/domain/banding.test.ts`, dan `lib/domain/perubahan.test.ts`.
+Uji otomatis: `npm test` menjalankan **106 uji Vitest di 12 berkas** (semua lulus) pada tag v0.2. Berkas ujinya: `lib/domain/regulasi.test.ts`, `lib/domain/slug.test.ts`, `lib/domain/tanggal.test.ts`, `lib/domain/versi-admin.test.ts`, `lib/domain/versi.test.ts`, dan `lib/crypto/fingerprint.test.ts` (dari Tugas 1), ditambah berkas yang datang bersama C1–C4: `lib/domain/kategori.test.ts`, `lib/crypto/password.test.ts`, `lib/domain/berkas-pdf.test.ts`, `lib/format.test.ts`, `lib/domain/banding.test.ts`, dan `lib/domain/perubahan.test.ts`.
 
 ### 8. Temuan selama pengujian dan perbaikannya
 
@@ -472,6 +478,62 @@ Cuplikan keluaran (11 tes lulus):
 ### Status per v0.2
 
 Bagian Kriptografi di atas dibekukan sebagai v0.1. Per v0.2, kata sandi akun Admin disimpan sebagai hash scrypt dengan salt acak (`lib/crypto/password.ts`), dan sidik SHA-256 (`fingerprint`) dipakai saat unggah berkas versi (dicatat di `file_sha256`) dan saat unduh (dicocokkan ulang sebelum dikirim).
+
+Jumlah uji otomatis:
+
+- Pada tag v0.2: 106 uji Vitest di 12 berkas (rincian di Tugas 2, bagian 7).
+- Setelah krip-0.2: 17 berkas uji, 192 lulus, 2 dilewati (194), keluaran `npm test` dari `apps/web` pada 1 November 2026. Dua uji yang dilewati adalah uji izin POSIX yang tidak berjalan di Windows.
+
+## Kriptografi: krip-0.2 (F-31)
+
+Komponen yang dikerjakan: integritas catatan versi (fitur F-31), berupa tag HMAC-SHA256 di kolom `versions.integrity_tag`, kode di `apps/web/lib/crypto/` (`kanonis.ts`, `mac.ts`, `kunci.ts`, `verifikasi.ts`, `data-terlindung.ts`).
+
+### Ringkasan
+
+F-31 menutup celah pada F-30: hash polos `file_sha256` tidak melindungi dari penyerang yang bisa menulis ke basis data dan ke `storage/`, karena PDF dan hash-nya bisa diganti bersamaan. Tag HMAC-SHA256 atas tujuh field versi (id, regulation_id, version_number, effective_date, file_sha256, file_name, file_size) dihitung dengan kunci yang disimpan di luar basis data dan di luar repository. Saat unduh PDF, hash berkas dihitung ulang dan tag diperiksa sebelum satu byte pun dikirim; galat apa pun berarti berkas tidak dikirim (gagal tertutup).
+
+### Cara menjalankan uji
+
+Dari folder `apps/web`:
+
+```bash
+npx vitest run lib/crypto
+npm test
+```
+
+### Menyiapkan kunci
+
+1. Isi `KYRION_MASTER_KEY_FILE` di `apps/web/.env.local` dengan lokasi berkas kunci di luar repository (contoh variabel ada di `apps/web/.env.example`).
+2. Buat berkas kunci, dari `apps/web`:
+
+   ```bash
+   npx tsx prisma/buat-kunci.ts
+   ```
+
+3. Tandatangani versi berberkas yang sudah ada, dari `apps/web`:
+
+   ```bash
+   npx tsx --conditions=react-server prisma/backfill-integritas.ts
+   ```
+
+Skrip pembuat kunci tidak pernah mencetak isi kunci dan menolak menimpa berkas yang sudah ada. Buat cadangan berkas kunci di tempat aman: tanpa kunci itu, semua unduhan versi berberkas ditolak.
+
+### Sambungan Tugas 1 ke Tugas 2
+
+| Komponen Tugas 1 (fingerprint F-30) | Komponen Tugas 2 (HMAC F-31) | Titik sambungan | Uji yang melintasi sambungan |
+|---|---|---|---|
+| Hash saat unggah: `fingerprint` | `file_sha256` menjadi salah satu field yang ditandatangani | `app/admin/regulasi/[slug]/versi/actions.ts` (`bacaUnggahan`) lalu `lib/data/versions.ts` (`createVersion`, `updateDraftVersion`) dan `lib/crypto/data-terlindung.ts` (`dataTerlindungDariBaris`) | `lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > meloloskan data, berkas, dan tag asli`; `lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila field fileSha256 diubah` |
+| Cek hash saat unduh: `verifyFingerprint` | Pemeriksaan tag, dijalankan setelah hash cocok | `lib/crypto/verifikasi.ts` (`periksaIntegritasVersi`) | `lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila hanya byte PDF yang diganti (langkah verifyFingerprint)`; `lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila PDF dan fileSha256 diganti bersamaan dengan tag lama` |
+| Batas ukuran: `MAX_INPUT_BYTES`, `InputTooLargeError` | Galat itu dibungkus menjadi `IntegritasGagal` | `lib/crypto/verifikasi.ts` (`periksaIntegritasVersi`) | `lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > membungkus galat internal: berkas melebihi batas (InputTooLargeError)` |
+| Respons unduhan PDF | Verifikasi tag sebelum `Response` dibuat | `lib/unduhan-pdf.ts` (`responsPdf`) lalu `lib/integritas-versi.ts` (`periksaBerkasVersi`) | Belum ada uji otomatis untuk jalur ini; kerangka hasil uji manual (belum diisi) ada di [docs/kriptografi/integritas-versi.md](docs/kriptografi/integritas-versi.md) |
+
+### Dokumen terkait
+
+- [docs/kriptografi/integritas-versi.md](docs/kriptografi/integritas-versi.md): tujuan, format kanonis dan tag, penanganan kunci, galat, dan keterbatasan.
+- [docs/kriptografi/tabel-skenario.md](docs/kriptografi/tabel-skenario.md): tabel skenario uji beserta hasilnya dari `vitest.txt`.
+- [KEPUTUSAN.md](KEPUTUSAN.md): keputusan rancangan Tugas 2.
+
+Keterbatasan Windows: bit izin POSIX tidak berlaku di Windows, sehingga pemeriksaan izin berkas kunci dilewati dan pembatasan akses bergantung pada ACL folder.
 
 ## Dokumen Teknis Praktikum PAW
 
