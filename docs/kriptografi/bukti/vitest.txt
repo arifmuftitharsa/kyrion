@@ -1,0 +1,123 @@
+﻿
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.4 [39m[90mC:/Projects/kyrion/apps/web[39m
+
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenghasilkan byte persis sesuai acuan eksternal[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mdiawali label yang diberi awalan panjang 4 byte big-endian[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mdeterministik untuk data yang sama[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenyamakan 'é' tunggal (NFC) dengan 'e' + aksen terpisah (NFD)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmembedakan data bila nilai dua field bertukar tempat (urutan field bagian dari format)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmembedakan data bila batas antarbagian bergeser (awalan panjang)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak id bukan UUID dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak id UUID huruf besar dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak regulationId bukan UUID dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak tanggal tidak mustahil tapi format salah (tanpa nol) dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak tanggal mustahil (30 Februari) dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSha256 huruf besar dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSha256 63 karakter dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSha256 bukan hex dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSize negatif dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSize pecahan dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSize NaN dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak versionNumber dengan surrogate yatim dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileName dengan surrogate yatim dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mpesan galat hanya menyebut nama field, bukan nilainya[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mhmacSha256[2m > [22msesuai RFC 4231 Test Case 1[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mhmacSha256[2m > [22msesuai RFC 4231 Test Case 2[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mturunkanKunciMac[2m > [22msama dengan acuan HKDF-SHA256 hitungan Python (salt kosong)[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mturunkanKunciMac[2m > [22mmenghasilkan kunci berbeda dari kunci induk lain[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mturunkanKunciMac[2m > [22mmenolak kunci induk yang bukan 32 byte[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mbuatTagVersi[2m > [22msama dengan tag acuan hitungan Python[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mbuatTagVersi[2m > [22mberformat v1$ + 64 hex huruf kecil[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mbuatTagVersi[2m > [22mberubah bila satu field berubah[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mbuatTagVersi[2m > [22mberubah bila kunci induk berbeda[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmemetakan baris lengkap menjadi data terlindung[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmengembalikan null bila fileSha256 kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmengembalikan null bila fileName kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmengembalikan null bila fileSize kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmengembalikan null bila ketiga field berkas kosong (versi tanpa berkas)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmenganggap fileSize 0 sebagai nilai sah, bukan kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmenghasilkan hasil sama untuk Date dan string tanggal[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mtidak menggeser tanggal akhir bulan[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mtidak menggeser tanggal akhir Februari tahun kabisat[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mtidak menggeser tanggal akhir tahun[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mtidak menggeser tanggal awal tahun[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmemakai basis UTC: 23.59 UTC tetap pada tanggal yang sama[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mfingerprint[2m > [22mmenghasilkan SHA-256 sesuai vektor uji resmi FIPS 180-2 untuk "abc"[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mfingerprint[2m > [22mmenghasilkan SHA-256 yang benar untuk input kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mfingerprint[2m > [22mmenerima input tepat sebesar MAX_INPUT_BYTES[32m 9[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mfingerprint[2m > [22mmelempar InputTooLargeError untuk input sebesar MAX_INPUT_BYTES + 1[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan true untuk data asli dan false bila satu byte diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: string bukan hex (64 karakter z)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: hex 63 karakter[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: hex 65 karakter[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: hex huruf besar dari hash yang benar[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: string kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmelempar InputTooLargeError (bukan mengembalikan false) untuk data di atas MAX_INPUT_BYTES[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmeloloskan data, berkas, dan tag asli[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field id diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field regulationId diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field versionNumber diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field effectiveDate diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field fileSha256 diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field fileName diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field fileSize diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila satu bit tag diubah[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila kunci valid tetapi berbeda[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag dan data asli yang disalin ke baris dengan id lain[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag null dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag kosong dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag tanpa awalan dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag awalan versi lain dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag hex huruf besar dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag terlalu pendek dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag terlalu panjang dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag bukan hex dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag spasi di ujung dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag teks acak dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmembungkus galat internal: kunci induk salah panjang[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmembungkus galat internal: field tidak sah (RangeError dari kanonisasi)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmembungkus galat internal: berkas melebihi batas (InputTooLargeError)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mpesan galat tetap dan tidak memuat tag, kunci, atau data[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila hanya byte PDF yang diganti (langkah verifyFingerprint)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila PDF dan fileSha256 diganti bersamaan dengan tag lama[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmengurai 64 karakter hex menjadi 32 byte[32m 4[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmemangkas spasi dan newline di ujung[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks kosong dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks hanya spasi dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks terlalu pendek (62 karakter) dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks terlalu panjang (66 karakter) dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks bukan hex dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks berawalan 0x dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks spasi di tengah dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks dua baris dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mpesan galat tidak memuat isi teks[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmenolak lokasi yang belum diatur[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmenolak berkas yang tidak ada[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmenolak berkas berisi kunci pendek atau bukan hex[32m 6[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmembaca berkas berisi hex yang sah[32m 3[2mms[22m[39m
+ [2m[90m↓[39m[22m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmenolak berkas yang bisa dibaca grup atau pengguna lain
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbuatBerkasKunci[2m > [22mmembuat berkas berisi kunci 32 byte yang bisa dibaca kembali[32m 3[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbuatBerkasKunci[2m > [22mmenghasilkan kunci berbeda tiap kali dibuat[32m 4[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbuatBerkasKunci[2m > [22mmenolak menimpa berkas yang sudah ada dan tidak mengubah isinya[32m 4[2mms[22m[39m
+ [2m[90m↓[39m[22m lib/crypto/kunci.test.ts[2m > [22mbuatBerkasKunci[2m > [22mmembuat berkas dengan mode 0o600
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mhashPassword dan verifyPassword[2m > [22mmenerima kata sandi yang benar[33m 332[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mhashPassword dan verifyPassword[2m > [22mmenolak kata sandi yang salah[33m 315[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mhashPassword dan verifyPassword[2m > [22mmenghasilkan hash berbeda untuk kata sandi sama (salt acak)[33m 508[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mhashPassword dan verifyPassword[2m > [22mmemakai format scrypt$N$r$p$salt$hash dengan parameter opsi B[32m 161[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mhashPassword dan verifyPassword[2m > [22mmenolak hash yang diubah satu karakter[33m 317[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mhashPassword dan verifyPassword[2m > [22mtetap memverifikasi hash dengan parameter lain (dibaca dari string)[32m 177[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mverifyPassword gagal tertutup untuk format rusak[2m > [22mstring kosong menghasilkan false[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mverifyPassword gagal tertutup untuk format rusak[2m > [22mbukan format menghasilkan false[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mverifyPassword gagal tertutup untuk format rusak[2m > [22malgoritma lain menghasilkan false[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mverifyPassword gagal tertutup untuk format rusak[2m > [22mjumlah bagian kurang menghasilkan false[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mverifyPassword gagal tertutup untuk format rusak[2m > [22msalt bukan base64 menghasilkan false[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mverifyPassword gagal tertutup untuk format rusak[2m > [22mN bukan angka menghasilkan false[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mverifyPassword gagal tertutup untuk format rusak[2m > [22mN bukan pangkat dua menghasilkan false[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mverifyPassword gagal tertutup untuk format rusak[2m > [22mN di luar batas (2^30) menghasilkan false[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/password.test.ts[2m > [22mverifyPassword gagal tertutup untuk format rusak[2m > [22msalt terlalu pendek menghasilkan false[32m 0[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+[2m      Tests [22m [1m[32m112 passed[39m[22m[2m | [22m[33m2 skipped[39m[90m (114)[39m
+[2m   Start at [22m 15:07:52
+[2m   Duration [22m 1.99s[2m (tests 91%, import 5%, transform 3%, worker 2%)[22m
+

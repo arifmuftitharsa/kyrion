@@ -84,7 +84,10 @@ model Version {
   fileSize       Int?          @map("file_size")
   fileSha256     String?       @map("file_sha256") @db.Char(64)
   fileUploadedAt DateTime?     @map("file_uploaded_at") @db.Timestamptz(3)
-  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  // Tag HMAC-SHA256 "v1$<hex64>" atas metadata dan hash berkas (F-31); kuncinya di luar DB.
+  // Null untuk versi tanpa berkas; versi berkas lama diisi skrip backfill.
+  integrityTag   String?       @map("integrity_tag")
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
   // Restrict: regulasi yang punya versi (termasuk Sah) tidak bisa dihapus.
   regulation     Regulation    @relation(fields: [regulationId], references: [id], onDelete: Restrict)

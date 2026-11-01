@@ -24,11 +24,24 @@ export interface Version {
   fileSize: number | null;
 }
 
-/** Berkas PDF versi yang tersimpan, untuk diunduh (kunci disk, nama tampilan, SHA-256). */
+/**
+ * Berkas PDF versi yang tersimpan, untuk diunduh. Selain kunci disk, nama tampilan,
+ * dan SHA-256, memuat seluruh field yang ikut ditandatangani (F-31) beserta tag-nya,
+ * agar tag bisa diverifikasi sebelum berkas dikirim.
+ */
 export interface BerkasTersimpan {
+  id: string;
+  regulationId: string;
+  versionNumber: string;
+  /** Tanggal berlaku dalam format ISO "YYYY-MM-DD". */
+  effectiveDate: string;
   key: string;
   name: string;
+  /** Ukuran berkas dalam byte. */
+  size: number;
   sha256: string;
+  /** Tag integritas "v1$<hex64>"; null untuk baris yang belum ditandatangani (ditolak saat unduh). */
+  tag: string | null;
 }
 
 export interface Regulation {

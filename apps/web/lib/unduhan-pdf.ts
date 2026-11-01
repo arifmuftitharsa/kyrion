@@ -1,10 +1,10 @@
 import "server-only";
-import { verifyFingerprint } from "@/lib/crypto/fingerprint";
+import { periksaBerkasVersi } from "@/lib/integritas-versi";
 import { bacaBerkas } from "@/lib/penyimpanan";
 import type { BerkasTersimpan } from "@/lib/types";
 
-// Respons unduhan PDF (F-05) untuk Route Handler publik dan admin. Hash berkas
-// di disk dihitung ulang dan dibandingkan dengan hash di DB sebelum dikirim.
+// Respons unduhan PDF (F-05) untuk Route Handler publik dan admin. Sebelum dikirim,
+// hash berkas di disk dihitung ulang (F-30) dan tag HMAC catatan versi diperiksa (F-31).
 
 function teks(pesan: string, status: number): Response {
   return new Response(pesan, {
@@ -32,15 +32,16 @@ export async function responsPdf(berkas: BerkasTersimpan): Promise<Response> {
     return teks("Berkas tidak ditemukan di penyimpanan.", 500);
   }
 
-  let cocok: boolean;
   try {
-    cocok = verifyFingerprint(bytes, berkas.sha256);
-  } catch {
-    // InputTooLargeError: berkas di disk membesar melewati batas, jelas tidak cocok.
-    cocok = false;
-  }
-  if (!cocok) {
-    console.error("Hash berkas tidak cocok dengan catatan DB:", berkas.key);
+    await periksaBerkasVersi(berkas, bytes);
+  } catch (error) {
+    // Gagal tertutup untuk galat apa pun (IntegritasGagal, kunci tidak valid, dsb.). Hanya
+    // nama galat yang dicatat: pesan atau stack bisa membawa jejak data.
+    console.error(
+      "Integritas berkas gagal diverifikasi:",
+      berkas.key,
+      error instanceof Error ? error.name : "galat tidak dikenal",
+    );
     return teks("Berkas gagal diverifikasi: isinya tidak sama dengan yang tercatat.", 500);
   }
 
