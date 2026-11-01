@@ -7,6 +7,7 @@ import {
   RegulationNotFoundError,
   SlugTakenError,
 } from "@/lib/domain/regulasi";
+import { berkasSelect, toBerkasTersimpan } from "@/lib/data/versions";
 import { PERNAH_DISAHKAN } from "@/lib/domain/versi";
 import { getPrisma } from "@/lib/prisma";
 import type { MasukanRegulasi } from "@/lib/skema";
@@ -78,11 +79,10 @@ export async function findPublicVersionFile(
   versionId: string,
 ): Promise<BerkasTersimpan | undefined> {
   const row = await getPrisma().version.findFirst({
-    select: { fileKey: true, fileName: true, fileSha256: true },
+    select: berkasSelect,
     where: { id: versionId, regulation: { slug }, status: { in: [...PERNAH_DISAHKAN] } },
   });
-  if (!row?.fileKey || !row.fileName || !row.fileSha256) return undefined;
-  return { key: row.fileKey, name: row.fileName, sha256: row.fileSha256 };
+  return toBerkasTersimpan(row);
 }
 
 /** Mengembalikan regulasi pada kategori (slug) tertentu; tanpa kategori berarti semua. */

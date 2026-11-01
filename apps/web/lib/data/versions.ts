@@ -1,7 +1,10 @@
 import "server-only";
+import { randomUUID } from "node:crypto";
 import { connection } from "next/server";
 import { Prisma } from "@/generated/prisma/client";
+import { dataTerlindungDariBaris, type BarisVersi } from "@/lib/crypto/data-terlindung";
 import { RegulationNotFoundError } from "@/lib/domain/regulasi";
+import { tandatanganiVersi } from "@/lib/integritas-versi";
 import { VersionNotEditableError, VersionNumberTakenError } from "@/lib/domain/versi-admin";
 import { getPrisma } from "@/lib/prisma";
 import type { MasukanVersi } from "@/lib/skema";
@@ -54,6 +57,47 @@ function toFileData(berkas: DataBerkas) {
     fileSha256: berkas.sha256,
     fileUploadedAt: new Date(),
   };
+}
+
+/**
+ * Kolom yang dibutuhkan unduhan dan verifikasi tag (F-31): ketujuh field terlindung,
+ * kunci disk, dan tag. Dipakai bersama oleh unduhan admin dan unduhan publik.
+ */
+export const berkasSelect = {
+  id: true,
+  regulationId: true,
+  versionNumber: true,
+  effectiveDate: true,
+  fileKey: true,
+  fileName: true,
+  fileSize: true,
+  fileSha256: true,
+  integrityTag: true,
+} satisfies Prisma.VersionSelect;
+
+type BerkasRow = Prisma.VersionGetPayload<{ select: typeof berkasSelect }>;
+
+/** undefined bila baris tidak ada atau versinya tidak punya berkas lengkap. */
+export function toBerkasTersimpan(row: BerkasRow | null): BerkasTersimpan | undefined {
+  if (!row?.fileKey || !row.fileName || !row.fileSha256 || row.fileSize === null) return undefined;
+  return {
+    id: row.id,
+    regulationId: row.regulationId,
+    versionNumber: row.versionNumber,
+    // Kolom date dibaca sebagai 00.00 UTC, jadi bagian tanggal UTC selalu tepat.
+    effectiveDate: row.effectiveDate.toISOString().slice(0, 10),
+    key: row.fileKey,
+    name: row.fileName,
+    size: row.fileSize,
+    sha256: row.fileSha256,
+    tag: row.integrityTag,
+  };
+}
+
+/** Tag F-31 untuk nilai yang AKAN ditulis; null bila versi tidak punya berkas lengkap. */
+async function hitungTag(baris: BarisVersi): Promise<string | null> {
+  const data = dataTerlindungDariBaris(baris);
+  return data ? tandatanganiVersi(data) : null;
 }
 
 type VersionRow = Prisma.VersionGetPayload<{ select: typeof versionSelect }>;
@@ -115,24 +159,40 @@ export async function findVersionFile(
   versionId: string,
 ): Promise<BerkasTersimpan | undefined> {
   const row = await getPrisma().version.findFirst({
-    select: { fileKey: true, fileName: true, fileSha256: true },
+    select: berkasSelect,
     where: { id: versionId, regulationId },
   });
-  if (!row?.fileKey || !row.fileName || !row.fileSha256) return undefined;
-  return { key: row.fileKey, name: row.fileName, sha256: row.fileSha256 };
+  return toBerkasTersimpan(row);
 }
 
-/** Versi baru selalu berstatus DRAF (PRD 5.1); berkas opsional ditulis dalam insert yang sama. */
+/**
+ * Versi baru selalu berstatus DRAF (PRD 5.1); berkas opsional ditulis dalam insert yang sama.
+ * ID dibuat di sini (bukan default uuidv7 di DB) karena ID ikut ditandatangani dan harus
+ * diketahui sebelum INSERT. Tag dihitung dari nilai yang ditulis; tanpa berkas, tag null.
+ */
 export async function createVersion(
   regulationId: string,
   masukan: MasukanVersi,
   berkas?: DataBerkas,
 ): Promise<void> {
+  const id = randomUUID();
+  const data = toVersionData(masukan);
+  const integrityTag = await hitungTag({
+    id,
+    regulationId,
+    versionNumber: data.versionNumber,
+    effectiveDate: data.effectiveDate,
+    fileSha256: berkas?.sha256 ?? null,
+    fileName: berkas?.name ?? null,
+    fileSize: berkas?.size ?? null,
+  });
   try {
     await getPrisma().version.create({
       data: {
-        ...toVersionData(masukan),
+        ...data,
         ...(berkas && toFileData(berkas)),
+        id,
+        integrityTag,
         status: "DRAF",
         regulationId,
       },
@@ -153,17 +213,41 @@ export async function updateDraftVersion(
   // Bila ada berkas baru: hanya berhasil bila berkas lama masih keyLama (cegah balapan ganti berkas).
   berkas?: { baru: DataBerkas; keyLama: string | null },
 ): Promise<void> {
+  const data = toVersionData(masukan);
   let count: number;
   try {
-    ({ count } = await getPrisma().version.updateMany({
-      where: {
+    // Tag memuat versionNumber dan effectiveDate, yang berubah pada setiap ubah, jadi tag
+    // dihitung ulang dari berkas yang berlaku sesudah update. Tanpa berkas baru itu berkas
+    // yang sekarang di DB; dibaca dalam transaksi yang sama dengan penulisannya.
+    count = await getPrisma().$transaction(async (tx) => {
+      const saat = await tx.version.findFirst({
+        where: { id: versionId, regulationId, status: "DRAF" },
+        select: { fileKey: true, fileName: true, fileSize: true, fileSha256: true },
+      });
+      if (!saat) return 0;
+
+      const integrityTag = await hitungTag({
         id: versionId,
         regulationId,
-        status: "DRAF",
-        ...(berkas && { fileKey: berkas.keyLama }),
-      },
-      data: { ...toVersionData(masukan), ...(berkas && toFileData(berkas.baru)) },
-    }));
+        versionNumber: data.versionNumber,
+        effectiveDate: data.effectiveDate,
+        fileSha256: berkas ? berkas.baru.sha256 : saat.fileSha256,
+        fileName: berkas ? berkas.baru.name : saat.fileName,
+        fileSize: berkas ? berkas.baru.size : saat.fileSize,
+      });
+      const hasil = await tx.version.updateMany({
+        where: {
+          id: versionId,
+          regulationId,
+          status: "DRAF",
+          // Berkas harus masih yang tadi dibaca (atau keyLama bila diganti), kalau tidak
+          // tag yang dihitung tidak sesuai isi baris dan tidak boleh ditulis.
+          fileKey: berkas ? berkas.keyLama : saat.fileKey,
+        },
+        data: { ...data, ...(berkas && toFileData(berkas.baru)), integrityTag },
+      });
+      return hasil.count;
+    });
   } catch (error) {
     throw toDomainError(error);
   }
