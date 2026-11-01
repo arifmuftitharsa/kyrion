@@ -33,6 +33,7 @@ erDiagram
         int file_size "opsional, byte"
         char64 file_sha256 "opsional, SHA-256 heksadesimal"
         timestamptz file_uploaded_at "opsional"
+        text integrity_tag "opsional, tag HMAC v1$hex64 (F-31)"
         timestamptz created_at "default now()"
         timestamptz updated_at "default now()"
     }
