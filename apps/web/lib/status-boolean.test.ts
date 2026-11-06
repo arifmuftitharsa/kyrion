@@ -3,7 +3,7 @@ import { z } from "zod";
 
 // Usulan AI (Modul 7, Galat 1): konversi tipe yang tampak masuk akal.
 const skemaStatus = z.object({
-  tersedia: z.coerce.boolean(),
+  tersedia: z.stringbool(),
 });
 
 // Meniru data dari formulir: semua nilai FormData berupa string.
