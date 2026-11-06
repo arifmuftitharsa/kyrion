@@ -18,7 +18,6 @@ import {
   pesanTolakHapusKategori,
 } from "@/lib/domain/kategori";
 import { createSlug } from "@/lib/domain/slug";
-import { getPrisma } from "@/lib/prisma";
 import { skemaIdKategori, skemaKategori } from "@/lib/skema";
 import { wajibAdmin } from "@/lib/sesi";
 import type { StatusForm } from "@/lib/status-form";
@@ -119,13 +118,26 @@ export async function hapusKategori(id: string): Promise<StatusForm> {
   const idValid = skemaIdKategori.safeParse(id);
   if (!idValid.success) return { pesan: PESAN_TIDAK_DITEMUKAN };
 
-  // Usulan AI (Modul 7, galat 2 dan 3): tampak ringkas dan rapi.
-  try {
-    await getPrisma().category.delete({ where: { id: idValid.data } });
-    revalidatePath("/", "layout");
-    redirect("/admin/kategori");
-  } catch (e) {
-    console.log("Gagal menghapus");
+  // Pra-cek memberi pesan yang tepat (jumlah regulasi) sebelum menyentuh constraint.
+  const kategori = await findCategoryById(idValid.data);
+  if (!kategori) return { pesan: PESAN_TIDAK_DITEMUKAN };
+  if (!kategoriBolehDihapus(kategori.regulationCount)) {
+    return { pesan: pesanTolakHapusKategori(kategori.regulationCount) };
   }
-  return {};
+
+  try {
+    await deleteEmptyCategory(idValid.data);
+  } catch (e) {
+    // Regulasi bisa ditambahkan request lain setelah pra-cek.
+    if (e instanceof CategoryHasRegulationsError) {
+      const terbaru = await findCategoryById(idValid.data);
+      return { pesan: pesanTolakHapusKategori(terbaru?.regulationCount ?? 1) };
+    }
+    if (e instanceof CategoryNotFoundError) return { pesan: PESAN_TIDAK_DITEMUKAN };
+    console.error("hapusKategori gagal:", e);
+    return { pesan: "Kategori gagal dihapus. Coba lagi." };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/admin/kategori");
 }
