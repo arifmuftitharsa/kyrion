@@ -24,7 +24,8 @@ __pycache__/
 .DS_Store
 Thumbs.db
 desktop.ini
-.vscode/
+.vscode/*
+!.vscode/launch.json
 
 # Pengaturan lokal Claude Code (tidak masuk repo)
 .claude/
