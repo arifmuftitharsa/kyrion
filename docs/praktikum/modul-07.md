@@ -51,6 +51,17 @@ Berkas ini di-commit pada `4096835`. Aturan `.gitignore` diubah dari `.vscode/` 
 
 Untuk melihat kueri SQL yang dikirim aplikasi, saya menambahkan opsi `log: ["query", "warn", "error"]` pada `apps/web/lib/prisma.ts`. Perubahan ini bersifat sementara untuk penelusuran dan dikembalikan dengan `git restore` sebelum commit, sehingga tidak masuk ke riwayat.
 
+Contoh bentuk opsinya pada konstruktor `PrismaClient` (tanpa nilai rahasia; koneksi tetap dari `DATABASE_URL`):
+
+```ts
+return new PrismaClient({
+  adapter: new PrismaPg({ connectionString }),
+  log: ["query", "warn", "error"],
+});
+```
+
+Saya tidak mencatat apakah opsi ini aktif saat bukti pada bagian 3 diambil ulang. Karena itu log di bagian 3 tidak saya pakai sebagai bukti kueri SQL. Kesimpulan tentang `DELETE` pada bagian 3.3 dibaca dari stack trace, bukan dari log kueri.
+
 ### Debugger berhenti di Server Component
 
 ![Debugger VS Code berhenti di Server Component](img/modul-07-debugger-server-component.png)
@@ -66,6 +77,8 @@ Untuk melihat kueri SQL yang dikirim aplikasi, saya menambahkan opsi `log: ["que
 Commit kode usulan AI (sebelum perbaikan): `ff3b7c9` (Galat 1) dan `3169014` (Galat 2 dan 3). Setiap galat punya commit usulan AI dan commit perbaikan yang terpisah agar bukti sebelum dan sesudah dapat diulang dari riwayat git.
 
 ## 3. Catatan Penelusuran
+
+**Asal bukti.** Galat diterapkan, ditemukan, dan diperbaiki pada sesi praktikum 6 November 2026 (commit `ff3b7c9` pukul 16.32 sampai `961198e` pukul 17.18 WIB). Log dan keluaran uji pada bagian 3.1 sampai 3.3 saya ambil ulang pada 8 November 2026 antara pukul 21.05 dan 21.30 WIB dengan `git switch --detach` ke `ff3b7c9`, `7471ffc`, `3169014`, dan `961198e`. Waktu perpindahan tercatat di `git reflog`, dan waktu pembuatan commit tercatat di `git log`.
 
 ### 3.1 Galat 1 — nilai "false" terbaca true (issue #7)
 
@@ -190,7 +203,7 @@ export async function hapusKategori(id: string): Promise<StatusForm> {
 
 **Bukti sebelum perbaikan**
 
-Breakpoint pada baris `catch` tetap berwarna abu-abu (Unbound breakpoint) dan debugger tidak pernah berhenti, sehingga penelusuran memakai perubahan sementara pada baris `catch` (`console.log("Gagal menghapus")` menjadi `console.log("Gagal menghapus", e)`) dan membaca keluarannya pada terminal `next dev`. Perubahan sementara itu tidak di-commit. Pada commit `3169014`, blok `catch` menangkap error dengan digest `NEXT_REDIRECT;push;/admin/kategori;307;` (4 dari 4 percobaan; keluaran di bawah berasal dari percobaan terakhir). Tampilan peramban setelah klik hapus: halaman `/admin/kategori/uji-galat-dua/hapus` menampilkan "Halaman tidak ditemukan" (404), bukan berpindah ke daftar kategori.
+Breakpoint pada baris `catch` tetap berwarna abu-abu (Unbound breakpoint) dan debugger tidak pernah berhenti, sehingga penelusuran memakai perubahan sementara pada baris `catch` (`console.log("Gagal menghapus")` menjadi `console.log("Gagal menghapus", e)`) dan membaca keluarannya pada terminal `next dev`. Perubahan sementara itu tidak di-commit. Pada commit `3169014`, blok `catch` menangkap error dengan digest `NEXT_REDIRECT;push;/admin/kategori;307;` (terbukti dari log percobaan yang dilampirkan di bawah). Tampilan peramban pada percobaan yang dilampirkan: halaman `/admin/kategori/uji-galat-dua/hapus` menampilkan "Halaman tidak ditemukan" (404), bukan berpindah ke daftar kategori.
 
 ```text
  GET /admin/kategori/uji-galat-dua/hapus 200 in 692ms (next.js: 649ms, proxy.ts: 5ms, application-code: 38ms)
@@ -419,7 +432,13 @@ Padanan "hapus item berulasan" pada Kyrion adalah hapus kategori yang masih beri
 - **Transaksi** (hapus anak dulu, baru induk) menjamin atomik, tetapi hasil akhirnya sama dengan Cascade: data turunan hilang. Transaksi tidak menyelesaikan pertanyaan "apakah boleh dihapus".
 - **Tolak dengan pesan** dipilih. Aturan bisnis F-10 pada PRD-Kyrion.md menyatakan hanya kategori kosong yang boleh dihapus, dan skema mewujudkannya dengan `onDelete: Restrict` dari Category ke Regulation. Basis data memang melarang; aplikasi cukup menyampaikannya dengan jelas kepada admin.
 
-Dua lapis dipakai bersama: pra-pemeriksaan jumlah regulasi di aksi (memberi pesan yang ramah) dan constraint basis data sebagai pengaman akhir. Pra-pemeriksaan saja tidak cukup karena ada jeda antara pemeriksaan dan penghapusan (kondisi balapan dua tab pada Galat 3); constraint `Restrict` menutup jeda itu.
+Tiga lapis dipakai bersama, masing-masing menutup celah yang tidak ditutup lapis sebelumnya:
+
+1. **Pra-pemeriksaan di aksi** (`findCategoryById` dan `kategoriBolehDihapus`) memberi pesan yang ramah beserta jumlah regulasinya.
+2. **Hapus bersyarat di lapisan data** (`deleteEmptyCategory` di `lib/data/categories.ts`): `deleteMany` dengan `where: { id, regulations: { none: {} } }`, sehingga pengecekan "kosong" dan penghapusan terjadi dalam satu pernyataan SQL. Bila tidak ada baris terhapus, kode memeriksa ulang untuk membedakan "tidak ada" (`CategoryNotFoundError`) dari "masih dipakai" (`CategoryHasRegulationsError`).
+3. **Constraint `Restrict` di basis data** sebagai pengaman akhir: bila regulasi masuk tepat di tengah pernyataan hapus, basis data menolak dengan `P2003`, yang dipetakan ke `CategoryHasRegulationsError`.
+
+Pra-pemeriksaan saja tidak cukup karena ada jeda antara pemeriksaan dan penghapusan (kondisi balapan dua tab pada Galat 3); lapis 2 dan 3 menutup jeda itu. Dari ketiga lapis, hanya lapis 1 yang teruji pada percobaan setelah perbaikan. Lapis 2 dan 3 saya baca dari kode dan tidak direproduksi terpisah. Penolakan `P2003` oleh basis data sendiri teramati pada kode usulan AI di bagian 3.3.
 
 ### 4.3 Nilai turunan saat render dibanding `useEffect`
 
@@ -429,7 +448,7 @@ Butir ini tidak dikerjakan pada Modul 7 versi saya karena hanya tiga galat yang 
 
 | Jenis galat | Contoh di Kyrion | Penanganan |
 |-------------|------------------|------------|
-| Galat yang diharapkan | `P2002` (duplikat), `P2003` (masih dipakai), `P2025` (tidak ditemukan) | Dipetakan ke pesan di Server Action dan dikembalikan sebagai status formulir |
+| Galat yang diharapkan | `P2002` (duplikat), `P2003` (masih dipakai), `P2025` (tidak ditemukan) | Dipetakan di lapisan data (`toDomainError` di `lib/data/categories.ts`) ke galat bertipe: `CategorySlugTakenError`, `CategoryHasRegulationsError`, `CategoryNotFoundError`. Server Action menangkapnya dan mengubahnya menjadi pesan yang dikembalikan sebagai status formulir |
 | Galat aksi yang tak terduga | Kegagalan basis data lain | `console.error` lalu pesan umum "Kategori gagal dihapus. Coba lagi." Galat tidak ditelan diam-diam |
 | Galat saat render | Server Component gagal memuat data | Diteruskan ke `app/error.tsx`, yang menampilkan kode galat (digest) dan tombol "Coba lagi" |
 
