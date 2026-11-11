@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-// Usulan AI (Modul 7, Galat 1): konversi tipe yang tampak masuk akal.
+// Perbaikan Galat 1 (#7, Modul 7): z.coerce.boolean() memakai Boolean(), sehingga "false" terbaca true.
+// z.stringbool() membaca teks "true" dan "false" sesuai artinya.
 const skemaStatus = z.object({
   tersedia: z.stringbool(),
 });
@@ -13,7 +14,7 @@ function dariFormulir(nilai: string) {
   return skemaStatus.parse(Object.fromEntries(formData));
 }
 
-describe("skemaStatus (usulan AI)", () => {
+describe("skemaStatus (perbaikan Galat 1, #7)", () => {
   it('"true" menjadi true', () => {
     expect(dariFormulir("true").tersedia).toBe(true);
   });
