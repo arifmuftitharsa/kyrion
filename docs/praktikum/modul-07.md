@@ -49,6 +49,8 @@ Berkas ini di-commit pada `4096835`. Aturan `.gitignore` diubah dari `.vscode/` 
 
 ### Konfigurasi log Prisma
 
+Konfigurasi "Next.js: debug client-side" (tipe `chrome`) ikut ditulis karena langkah modul memintanya, tetapi belum saya uji. Konfigurasi itu ditujukan untuk breakpoint di Client Component (bahan Galat 4), dan Galat 4 tidak dikerjakan pada Modul 7 versi saya. Yang terbukti berfungsi hanya konfigurasi server-side, dan itu pun terbatas pada Server Component (gambar di bawah). Breakpoint pada baris `catch` di Server Action tetap Unbound (bagian 3.2).
+
 Untuk melihat kueri SQL yang dikirim aplikasi, saya menambahkan opsi `log: ["query", "warn", "error"]` pada `apps/web/lib/prisma.ts`. Perubahan ini bersifat sementara untuk penelusuran dan dikembalikan dengan `git restore` sebelum commit, sehingga tidak masuk ke riwayat.
 
 Contoh bentuk opsinya pada konstruktor `PrismaClient` (tanpa nilai rahasia; koneksi tetap dari `DATABASE_URL`):
