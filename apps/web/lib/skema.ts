@@ -101,10 +101,20 @@ const pilihanVersi = z.string({ error: PESAN_PILIH_VERSI }).min(1, PESAN_PILIH_V
 // Query string perbandingan di halaman publik (F-04): dari = versi lama, ke = versi baru.
 export const skemaBanding = z.object({ dari: pilihanVersi, ke: pilihanVersi });
 
+const POLA_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
 // Parameter URL unduhan berkas (Route Handler): tidak valid diperlakukan sebagai 404.
 export const skemaParamBerkas = z.object({
-  slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  slug: z.string().regex(POLA_SLUG),
   versionId: skemaIdVersi,
+});
+
+// Query GET /api/v1/regulations (F-01). strictObject menolak parameter tak dikenal;
+// parameter ganda tiba sebagai array sehingga ditolak oleh z.string.
+export const skemaQueryRegulasi = z.strictObject({
+  category: z.string({ error: "Kategori harus berupa satu nilai" })
+    .regex(POLA_SLUG, "Format slug kategori tidak valid")
+    .optional(),
 });
 
 // Dipakai halaman /masuk di Bagian 4 (sama dengan modul)
