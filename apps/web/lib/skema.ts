@@ -117,6 +117,10 @@ export const skemaQueryRegulasi = z.strictObject({
     .optional(),
 });
 
+// GET /api/v1/regulations/{slug} (F-02): slug di path dan query yang harus kosong.
+export const skemaSlugRegulasi = z.string().regex(POLA_SLUG);
+export const skemaQueryTanpaParam = z.strictObject({});
+
 // Dipakai halaman /masuk di Bagian 4 (sama dengan modul)
 export const skemaMasuk = z.object({
   // Dinormalisasi huruf kecil agar cocok dengan email tersimpan di tabel users.
