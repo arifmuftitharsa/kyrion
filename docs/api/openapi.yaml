@@ -1,0 +1,388 @@
+openapi: 3.1.0
+info:
+  title: Kyrion API
+  version: 0.3.0
+  description: |
+    API baca Kyrion untuk regulasi beserta versinya.
+
+    Semua respons memakai `Cache-Control: no-store`. Respons sukses berupa
+    `application/json` dengan pembungkus `{ "data": ... }`; respons galat berupa
+    `application/problem+json` (RFC 9457).
+
+    **Versi yang berlaku** pada suatu tanggal acuan dipilih dari versi berstatus
+    `SAH` atau `DIGANTIKAN` yang `effectiveDate`-nya sama dengan atau sebelum tanggal
+    acuan, lalu diambil yang `effectiveDate`-nya paling akhir. Versi `DRAF` dan
+    `DIBATALKAN` tidak pernah keluar dari API ini. Bila ada dua versi dengan
+    `effectiveDate` sama, yang lebih dulu dalam urutan data (dibuat paling akhir)
+    dipakai; aturan penentu seri ini masih sementara. Bila tidak ada versi yang
+    memenuhi, `currentVersion` bernilai `null`. Tanggal acuan bawaan adalah hari ini
+    menurut zona waktu Asia/Jakarta (WIB).
+
+    Autentikasi dan endpoint lain menyusul di v0.3.
+
+    Seluruh contoh pada dokumen ini adalah data rekaan (sintetis).
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Pengembangan lokal
+# Endpoint pada dokumen ini belum memerlukan autentikasi. Daftar kosong menyatakannya
+# secara eksplisit; skema keamanan ditambahkan saat login v0.3 dibangun.
+security: []
+tags:
+  - name: Regulasi
+    description: Pembacaan regulasi dan versinya.
+paths:
+  /regulations:
+    get:
+      tags: [Regulasi]
+      operationId: daftarRegulasi
+      summary: Daftar regulasi beserta versi yang berlaku hari ini
+      description: |
+        Mengembalikan regulasi terurut menurut nama (menaik). Daftar versi lengkap
+        tidak ikut; hanya `currentVersion` pada hari ini (WIB). Kategori yang tidak
+        dikenal menghasilkan `data: []`, bukan 404. Parameter query yang tidak dikenal
+        atau diulang ditolak dengan 400.
+      parameters:
+        - $ref: "#/components/parameters/KategoriQuery"
+      responses:
+        "200":
+          $ref: "#/components/responses/DaftarRegulasi200"
+        "400":
+          $ref: "#/components/responses/Galat400"
+        "500":
+          $ref: "#/components/responses/Galat500"
+  /regulations/{slug}:
+    get:
+      tags: [Regulasi]
+      operationId: detailRegulasi
+      summary: Detail satu regulasi beserta linimasa versinya
+      description: |
+        Linimasa `versions` diurutkan dari `effectiveDate` terbaru. `currentVersion`
+        dihitung untuk hari ini (WIB). Slug berformat salah diperlakukan sama dengan
+        slug yang tidak ada (404) dan diperiksa sebelum query. Endpoint ini tidak
+        menerima parameter query: kunci apa pun ditolak dengan 400.
+      parameters:
+        - $ref: "#/components/parameters/SlugRegulasi"
+      responses:
+        "200":
+          $ref: "#/components/responses/DetailRegulasi200"
+        "400":
+          $ref: "#/components/responses/Galat400"
+        "404":
+          $ref: "#/components/responses/Galat404"
+        "500":
+          $ref: "#/components/responses/Galat500"
+  /regulations/{slug}/current-version:
+    get:
+      tags: [Regulasi]
+      operationId: versiBerlakuPadaTanggal
+      summary: Versi regulasi yang berlaku pada tanggal acuan
+      description: |
+        Slug berformat salah atau tidak ada menghasilkan 404, dan diutamakan atas
+        validasi query. `date` yang tidak sah, diulang, atau parameter lain yang tidak
+        dikenal menghasilkan 400. Field `date` pada respons adalah tanggal acuan yang
+        benar-benar dipakai (hari ini WIB bila `date` tidak dikirim).
+      parameters:
+        - $ref: "#/components/parameters/SlugRegulasi"
+        - $ref: "#/components/parameters/TanggalAcuanQuery"
+      responses:
+        "200":
+          $ref: "#/components/responses/VersiBerlaku200"
+        "400":
+          $ref: "#/components/responses/Galat400"
+        "404":
+          $ref: "#/components/responses/Galat404"
+        "500":
+          $ref: "#/components/responses/Galat500"
+components:
+  parameters:
+    SlugRegulasi:
+      name: slug
+      in: path
+      required: true
+      description: Slug regulasi.
+      schema:
+        $ref: "#/components/schemas/Slug"
+    KategoriQuery:
+      name: category
+      in: query
+      required: false
+      description: Slug kategori untuk menyaring daftar. Tanpa nilai ini, semua regulasi dikembalikan.
+      schema:
+        $ref: "#/components/schemas/Slug"
+    TanggalAcuanQuery:
+      name: date
+      in: query
+      required: false
+      description: Tanggal acuan (YYYY-MM-DD, tanggal kalender yang sah). Bawaan hari ini menurut WIB.
+      schema:
+        $ref: "#/components/schemas/TanggalIso"
+  headers:
+    CacheControl:
+      description: Selalu `no-store`.
+      schema:
+        type: string
+        const: no-store
+  schemas:
+    Slug:
+      type: string
+      pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      examples: [regulasi-contoh]
+    TanggalIso:
+      type: string
+      format: date
+      examples: ["2026-01-01"]
+    StatusVersi:
+      type: string
+      description: |
+        Hanya versi yang pernah disahkan yang muncul di respons baca. `DRAF` dan
+        `DIBATALKAN` ada pada enum basis data tetapi disaring di lapisan data.
+      enum: [SAH, DIGANTIKAN]
+    VersiBerlaku:
+      type: object
+      required: [id, versionNumber, effectiveDate, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        versionNumber:
+          type: string
+        effectiveDate:
+          $ref: "#/components/schemas/TanggalIso"
+        status:
+          $ref: "#/components/schemas/StatusVersi"
+    VersiLinimasa:
+      allOf:
+        - $ref: "#/components/schemas/VersiBerlaku"
+        - type: object
+          required: [changeSummary, fileSize]
+          properties:
+            changeSummary:
+              type: [string, "null"]
+              description: Ringkasan perubahan; `null` untuk versi pertama.
+            fileSize:
+              type: [integer, "null"]
+              description: Ukuran berkas PDF dalam byte; `null` bila versi belum punya berkas.
+    RingkasanRegulasi:
+      type: object
+      required: [slug, name, category, description, currentVersion]
+      properties:
+        slug:
+          $ref: "#/components/schemas/Slug"
+        name:
+          type: string
+        category:
+          type: string
+          description: Nama kategori (bukan slug).
+        description:
+          type: [string, "null"]
+        currentVersion:
+          description: Versi yang berlaku hari ini (WIB); `null` bila belum ada.
+          oneOf:
+            - $ref: "#/components/schemas/VersiBerlaku"
+            - type: "null"
+    DetailRegulasi:
+      allOf:
+        - $ref: "#/components/schemas/RingkasanRegulasi"
+        - type: object
+          required: [versions]
+          properties:
+            versions:
+              type: array
+              description: Dari `effectiveDate` terbaru.
+              items:
+                $ref: "#/components/schemas/VersiLinimasa"
+    VersiBerlakuPadaTanggal:
+      type: object
+      required: [slug, date, currentVersion]
+      properties:
+        slug:
+          $ref: "#/components/schemas/Slug"
+        date:
+          $ref: "#/components/schemas/TanggalIso"
+        currentVersion:
+          description: Versi yang berlaku pada `date`; `null` bila belum ada.
+          oneOf:
+            - $ref: "#/components/schemas/VersiBerlaku"
+            - type: "null"
+    DaftarRegulasiResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/RingkasanRegulasi"
+    DetailRegulasiResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: "#/components/schemas/DetailRegulasi"
+    VersiBerlakuResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: "#/components/schemas/VersiBerlakuPadaTanggal"
+    GalatField:
+      type: object
+      required: [field, message]
+      properties:
+        field:
+          type: string
+          description: Nama parameter query; `query` bila galat tidak terkait satu parameter.
+        message:
+          type: string
+    Masalah:
+      type: object
+      description: Detail masalah menurut RFC 9457.
+      required: [type, title, status, detail, instance]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+          description: Berbentuk `/problems/<jenis>`.
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+          description: Path permintaan, tanpa query string.
+    MasalahValidasi:
+      allOf:
+        - $ref: "#/components/schemas/Masalah"
+        - type: object
+          required: [errors]
+          properties:
+            errors:
+              type: array
+              items:
+                $ref: "#/components/schemas/GalatField"
+  responses:
+    DaftarRegulasi200:
+      description: Daftar regulasi (contoh sintetis).
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/DaftarRegulasiResponse"
+          example:
+            data:
+              - slug: regulasi-contoh-satu
+                name: Regulasi Contoh Satu (sintetis)
+                category: Kategori Contoh
+                description: Deskripsi rekaan.
+                currentVersion:
+                  id: 00000000-0000-7000-8000-000000000001
+                  versionNumber: "1.0"
+                  effectiveDate: "2026-01-01"
+                  status: SAH
+              - slug: regulasi-contoh-dua
+                name: Regulasi Contoh Dua (sintetis)
+                category: Kategori Contoh
+                description: null
+                currentVersion: null
+    DetailRegulasi200:
+      description: Detail regulasi (contoh sintetis).
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/DetailRegulasiResponse"
+          example:
+            data:
+              slug: regulasi-contoh-satu
+              name: Regulasi Contoh Satu (sintetis)
+              category: Kategori Contoh
+              description: Deskripsi rekaan.
+              currentVersion:
+                id: 00000000-0000-7000-8000-000000000002
+                versionNumber: "2.0"
+                effectiveDate: "2026-06-01"
+                status: SAH
+              versions:
+                - id: 00000000-0000-7000-8000-000000000002
+                  versionNumber: "2.0"
+                  effectiveDate: "2026-06-01"
+                  status: SAH
+                  changeSummary: Ringkasan perubahan rekaan.
+                  fileSize: 123456
+                - id: 00000000-0000-7000-8000-000000000001
+                  versionNumber: "1.0"
+                  effectiveDate: "2026-01-01"
+                  status: DIGANTIKAN
+                  changeSummary: null
+                  fileSize: null
+    VersiBerlaku200:
+      description: Versi yang berlaku pada tanggal acuan (contoh sintetis).
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/VersiBerlakuResponse"
+          example:
+            data:
+              slug: regulasi-contoh-satu
+              date: "2026-03-15"
+              currentVersion:
+                id: 00000000-0000-7000-8000-000000000001
+                versionNumber: "1.0"
+                effectiveDate: "2026-01-01"
+                status: DIGANTIKAN
+    Galat400:
+      description: Parameter query tidak valid, tidak dikenal, atau diulang.
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/MasalahValidasi"
+          example:
+            type: /problems/validation-error
+            title: Masukan tidak valid
+            status: 400
+            detail: Parameter query tidak valid.
+            instance: /api/v1/regulations/regulasi-contoh-satu/current-version
+            errors:
+              - field: date
+                message: Tanggal harus berformat YYYY-MM-DD yang sah
+    Galat404:
+      description: Regulasi tidak ditemukan, termasuk slug berformat salah.
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Masalah"
+          example:
+            type: /problems/not-found
+            title: Tidak ditemukan
+            status: 404
+            detail: Regulasi tidak ditemukan.
+            instance: /api/v1/regulations/regulasi-tidak-ada
+    Galat500:
+      description: Galat server. Pesan galat asli tidak pernah dikirim.
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Masalah"
+          example:
+            type: /problems/internal-error
+            title: Galat server
+            status: 500
+            detail: Terjadi kesalahan pada server.
+            instance: /api/v1/regulations

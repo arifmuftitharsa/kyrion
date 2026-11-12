@@ -4,6 +4,7 @@ node_modules/
 out/
 build/
 dist/
+.vitest/
 
 # Rahasia dan konfigurasi lokal (jangan pernah di-commit)
 .env
