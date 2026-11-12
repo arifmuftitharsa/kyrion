@@ -121,6 +121,12 @@ export const skemaQueryRegulasi = z.strictObject({
 export const skemaSlugRegulasi = z.string().regex(POLA_SLUG);
 export const skemaQueryTanpaParam = z.strictObject({});
 
+// GET /api/v1/regulations/{slug}/current-version (F-03): hanya date. z.iso.date()
+// menolak tanggal kalender mustahil; parameter ganda (array) ditolak karena bukan string.
+export const skemaQueryVersiBerlaku = z.strictObject({
+  date: z.iso.date({ error: "Tanggal harus berformat YYYY-MM-DD yang sah" }).optional(),
+});
+
 // Dipakai halaman /masuk di Bagian 4 (sama dengan modul)
 export const skemaMasuk = z.object({
   // Dinormalisasi huruf kecil agar cocok dengan email tersimpan di tabel users.
