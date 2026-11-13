@@ -122,7 +122,6 @@ kyrion/
     │   ├── validation/
     │   │   └── verify-form.ts      # Validasi formulir verifikasi (fungsi murni, tanpa React)
     │   ├── prisma.ts               # Satu PrismaClient (server-only)
-    │   ├── autentikasi.ts          # Verifikasi kredensial Admin terhadap tabel users
     │   ├── sesi.ts                 # Sesi cookie: bacaSesi() dan wajibAdmin() (memeriksa baris users aktif berperan ADMIN)
     │   ├── penyimpanan.ts          # Simpan, baca, dan hapus PDF di disk (di luar public/)
     │   ├── unduhan-pdf.ts          # Respons unduhan PDF; hash dicocokkan ulang sebelum dikirim
@@ -211,7 +210,12 @@ cd apps/web
 npm install
 cp .env.example .env.local
 # isi DATABASE_URL (host 127.0.0.1, port 5433; pengguna, kata sandi, dan nama DB sama dengan root .env)
-# isi ADMIN_SEED_EMAIL dan ADMIN_SEED_PASSWORD (minimal 15 karakter): seed membuat akun Admin dari keduanya
+# isi ADMIN_SEED_EMAIL dengan alamat kampus REKAAN (universitaspertamina.ac.id atau student.universitaspertamina.ac.id), jangan alamat nyata
+# isi EMAIL_ADAPTER=konsol (kode OTP tercetak di terminal server saat pengembangan)
+# isi BETTER_AUTH_URL=http://localhost:3000
+# isi BETTER_AUTH_SECRET dengan nilai acak minimal 32 karakter, jangan di-commit; buat dengan:
+#   node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+# (tanpa BETTER_AUTH_URL dan BETTER_AUTH_SECRET, aplikasi menolak permintaan ke /api/auth)
 # KYRION_STORAGE_DIR opsional (kosong = apps/web/storage)
 npx prisma migrate dev
 npx prisma generate
@@ -219,16 +223,16 @@ npx prisma db seed
 npm run dev
 ```
 
-Buka http://localhost:3000, lalu masuk lewat `/masuk` dengan email dan kata sandi dari `ADMIN_SEED_*` untuk membuka `/admin/regulasi`.
+Buka http://localhost:3000, lalu masuk lewat `/masuk` dengan email Admin dari `ADMIN_SEED_EMAIL`. Tidak ada kata sandi: kode OTP dikirim ke email dan, dengan `EMAIL_ADAPTER=konsol`, tercetak di terminal server `npm run dev`. Setelah masuk, buka `/admin/regulasi`.
 
 - `.env` dan `.env.local` diabaikan Git dan tidak boleh di-commit.
-- `ADMIN_SEED_*` hanya dibaca oleh seed lalu disimpan sebagai hash scrypt di tabel `users`. Bila keduanya kosong atau kata sandi kurang dari 15 karakter, seed berhenti sebelum menulis apa pun.
+- `ADMIN_SEED_EMAIL` hanya dibaca oleh seed. Bila kosong atau bukan alamat kampus yang sah, seed berhenti sebelum menulis apa pun. Seed tidak menyimpan kata sandi.
 - PDF versi disimpan di `KYRION_STORAGE_DIR` (kosong = `apps/web/storage`, diabaikan Git). Lokasi di dalam folder `public/` ditolak.
 - Perintah `prisma` membaca `DATABASE_URL` dari `.env.local` lewat `prisma.config.ts`, jadi berkas itu harus sudah ada.
 - Prisma 7 tidak menjalankan `generate` dan seed otomatis setelah `migrate dev`, sehingga keduanya dijalankan eksplisit.
 - Uji otomatis: `npm test`. Build produksi: `npm run build`, lalu `npm start`.
 
-> **Peringatan:** seed memakai `upsert` sehingga aman dijalankan ulang tanpa menggandakan data, tetapi baris seed yang sudah diubah manual akan dikembalikan ke nilai awalnya. Butir perubahan milik versi seed dihapus lalu dibuat ulang, dan hash kata sandi Admin dihitung ulang (dengan salt baru) pada setiap seed.
+> **Peringatan:** seed memakai `upsert` sehingga aman dijalankan ulang tanpa menggandakan data, tetapi baris seed yang sudah diubah manual akan dikembalikan ke nilai awalnya. Butir perubahan milik versi seed dihapus lalu dibuat ulang, dan akun Admin dikembalikan ke peran ADMIN dan aktif pada setiap seed.
 
 ### 3. Pemodelan data
 
@@ -250,7 +254,7 @@ Constraint berikut diambil dari `apps/web/prisma/schema.prisma` dan lima migrasi
 | Nama kategori unik (lewat slug) | `UNIQUE INDEX categories_slug_key` pada `categories(slug)` |
 | Kategori yang dipakai tidak boleh hilang | FK `regulations.category_id` ke `categories.id` dengan `ON DELETE RESTRICT`, ditambah index `regulations_category_id_idx`; kolom teks `category` dihapus di migrasi `kategori` |
 | Email akun unik | `UNIQUE INDEX users_email_key` pada `users(email)` |
-| Peran akun | Enum `user_role`: `ADMIN`, `SIVITAS` (bawaan `SIVITAS`); `password_hash` boleh null |
+| Peran akun | Enum `user_role`: `ADMIN`, `SIVITAS` (bawaan `SIVITAS`) |
 | Satu berkas milik satu versi | `UNIQUE INDEX versions_file_key_key` pada `versions(file_key)`; `file_sha256` bertipe `CHAR(64)` |
 | Kelima kolom berkas terisi atau kosong bersama | Dijaga aplikasi (tanpa CHECK di DB) |
 | Change milik satu versi | FK `changes.version_id` ke `versions.id` dengan `ON DELETE CASCADE`, ditambah index `changes_version_id_idx` |
@@ -270,7 +274,7 @@ Versi yang berlaku tidak disimpan sebagai kolom; lapisan domain menghitungnya.
 | Versi berlaku adalah versi Sah atau Digantikan dengan tanggal mulai berlaku kurang dari atau sama dengan hari ini (WIB) yang paling baru. | `lib/domain/versi.ts`, `lib/domain/tanggal.ts` |
 | Tanggal dimasukkan lewat tiga kolom (tanggal, nama bulan, tahun) agar tidak bergantung pada bahasa browser. | `components/FormVersi.tsx`, `lib/skema.ts` |
 | Kategori hanya dapat dihapus bila tanpa regulasi; nama serupa (beda huruf besar-kecil atau spasi) ditolak lewat slug. | `lib/domain/kategori.ts`, `lib/data/categories.ts`, FK `RESTRICT` |
-| Login memakai hash scrypt; email salah dan kata sandi salah mendapat satu pesan yang sama; akun nonaktif ditolak. | `lib/crypto/password.ts`, `lib/autentikasi.ts`, `lib/sesi.ts` |
+| Login hanya lewat OTP email (Better Auth), tanpa kata sandi; domain email kampus diwajibkan dan akun nonaktif ditolak. | `lib/auth/`, `lib/sesi.ts` |
 | Berkas PDF divalidasi (magic bytes `%PDF-`, maksimal 10 MB, juga dicek di klien), disimpan dengan nama buatan server di luar `public/`, dan sidik SHA-256 dicatat. | `lib/domain/berkas-pdf.ts`, `lib/penyimpanan.ts`, `lib/crypto/fingerprint.ts` |
 | Unduhan publik hanya untuk versi Sah dan Digantikan; hash berkas dicocokkan ulang sebelum dikirim. | `lib/data/regulations.ts`, `lib/unduhan-pdf.ts` |
 | Change hanya dapat ditambah, diubah, dan dihapus pada versi Draf; penjaganya transaksi yang mengunci baris versi berstatus Draf. | `lib/domain/perubahan.ts`, `lib/data/changes.ts` |

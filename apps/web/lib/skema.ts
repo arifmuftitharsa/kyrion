@@ -126,13 +126,3 @@ export const skemaQueryTanpaParam = z.strictObject({});
 export const skemaQueryVersiBerlaku = z.strictObject({
   date: z.iso.date({ error: "Tanggal harus berformat YYYY-MM-DD yang sah" }).optional(),
 });
-
-// Dipakai halaman /masuk di Bagian 4 (sama dengan modul)
-export const skemaMasuk = z.object({
-  // Dinormalisasi huruf kecil agar cocok dengan email tersimpan di tabel users.
-  email: z.string().trim().toLowerCase().pipe(z.email("Format email tidak valid")),
-  // Batas atas membatasi ukuran masukan yang diproses scrypt.
-  kataSandi: z.string()
-    .min(8, "Kata sandi minimal 8 karakter")
-    .max(256, "Kata sandi maksimal 256 karakter"),
-});

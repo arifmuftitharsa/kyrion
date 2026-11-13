@@ -38,14 +38,18 @@ model User {
   email        String   @unique
   // Default SIVITAS: baris tanpa peran eksplisit tidak otomatis menjadi Admin.
   role         UserRole @default(SIVITAS)
-  // Null untuk akun SSO (v0.3) yang tidak memakai kata sandi.
-  passwordHash String?  @map("password_hash")
   isActive     Boolean  @default(true) @map("is_active")
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  // Kolom inti Better Auth. Baris lama mendapat name kosong.
+  name          String   @default("")
+  emailVerified Boolean  @default(false) @map("email_verified")
+  image         String?
   // Sisi balik relasi; tidak menambah kolom di tabel users.
   versiDisahkan Version[]  @relation("PengesahVersi")
   logAudit      AuditLog[]
+  sessions      Session[]
+  accounts      Account[]
 
   @@map("users")
 }
@@ -155,4 +159,54 @@ model AuditLog {
 
   @@index([objectType, objectId])
   @@map("audit_logs")
+}
+
+// Tabel inti Better Auth 1.x. Nama model dan field harus persis ini (dipakai adapter Prisma).
+// Token sesi setara kredensial: jangan dicatat ke log atau dikirim ke klien selain cookie.
+model Session {
+  id        String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  token     String   @unique
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+// Kolom password ada karena skema inti Better Auth; tidak dipakai (login hanya OTP).
+model Account {
+  id                    String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId                String    @map("user_id") @db.Uuid
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  idToken               String?   @map("id_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at") @db.Timestamptz(3)
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at") @db.Timestamptz(3)
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz(3)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([identifier])
+  @@map("verifications")
 }

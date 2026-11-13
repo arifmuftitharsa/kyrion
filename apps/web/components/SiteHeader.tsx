@@ -2,23 +2,14 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { keluar } from "@/app/masuk/actions";
 import TautanNav, { type Tautan } from "@/components/TautanNav";
+import { pilihMenu } from "@/lib/menu";
 import { bacaSesi } from "@/lib/sesi";
 import { focusRing } from "@/lib/styles";
-
-const tautanUmum: Tautan[] = [
-  { href: "/", label: "Daftar Regulasi" },
-  { href: "/verifikasi", label: "Verifikasi Dokumen" },
-];
-const tautanTamu: Tautan[] = [...tautanUmum, { href: "/masuk", label: "Masuk" }];
-const tautanAdmin: Tautan[] = [
-  ...tautanUmum,
-  { href: "/admin/regulasi", label: "Kelola Regulasi" },
-];
 
 // Hanya tampilan: otorisasi tetap di wajibAdmin() pada setiap halaman dan action admin.
 export default async function SiteHeader() {
   const sesi = await bacaSesi();
-  const navItems = sesi ? tautanAdmin : tautanTamu;
+  const { tautan: navItems, bisaKeluar } = pilihMenu(sesi?.role ?? null);
 
   return (
     <header className="border-b border-slate-200 bg-white">
@@ -35,7 +26,7 @@ export default async function SiteHeader() {
             <TautanNav tautan={navItems} />
           </Suspense>
           {/* Keluar lewat POST (Server Action), bukan tautan GET. */}
-          {sesi && (
+          {bisaKeluar && (
             <form action={keluar}>
               <button
                 type="submit"
