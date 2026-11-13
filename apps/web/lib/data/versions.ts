@@ -8,6 +8,18 @@ import { todayInJakarta } from "@/lib/domain/tanggal";
 import { terapkanStatusTurunan } from "@/lib/domain/versi";
 import { tandatanganiVersi } from "@/lib/integritas-versi";
 import { VersionNotEditableError, VersionNumberTakenError } from "@/lib/domain/versi-admin";
+import {
+  isiTransaksiBatalkan,
+  isiTransaksiSahkan,
+  type ParamBatalkan,
+  type ParamSahkan,
+} from "@/lib/data/pengesahan";
+import {
+  catatUnggahBerkas,
+  isiTransaksiBuat,
+  isiTransaksiHapus,
+  type PelakuAudit,
+} from "@/lib/data/versi-tulis";
 import { getPrisma } from "@/lib/prisma";
 import type { MasukanVersi } from "@/lib/skema";
 import type { BerkasTersimpan, VersionStatus } from "@/lib/types";
@@ -189,6 +201,7 @@ export async function findVersionFile(
 export async function createVersion(
   regulationId: string,
   masukan: MasukanVersi,
+  audit: PelakuAudit,
   berkas?: DataBerkas,
 ): Promise<void> {
   const id = randomUUID();
@@ -203,16 +216,21 @@ export async function createVersion(
     fileSize: berkas?.size ?? null,
   });
   try {
-    await getPrisma().version.create({
-      data: {
-        ...data,
-        ...(berkas && toFileData(berkas)),
-        id,
-        integrityTag,
-        status: "DRAF",
-        regulationId,
-      },
-    });
+    await getPrisma().$transaction((tx) =>
+      isiTransaksiBuat(
+        tx,
+        {
+          ...data,
+          ...(berkas && toFileData(berkas)),
+          id,
+          integrityTag,
+          status: "DRAF",
+          regulationId,
+        },
+        audit,
+        Boolean(berkas),
+      ),
+    );
   } catch (error) {
     throw toDomainError(error);
   }
@@ -226,6 +244,7 @@ export async function updateDraftVersion(
   regulationId: string,
   versionId: string,
   masukan: MasukanVersi,
+  audit: PelakuAudit,
   // Bila ada berkas baru: hanya berhasil bila berkas lama masih keyLama (cegah balapan ganti berkas).
   berkas?: { baru: DataBerkas; keyLama: string | null },
 ): Promise<void> {
@@ -262,6 +281,7 @@ export async function updateDraftVersion(
         },
         data: { ...data, ...(berkas && toFileData(berkas.baru)), integrityTag },
       });
+      if (berkas && hasil.count > 0) await catatUnggahBerkas(tx, versionId, audit);
       return hasil.count;
     });
   } catch (error) {
@@ -278,9 +298,28 @@ export async function deleteDraftVersion(
   regulationId: string,
   versionId: string,
   fileKey: string | null,
+  audit: PelakuAudit,
 ): Promise<void> {
-  const { count } = await getPrisma().version.deleteMany({
-    where: { id: versionId, regulationId, status: "DRAF", fileKey },
+  await getPrisma().$transaction((tx) =>
+    isiTransaksiHapus(tx, { regulationId, versionId, fileKey, audit }),
+  );
+}
+
+/** Pengesahan atomik bersama log audit (F-13, F-15); galat bertipe dari isiTransaksiSahkan. */
+export async function sahkanVersiDraf(p: ParamSahkan): Promise<void> {
+  await getPrisma().$transaction((tx) => isiTransaksiSahkan(tx, p));
+}
+
+/** Pembatalan atomik bersama log audit; berkas tidak dihapus. */
+export async function batalkanVersiDraf(p: ParamBatalkan): Promise<void> {
+  await getPrisma().$transaction((tx) => isiTransaksiBatalkan(tx, p));
+}
+
+/** Penanda versi untuk halaman konfirmasi sahkan: updatedAt sebagai string ISO. */
+export async function getPenandaVersi(regulationId: string, versionId: string): Promise<string | undefined> {
+  const row = await getPrisma().version.findFirst({
+    select: { updatedAt: true },
+    where: { id: versionId, regulationId },
   });
-  if (count === 0) throw new VersionNotEditableError("Versi tidak lagi berstatus DRAF");
+  return row?.updatedAt.toISOString();
 }
