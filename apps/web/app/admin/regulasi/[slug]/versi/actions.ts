@@ -6,8 +6,10 @@ import { redirect } from "next/navigation";
 import { fingerprint } from "@/lib/crypto/fingerprint";
 import { getAdminRegulationById, type AdminRegulation } from "@/lib/data/regulations";
 import {
+  batalkanVersiDraf,
   createVersion,
   deleteDraftVersion,
+  sahkanVersiDraf,
   findVersion,
   updateDraftVersion,
   type AdminVersion,
@@ -21,10 +23,18 @@ import {
 } from "@/lib/domain/berkas-pdf";
 import { RegulationNotFoundError } from "@/lib/domain/regulasi";
 import {
+  PESAN_TANGGAL_KEMBAR,
+  PESAN_TANPA_BERKAS,
+  VersionEffectiveDateTakenError,
   VersionNotEditableError,
   VersionNumberTakenError,
+  VersionWithoutFileError,
+  alasanTolakSahkan,
+  pesanTolakBatalkanVersi,
   pesanTolakHapusVersi,
+  pesanTolakSahkan,
   pesanTolakUbahVersi,
+  versiBolehDibatalkan,
   versiBolehDihapus,
   versiBolehDiubah,
 } from "@/lib/domain/versi-admin";
@@ -230,6 +240,92 @@ export async function hapusVersi(regulationId: string, versionId: string): Promi
     return { pesan: "Versi gagal dihapus. Coba lagi." };
   }
   if (fileKey) await hapusBerkas(fileKey);
+
+  revalidatePath("/", "layout");
+  redirect(`/admin/regulasi/${target.regulasi.slug}/versi`);
+}
+
+const PESAN_HALAMAN_KEDALUWARSA = "Halaman kedaluwarsa. Muat ulang halaman, lalu coba lagi.";
+const PESAN_VERSI_BERUBAH = "Versi ini baru saja diubah. Muat ulang halaman, lalu coba lagi.";
+
+function namaGalat(e: unknown): string {
+  return e instanceof Error ? e.name : "galat tidak dikenal";
+}
+
+// Dipakai lewat useActionState (status sebelumnya tidak dibutuhkan); penanda (updatedAt ISO dari halaman konfirmasi) diikat lewat .bind.
+export async function sahkanVersi(
+  regulationId: string,
+  versionId: string,
+  penanda: string,
+): Promise<StatusForm> {
+  const admin = await wajibAdmin();
+
+  const target = await cariTarget(regulationId, versionId);
+  if (!target.regulasi || !target.versi) return { pesan: target.pesan };
+  // Penanda dari klien: divalidasi sebelum dipakai di where.
+  if (!z.iso.datetime().safeParse(penanda).success) return { pesan: PESAN_HALAMAN_KEDALUWARSA };
+
+  // Pra-cek untuk pesan cepat; tanggal kembar ditegakkan di transaksi.
+  const { status, fileKey, fileName, fileSize } = target.versi;
+  const alasan = alasanTolakSahkan({
+    status,
+    berkasLengkap: Boolean(fileKey && fileName && fileSize !== null),
+    tanggalKembar: false,
+  });
+  if (alasan) return { pesan: pesanTolakSahkan(alasan, status) };
+
+  try {
+    await sahkanVersiDraf({
+      regulationId,
+      versionId,
+      penanda: new Date(penanda),
+      actorId: admin.id,
+      keterangan: `${target.regulasi.name}, versi ${target.versi.versionNumber}`,
+      waktu: new Date(),
+    });
+  } catch (e) {
+    if (e instanceof VersionWithoutFileError) return { pesan: PESAN_TANPA_BERKAS };
+    if (e instanceof VersionEffectiveDateTakenError) return { pesan: PESAN_TANGGAL_KEMBAR };
+    if (e instanceof VersionNotEditableError) {
+      const terbaru = await findVersion(regulationId, versionId);
+      if (!terbaru) return { pesan: PESAN_VERSI_TIDAK_ADA };
+      if (terbaru.status === "DRAF") return { pesan: PESAN_VERSI_BERUBAH };
+      return { pesan: pesanTolakSahkan("BUKAN_DRAF", terbaru.status) };
+    }
+    console.error("sahkanVersi gagal:", namaGalat(e));
+    return { pesan: "Versi gagal disahkan. Coba lagi." };
+  }
+
+  revalidatePath("/", "layout");
+  redirect(`/admin/regulasi/${target.regulasi.slug}/versi`);
+}
+
+export async function batalkanVersi(
+  regulationId: string,
+  versionId: string,
+): Promise<StatusForm> {
+  const admin = await wajibAdmin();
+
+  const target = await cariTarget(regulationId, versionId);
+  if (!target.regulasi || !target.versi) return { pesan: target.pesan };
+  if (!versiBolehDibatalkan(target.versi.status)) {
+    return { pesan: pesanTolakBatalkanVersi(target.versi.status) };
+  }
+
+  try {
+    await batalkanVersiDraf({
+      regulationId,
+      versionId,
+      actorId: admin.id,
+      keterangan: `${target.regulasi.name}, versi ${target.versi.versionNumber}`,
+    });
+  } catch (e) {
+    if (e instanceof VersionNotEditableError) {
+      return { pesan: await pesanSetelahGagal(regulationId, versionId, pesanTolakBatalkanVersi) };
+    }
+    console.error("batalkanVersi gagal:", namaGalat(e));
+    return { pesan: "Versi gagal dibatalkan. Coba lagi." };
+  }
 
   revalidatePath("/", "layout");
   redirect(`/admin/regulasi/${target.regulasi.slug}/versi`);

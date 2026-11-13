@@ -8,6 +8,12 @@ import { todayInJakarta } from "@/lib/domain/tanggal";
 import { terapkanStatusTurunan } from "@/lib/domain/versi";
 import { tandatanganiVersi } from "@/lib/integritas-versi";
 import { VersionNotEditableError, VersionNumberTakenError } from "@/lib/domain/versi-admin";
+import {
+  isiTransaksiBatalkan,
+  isiTransaksiSahkan,
+  type ParamBatalkan,
+  type ParamSahkan,
+} from "@/lib/data/pengesahan";
 import { getPrisma } from "@/lib/prisma";
 import type { MasukanVersi } from "@/lib/skema";
 import type { BerkasTersimpan, VersionStatus } from "@/lib/types";
@@ -283,4 +289,23 @@ export async function deleteDraftVersion(
     where: { id: versionId, regulationId, status: "DRAF", fileKey },
   });
   if (count === 0) throw new VersionNotEditableError("Versi tidak lagi berstatus DRAF");
+}
+
+/** Pengesahan atomik bersama log audit (F-13, F-15); galat bertipe dari isiTransaksiSahkan. */
+export async function sahkanVersiDraf(p: ParamSahkan): Promise<void> {
+  await getPrisma().$transaction((tx) => isiTransaksiSahkan(tx, p));
+}
+
+/** Pembatalan atomik bersama log audit; berkas tidak dihapus. */
+export async function batalkanVersiDraf(p: ParamBatalkan): Promise<void> {
+  await getPrisma().$transaction((tx) => isiTransaksiBatalkan(tx, p));
+}
+
+/** Penanda versi untuk halaman konfirmasi sahkan: updatedAt sebagai string ISO. */
+export async function getPenandaVersi(regulationId: string, versionId: string): Promise<string | undefined> {
+  const row = await getPrisma().version.findFirst({
+    select: { updatedAt: true },
+    where: { id: versionId, regulationId },
+  });
+  return row?.updatedAt.toISOString();
 }

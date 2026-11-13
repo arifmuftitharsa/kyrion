@@ -21,8 +21,9 @@ export const PERNAH_DISAHKAN: readonly VersionStatus[] = ["SAH", "DIGANTIKAN"];
  * leksikografis, sehingga bebas dari pergeseran zona waktu.
  *
  * Tanggal berlaku sama: versi yang muncul lebih dulu di `versions` dipertahankan
- * (lib/data mengurutkan effectiveDate desc, createdAt desc). Ini tie-break
- * sementara; keputusan final ditunda ke v0.3 saat pengesahan (F-13) dibangun.
+ * (lib/data mengurutkan effectiveDate desc, createdAt desc). Kini hanya cadangan:
+ * pengesahan menolak tanggal kembar, tetapi dua pengesahan bersamaan atas dua
+ * Draf bertanggal sama masih bisa lolos, dan penentu seri ini yang menanganinya.
  */
 export function findEffectiveVersion<T extends StatusDanTanggal>(
   versions: readonly T[],

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import StatusBadge from "@/components/StatusBadge";
 import { getAdminRegulationBySlug } from "@/lib/data/regulations";
 import { getAdminVersions } from "@/lib/data/versions";
-import { versiBolehDihapus, versiBolehDiubah } from "@/lib/domain/versi-admin";
+import { versiBolehDibatalkan, versiBolehDihapus, versiBolehDiubah } from "@/lib/domain/versi-admin";
 import { formatDate, formatUkuranBerkas } from "@/lib/format";
 import { wajibAdmin } from "@/lib/sesi";
 
@@ -35,8 +35,8 @@ export default async function HalamanKelolaVersi({ params }: HalamanKelolaVersiP
         </Link>
       </div>
       <p className="text-sm text-gray-600">
-        Hanya versi Draf yang dapat diubah atau dihapus. Pengesahan dan pembatalan
-        versi belum tersedia di v0.2.
+        Hanya versi Draf yang dapat diubah, dihapus, disahkan, atau dibatalkan.
+        Pengesahan tidak dapat dibatalkan.
       </p>
 
       {versions.length === 0 ? (
@@ -105,6 +105,24 @@ export default async function HalamanKelolaVersi({ params }: HalamanKelolaVersiP
                     >
                       Hapus
                     </Link>
+                  )}
+                  {versiBolehDibatalkan(version.status) && (
+                    <>
+                      <Link
+                        href={`${dasar}/${version.id}/sahkan`}
+                        aria-label={`Sahkan versi ${version.versionNumber}`}
+                        className="underline"
+                      >
+                        Sahkan
+                      </Link>
+                      <Link
+                        href={`${dasar}/${version.id}/batalkan`}
+                        aria-label={`Batalkan versi ${version.versionNumber}`}
+                        className="underline"
+                      >
+                        Batalkan
+                      </Link>
+                    </>
                   )}
                 </td>
               </tr>
