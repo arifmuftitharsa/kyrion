@@ -17,3 +17,12 @@ export function emailKampusSah(email: string): boolean {
   const [lokal, domain] = bagian;
   return lokal.length > 0 && DOMAIN_KAMPUS.has(domain);
 }
+
+/** Email Admin seed: dinormalkan, wajib email kampus sah. Galat hanya menyebut nama variabel, tidak nilainya. */
+export function emailAdminSeed(mentah: string | undefined): string {
+  const email = normalkanEmail(mentah ?? "");
+  if (!emailKampusSah(email)) {
+    throw new Error("ADMIN_SEED_EMAIL wajib diisi dengan alamat email kampus yang sah");
+  }
+  return email;
+}

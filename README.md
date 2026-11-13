@@ -122,7 +122,6 @@ kyrion/
     │   ├── validation/
     │   │   └── verify-form.ts      # Validasi formulir verifikasi (fungsi murni, tanpa React)
     │   ├── prisma.ts               # Satu PrismaClient (server-only)
-    │   ├── autentikasi.ts          # Verifikasi kredensial Admin terhadap tabel users
     │   ├── sesi.ts                 # Sesi cookie: bacaSesi() dan wajibAdmin() (memeriksa baris users aktif berperan ADMIN)
     │   ├── penyimpanan.ts          # Simpan, baca, dan hapus PDF di disk (di luar public/)
     │   ├── unduhan-pdf.ts          # Respons unduhan PDF; hash dicocokkan ulang sebelum dikirim
@@ -211,7 +210,12 @@ cd apps/web
 npm install
 cp .env.example .env.local
 # isi DATABASE_URL (host 127.0.0.1, port 5433; pengguna, kata sandi, dan nama DB sama dengan root .env)
-# isi ADMIN_SEED_EMAIL dan ADMIN_SEED_PASSWORD (minimal 15 karakter): seed membuat akun Admin dari keduanya
+# isi ADMIN_SEED_EMAIL dengan alamat kampus REKAAN (universitaspertamina.ac.id atau student.universitaspertamina.ac.id), jangan alamat nyata
+# isi EMAIL_ADAPTER=konsol (kode OTP tercetak di terminal server saat pengembangan)
+# isi BETTER_AUTH_URL=http://localhost:3000
+# isi BETTER_AUTH_SECRET dengan nilai acak minimal 32 karakter, jangan di-commit; buat dengan:
+#   node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+# (tanpa BETTER_AUTH_URL dan BETTER_AUTH_SECRET, aplikasi menolak permintaan ke /api/auth)
 # KYRION_STORAGE_DIR opsional (kosong = apps/web/storage)
 npx prisma migrate dev
 npx prisma generate
@@ -219,16 +223,16 @@ npx prisma db seed
 npm run dev
 ```
 
-Buka http://localhost:3000, lalu masuk lewat `/masuk` dengan email dan kata sandi dari `ADMIN_SEED_*` untuk membuka `/admin/regulasi`.
+Buka http://localhost:3000, lalu masuk lewat `/masuk` dengan email Admin dari `ADMIN_SEED_EMAIL`. Tidak ada kata sandi: kode OTP dikirim ke email dan, dengan `EMAIL_ADAPTER=konsol`, tercetak di terminal server `npm run dev`. Setelah masuk, buka `/admin/regulasi`.
 
 - `.env` dan `.env.local` diabaikan Git dan tidak boleh di-commit.
-- `ADMIN_SEED_*` hanya dibaca oleh seed lalu disimpan sebagai hash scrypt di tabel `users`. Bila keduanya kosong atau kata sandi kurang dari 15 karakter, seed berhenti sebelum menulis apa pun.
+- `ADMIN_SEED_EMAIL` hanya dibaca oleh seed. Bila kosong atau bukan alamat kampus yang sah, seed berhenti sebelum menulis apa pun. Seed tidak menyimpan kata sandi.
 - PDF versi disimpan di `KYRION_STORAGE_DIR` (kosong = `apps/web/storage`, diabaikan Git). Lokasi di dalam folder `public/` ditolak.
 - Perintah `prisma` membaca `DATABASE_URL` dari `.env.local` lewat `prisma.config.ts`, jadi berkas itu harus sudah ada.
 - Prisma 7 tidak menjalankan `generate` dan seed otomatis setelah `migrate dev`, sehingga keduanya dijalankan eksplisit.
 - Uji otomatis: `npm test`. Build produksi: `npm run build`, lalu `npm start`.
 
-> **Peringatan:** seed memakai `upsert` sehingga aman dijalankan ulang tanpa menggandakan data, tetapi baris seed yang sudah diubah manual akan dikembalikan ke nilai awalnya. Butir perubahan milik versi seed dihapus lalu dibuat ulang, dan hash kata sandi Admin dihitung ulang (dengan salt baru) pada setiap seed.
+> **Peringatan:** seed memakai `upsert` sehingga aman dijalankan ulang tanpa menggandakan data, tetapi baris seed yang sudah diubah manual akan dikembalikan ke nilai awalnya. Butir perubahan milik versi seed dihapus lalu dibuat ulang, dan akun Admin dikembalikan ke peran ADMIN dan aktif pada setiap seed.
 
 ### 3. Pemodelan data
 
