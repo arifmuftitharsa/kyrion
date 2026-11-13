@@ -10,13 +10,17 @@ import { GalatPengirimEmail } from "@/lib/email/pengirim";
 import { getPrisma } from "@/lib/prisma";
 import { bacaKonfigurasiAuth } from "./konfigurasi";
 import { permintaanDiizinkan } from "./izin";
+import { buatJedaOtp } from "./jeda";
+import { KODE_GALAT } from "./kode-galat";
 import { hashOtp, turunkanKunciOtp } from "./otp";
 
 // Titik masuk tunggal ke env untuk Better Auth. Dibuat malas pada pemanggilan pertama, bukan
 // saat impor, agar build dan test tidak butuh env. Hanya hasil sukses yang di-cache.
 
 const JALUR_OTP = ["/email-otp/send-verification-otp", "/sign-in/email-otp"];
-const PESAN_EMAIL_KAMPUS = "Gunakan email kampus.";
+// Di globalThis agar jeda tidak hilang saat Fast Refresh memuat ulang modul.
+const g = globalThis as unknown as { jedaOtp?: ReturnType<typeof buatJedaOtp> };
+const jedaOtp = (g.jedaOtp ??= buatJedaOtp({ jam: Date.now }));
 
 /** Hanya nama galat serta alasan/status; OTP, alamat, dan isi email tidak pernah dicatat. */
 function catatGalatKirim(e: unknown): void {
@@ -51,7 +55,7 @@ function buatAuth() {
     baseURL,
     database: prismaAdapter(getPrisma(), { provider: "postgresql" }),
     // ID dibuat basis data (uuidv7), bukan Better Auth.
-    advanced: { database: { generateId: false } },
+    advanced: { database: { generateId: "uuid" } },
     // Tanpa input: peran tidak bisa diisi dari API; DB memberi default SIVITAS.
     user: { additionalFields: { role: { type: ["ADMIN", "SIVITAS"], required: false, input: false } } },
     session: { expiresIn: 60 * 60 * 24 * 7 },
@@ -87,11 +91,16 @@ function buatAuth() {
         if (!JALUR_OTP.includes(ctx.path)) return;
         const body = ctx.body as { email?: unknown; type?: unknown } | undefined;
         if (typeof body?.email !== "string" || !emailKampusSah(body.email)) {
-          throw new APIError("BAD_REQUEST", { message: PESAN_EMAIL_KAMPUS });
+          throw APIError.from("BAD_REQUEST", KODE_GALAT.EMAIL_BUKAN_KAMPUS);
         }
+        if (ctx.path !== "/email-otp/send-verification-otp") return;
         // Hanya OTP sign-in yang boleh dibuat.
-        if (ctx.path === "/email-otp/send-verification-otp" && body.type !== "sign-in") {
-          throw new APIError("BAD_REQUEST", { message: "Tipe OTP tidak didukung." });
+        if (body.type !== "sign-in") {
+          throw APIError.from("BAD_REQUEST", KODE_GALAT.TIPE_OTP_TIDAK_DIDUKUNG);
+        }
+        // Terakhir: jeda dicatat hanya bila semua pemeriksaan lain lolos.
+        if (!jedaOtp.cobaCatat(body.email)) {
+          throw APIError.from("TOO_MANY_REQUESTS", KODE_GALAT.JEDA_OTP);
         }
       }),
     },
@@ -100,7 +109,7 @@ function buatAuth() {
         create: {
           // throw (bukan return false) agar respons 4xx, bukan 500 dari create() yang null.
           before: async (user) => {
-            if (!emailKampusSah(user.email)) throw new APIError("BAD_REQUEST", { message: PESAN_EMAIL_KAMPUS });
+            if (!emailKampusSah(user.email)) throw APIError.from("BAD_REQUEST", KODE_GALAT.EMAIL_BUKAN_KAMPUS);
           },
         },
       },
@@ -111,7 +120,7 @@ function buatAuth() {
               where: { id: sesi.userId },
               select: { isActive: true },
             });
-            if (!pengguna?.isActive) throw new APIError("FORBIDDEN", { message: "Akun tidak aktif." });
+            if (!pengguna?.isActive) throw APIError.from("FORBIDDEN", KODE_GALAT.AKUN_TIDAK_AKTIF);
           },
         },
       },

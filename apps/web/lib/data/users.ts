@@ -21,6 +21,17 @@ export async function findUserForLogin(email: string): Promise<LoginCandidate | 
   return row ?? undefined;
 }
 
+/** Akun aktif (peran apa pun) berdasarkan id sesi; sumber kebenaran peran dan status. */
+export async function findActiveUserById(
+  id: string,
+): Promise<{ id: string; email: string; role: UserRole } | undefined> {
+  const row = await getPrisma().user.findFirst({
+    select: { id: true, email: true, role: true },
+    where: { id, isActive: true },
+  });
+  return row ?? undefined;
+}
+
 /** Admin aktif berdasarkan id sesi; sumber kebenaran peran dan status akun. */
 export async function findActiveAdminById(
   id: string,
