@@ -254,7 +254,7 @@ Constraint berikut diambil dari `apps/web/prisma/schema.prisma` dan lima migrasi
 | Nama kategori unik (lewat slug) | `UNIQUE INDEX categories_slug_key` pada `categories(slug)` |
 | Kategori yang dipakai tidak boleh hilang | FK `regulations.category_id` ke `categories.id` dengan `ON DELETE RESTRICT`, ditambah index `regulations_category_id_idx`; kolom teks `category` dihapus di migrasi `kategori` |
 | Email akun unik | `UNIQUE INDEX users_email_key` pada `users(email)` |
-| Peran akun | Enum `user_role`: `ADMIN`, `SIVITAS` (bawaan `SIVITAS`); `password_hash` boleh null |
+| Peran akun | Enum `user_role`: `ADMIN`, `SIVITAS` (bawaan `SIVITAS`) |
 | Satu berkas milik satu versi | `UNIQUE INDEX versions_file_key_key` pada `versions(file_key)`; `file_sha256` bertipe `CHAR(64)` |
 | Kelima kolom berkas terisi atau kosong bersama | Dijaga aplikasi (tanpa CHECK di DB) |
 | Change milik satu versi | FK `changes.version_id` ke `versions.id` dengan `ON DELETE CASCADE`, ditambah index `changes_version_id_idx` |
@@ -274,7 +274,7 @@ Versi yang berlaku tidak disimpan sebagai kolom; lapisan domain menghitungnya.
 | Versi berlaku adalah versi Sah atau Digantikan dengan tanggal mulai berlaku kurang dari atau sama dengan hari ini (WIB) yang paling baru. | `lib/domain/versi.ts`, `lib/domain/tanggal.ts` |
 | Tanggal dimasukkan lewat tiga kolom (tanggal, nama bulan, tahun) agar tidak bergantung pada bahasa browser. | `components/FormVersi.tsx`, `lib/skema.ts` |
 | Kategori hanya dapat dihapus bila tanpa regulasi; nama serupa (beda huruf besar-kecil atau spasi) ditolak lewat slug. | `lib/domain/kategori.ts`, `lib/data/categories.ts`, FK `RESTRICT` |
-| Login memakai hash scrypt; email salah dan kata sandi salah mendapat satu pesan yang sama; akun nonaktif ditolak. | `lib/crypto/password.ts`, `lib/autentikasi.ts`, `lib/sesi.ts` |
+| Login hanya lewat OTP email (Better Auth), tanpa kata sandi; domain email kampus diwajibkan dan akun nonaktif ditolak. | `lib/auth/`, `lib/sesi.ts` |
 | Berkas PDF divalidasi (magic bytes `%PDF-`, maksimal 10 MB, juga dicek di klien), disimpan dengan nama buatan server di luar `public/`, dan sidik SHA-256 dicatat. | `lib/domain/berkas-pdf.ts`, `lib/penyimpanan.ts`, `lib/crypto/fingerprint.ts` |
 | Unduhan publik hanya untuk versi Sah dan Digantikan; hash berkas dicocokkan ulang sebelum dikirim. | `lib/data/regulations.ts`, `lib/unduhan-pdf.ts` |
 | Change hanya dapat ditambah, diubah, dan dihapus pada versi Draf; penjaganya transaksi yang mengunci baris versi berstatus Draf. | `lib/domain/perubahan.ts`, `lib/data/changes.ts` |

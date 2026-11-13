@@ -38,8 +38,6 @@ model User {
   email        String   @unique
   // Default SIVITAS: baris tanpa peran eksplisit tidak otomatis menjadi Admin.
   role         UserRole @default(SIVITAS)
-  // Null untuk akun SSO (v0.3) yang tidak memakai kata sandi.
-  passwordHash String?  @map("password_hash")
   isActive     Boolean  @default(true) @map("is_active")
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
