@@ -4,6 +4,8 @@ import { connection } from "next/server";
 import { Prisma } from "@/generated/prisma/client";
 import { dataTerlindungDariBaris, type BarisVersi } from "@/lib/crypto/data-terlindung";
 import { RegulationNotFoundError } from "@/lib/domain/regulasi";
+import { todayInJakarta } from "@/lib/domain/tanggal";
+import { terapkanStatusTurunan } from "@/lib/domain/versi";
 import { tandatanganiVersi } from "@/lib/integritas-versi";
 import { VersionNotEditableError, VersionNumberTakenError } from "@/lib/domain/versi-admin";
 import { getPrisma } from "@/lib/prisma";
@@ -134,7 +136,21 @@ export async function getAdminVersions(regulationId: string): Promise<AdminVersi
     where: { regulationId },
     orderBy: [{ effectiveDate: "desc" }, { createdAt: "desc" }],
   });
-  return rows.map(toAdminVersion);
+  // Label dihitung setelah effectiveDate menjadi string ISO (bukan Date).
+  return terapkanStatusTurunan(rows.map(toAdminVersion), todayInJakarta(new Date()));
+}
+
+/**
+ * Status untuk TAMPILAN (label turunan) satu versi. Hanya untuk halaman, bukan guard
+ * atau Server Action: itu memakai findVersion (status tersimpan). Memuat semua versi
+ * saudara karena label bergantung pada versi lain.
+ */
+export async function getStatusTampilan(
+  regulationId: string,
+  versionId: string,
+): Promise<VersionStatus | undefined> {
+  const semua = await getAdminVersions(regulationId);
+  return semua.find((v) => v.id === versionId)?.status;
 }
 
 /**

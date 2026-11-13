@@ -2,6 +2,12 @@
 // sehingga input sama selalu menghasilkan output sama dan mudah diuji.
 import type { Version, VersionStatus } from "@/lib/types";
 
+/** Bentuk minimal versi untuk aturan di file ini; effectiveDate ISO "YYYY-MM-DD" (bukan Date). */
+interface StatusDanTanggal {
+  status: VersionStatus;
+  effectiveDate: string;
+}
+
 /** Status versi yang pernah disahkan; hanya ini yang ditampilkan ke publik (F-02). */
 export const PERNAH_DISAHKAN: readonly VersionStatus[] = ["SAH", "DIGANTIKAN"];
 
@@ -18,21 +24,41 @@ export const PERNAH_DISAHKAN: readonly VersionStatus[] = ["SAH", "DIGANTIKAN"];
  * (lib/data mengurutkan effectiveDate desc, createdAt desc). Ini tie-break
  * sementara; keputusan final ditunda ke v0.3 saat pengesahan (F-13) dibangun.
  */
-export function findEffectiveVersion(
-  versions: readonly Version[],
+export function findEffectiveVersion<T extends StatusDanTanggal>(
+  versions: readonly T[],
   onDate: string,
-): Version | undefined {
+): T | undefined {
   return versions
     .filter(
       (version) =>
         PERNAH_DISAHKAN.includes(version.status) &&
         version.effectiveDate <= onDate,
     )
-    .reduce<Version | undefined>(
+    .reduce<T | undefined>(
       (latest, version) =>
         !latest || version.effectiveDate > latest.effectiveDate ? version : latest,
       undefined,
     );
+}
+
+/**
+ * Label status yang ditampilkan untuk semua versi SATU regulasi pada `today`
+ * (ISO "YYYY-MM-DD"). Status tersimpan SAH dan DIGANTIKAN diperlakukan sama:
+ * versi berlaku (findEffectiveVersion) berlabel SAH, versi pernah disahkan lain
+ * yang tanggal berlakunya <= `today` berlabel DIGANTIKAN, yang di masa depan SAH.
+ * DRAF dan DIBATALKAN tidak diubah. Mengembalikan salinan; urutan dipertahankan.
+ */
+export function terapkanStatusTurunan<T extends StatusDanTanggal>(
+  versions: readonly T[],
+  today: string,
+): T[] {
+  const berlaku = findEffectiveVersion(versions, today);
+  return versions.map((version) => {
+    if (!PERNAH_DISAHKAN.includes(version.status)) return { ...version };
+    const status: VersionStatus =
+      version === berlaku || version.effectiveDate > today ? "SAH" : "DIGANTIKAN";
+    return { ...version, status };
+  });
 }
 
 /**

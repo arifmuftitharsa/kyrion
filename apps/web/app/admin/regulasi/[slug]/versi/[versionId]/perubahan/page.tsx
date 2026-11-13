@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import StatusBadge from "@/components/StatusBadge";
 import { getAdminChanges } from "@/lib/data/changes";
 import { getAdminRegulationBySlug } from "@/lib/data/regulations";
-import { findVersion } from "@/lib/data/versions";
+import { findVersion, getStatusTampilan } from "@/lib/data/versions";
 import { versiBolehDiubah } from "@/lib/domain/versi-admin";
 import { skemaIdVersi } from "@/lib/skema";
 import { wajibAdmin } from "@/lib/sesi";
@@ -26,6 +26,8 @@ export default async function HalamanPerubahan({ params }: HalamanPerubahanProps
   if (!version) notFound();
 
   const changes = await getAdminChanges(version.id);
+  // Badge memakai label turunan; guard `boleh` tetap status tersimpan (version.status).
+  const statusTampilan = (await getStatusTampilan(regulation.id, version.id)) ?? version.status;
   const kembali = `/admin/regulasi/${regulation.slug}/versi`;
   const dasar = `${kembali}/${version.id}/perubahan`;
   const boleh = versiBolehDiubah(version.status);
@@ -37,7 +39,7 @@ export default async function HalamanPerubahan({ params }: HalamanPerubahanProps
       </Link>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex flex-wrap items-center gap-2 text-3xl font-bold">
-          Perubahan Versi {version.versionNumber} <StatusBadge status={version.status} />
+          Perubahan Versi {version.versionNumber} <StatusBadge status={statusTampilan} />
         </h1>
         {boleh && (
           <Link href={`${dasar}/baru`} className="rounded bg-blue-700 px-4 py-2 text-white">
