@@ -3,7 +3,8 @@ import { connection } from "next/server";
 import { Prisma } from "@/generated/prisma/client";
 import type { VersiBanding } from "@/lib/domain/banding";
 import { ChangeNotFoundError } from "@/lib/domain/perubahan";
-import { PERNAH_DISAHKAN } from "@/lib/domain/versi";
+import { todayInJakarta } from "@/lib/domain/tanggal";
+import { PERNAH_DISAHKAN, terapkanStatusTurunan } from "@/lib/domain/versi";
 import { VersionNotEditableError } from "@/lib/domain/versi-admin";
 import { getPrisma } from "@/lib/prisma";
 import type { MasukanPerubahan } from "@/lib/skema";
@@ -60,12 +61,14 @@ export async function getPublicVersionsForComparison(slug: string): Promise<Vers
     where: { regulation: { slug }, status: { in: [...PERNAH_DISAHKAN] } },
     orderBy: [{ effectiveDate: "asc" }, { createdAt: "asc" }],
   });
-  return rows.map(({ changes, effectiveDate, ...row }) => ({
+  const versi = rows.map(({ changes, effectiveDate, ...row }) => ({
     ...row,
     // Kolom date dibaca sebagai 00.00 UTC, jadi bagian tanggal UTC selalu tepat.
     effectiveDate: effectiveDate.toISOString().slice(0, 10),
     perubahan: changes,
   }));
+  // Label dihitung setelah effectiveDate menjadi string ISO (bukan Date).
+  return terapkanStatusTurunan(versi, todayInJakarta(new Date()));
 }
 
 /**

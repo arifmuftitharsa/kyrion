@@ -38,7 +38,7 @@ const regulations: SeedRegulation[] = [
       {
         versionNumber: "2024/2025",
         effectiveDate: "2024-08-01",
-        status: "DIGANTIKAN",
+        status: "SAH",
         changeSummary: null,
       },
       {
@@ -73,7 +73,7 @@ const regulations: SeedRegulation[] = [
       {
         versionNumber: "2022",
         effectiveDate: "2022-09-01",
-        status: "DIGANTIKAN",
+        status: "SAH",
         changeSummary: null,
       },
       {

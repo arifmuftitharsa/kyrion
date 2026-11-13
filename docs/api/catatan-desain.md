@@ -101,3 +101,11 @@ Endpoint pada kolom "Rencana" belum menjadi kontrak dan belum ditulis di `openap
 - Spesifikasi diperiksa dengan `npx @redocly/cli lint docs/api/openapi.yaml`.
 
 Cara menjalankan uji: `npm test` di `apps/web`.
+
+## 11. Label status Digantikan
+
+Label "Digantikan" dihitung saat dibaca (`terapkanStatusTurunan` di `lib/domain/versi.ts`, dipasang di lapisan data), bukan disimpan. Status SAH dan DIGANTIKAN yang tersimpan diperlakukan sama sebagai "pernah disahkan".
+
+- **Nilai di basis data tidak sama dengan label di aplikasi.** Hasil `psql` yang menampilkan SAH untuk versi yang di aplikasi tampil Digantikan bukan galat.
+- **Versi yang disahkan dengan tanggal berlaku lebih awal dari versi berlaku saat ini langsung tampil Digantikan.** Itu disengaja: yang menentukan label adalah tanggal berlaku terhadap hari ini (WIB), bukan urutan pengesahan.
+- Guard dan operasi tulis (`versiBolehDiubah`, `versiBolehDihapus`, filter `DRAF`) tetap memakai status tersimpan.

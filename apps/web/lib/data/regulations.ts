@@ -8,7 +8,8 @@ import {
   SlugTakenError,
 } from "@/lib/domain/regulasi";
 import { berkasSelect, toBerkasTersimpan } from "@/lib/data/versions";
-import { PERNAH_DISAHKAN } from "@/lib/domain/versi";
+import { todayInJakarta } from "@/lib/domain/tanggal";
+import { PERNAH_DISAHKAN, terapkanStatusTurunan } from "@/lib/domain/versi";
 import { getPrisma } from "@/lib/prisma";
 import type { MasukanRegulasi } from "@/lib/skema";
 import type { BerkasTersimpan, Regulation } from "@/lib/types";
@@ -29,21 +30,25 @@ const withPublicVersions = {
 type RegulationRow = Prisma.RegulationGetPayload<typeof withPublicVersions>;
 
 /** Memetakan baris Prisma ke tipe domain; komponen tidak pernah melihat tipe Prisma. */
-function toRegulation(row: RegulationRow): Regulation {
+function toRegulation(row: RegulationRow, today: string): Regulation {
   return {
     slug: row.slug,
     name: row.name,
     category: row.category.name,
     description: row.description,
-    versions: row.versions.map((version) => ({
-      id: version.id,
-      versionNumber: version.versionNumber,
-      // Kolom date dibaca sebagai 00.00 UTC, jadi bagian tanggal UTC selalu tepat.
-      effectiveDate: version.effectiveDate.toISOString().slice(0, 10),
-      status: version.status,
-      changeSummary: version.changeSummary,
-      fileSize: version.fileSize,
-    })),
+    // Label status dihitung setelah effectiveDate menjadi string ISO (bukan Date).
+    versions: terapkanStatusTurunan(
+      row.versions.map((version) => ({
+        id: version.id,
+        versionNumber: version.versionNumber,
+        // Kolom date dibaca sebagai 00.00 UTC, jadi bagian tanggal UTC selalu tepat.
+        effectiveDate: version.effectiveDate.toISOString().slice(0, 10),
+        status: version.status,
+        changeSummary: version.changeSummary,
+        fileSize: version.fileSize,
+      })),
+      today,
+    ),
   };
 }
 
@@ -56,7 +61,8 @@ export async function getRegulations(): Promise<Regulation[]> {
     ...withPublicVersions,
     orderBy: { name: "asc" },
   });
-  return rows.map(toRegulation);
+  const today = todayInJakarta(new Date());
+  return rows.map((row) => toRegulation(row, today));
 }
 
 export async function getRegulationBySlug(
@@ -67,7 +73,7 @@ export async function getRegulationBySlug(
     ...withPublicVersions,
     where: { slug },
   });
-  return row ? toRegulation(row) : undefined;
+  return row ? toRegulation(row, todayInJakarta(new Date())) : undefined;
 }
 
 /**
@@ -95,7 +101,8 @@ export async function getRegulationsByCategory(
     where: categorySlug ? { category: { slug: categorySlug } } : {},
     orderBy: { name: "asc" },
   });
-  return rows.map(toRegulation);
+  const today = todayInJakarta(new Date());
+  return rows.map((row) => toRegulation(row, today));
 }
 
 // ===================== Admin (Bagian B2) =====================
