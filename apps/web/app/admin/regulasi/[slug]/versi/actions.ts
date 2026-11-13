@@ -140,7 +140,7 @@ export async function simpanVersi(
   formData: FormData,
 ): Promise<StatusForm> {
   // Server Action adalah endpoint publik: sesi dicek di sini, di luar try.
-  await wajibAdmin();
+  const admin = await wajibAdmin();
 
   const target = await cariTarget(regulationId);
   if (!target.regulasi) return { pesan: target.pesan };
@@ -157,7 +157,15 @@ export async function simpanVersi(
   let berkas: DataBerkas | undefined;
   try {
     if (unggahan.tipe === "ada") berkas = await simpanUnggahan(unggahan);
-    await createVersion(regulationId, hasil.masukan, berkas);
+    await createVersion(
+      regulationId,
+      hasil.masukan,
+      {
+        actorId: admin.id,
+        keterangan: `${target.regulasi.name}, versi ${hasil.masukan.versionNumber}`,
+      },
+      berkas,
+    );
   } catch (e) {
     if (berkas) await hapusBerkas(berkas.key);
     // Constraint unik menangani nomor kembar, termasuk saat dua request bersamaan.
@@ -178,7 +186,7 @@ export async function ubahVersi(
   _sebelumnya: StatusForm,
   formData: FormData,
 ): Promise<StatusForm> {
-  await wajibAdmin();
+  const admin = await wajibAdmin();
 
   const target = await cariTarget(regulationId, versionId);
   if (!target.regulasi || !target.versi) return { pesan: target.pesan };
@@ -203,6 +211,10 @@ export async function ubahVersi(
       regulationId,
       versionId,
       hasil.masukan,
+      {
+        actorId: admin.id,
+        keterangan: `${target.regulasi.name}, versi ${hasil.masukan.versionNumber}`,
+      },
       berkasBaru && { baru: berkasBaru, keyLama },
     );
   } catch (e) {
@@ -222,7 +234,7 @@ export async function ubahVersi(
 
 // Dipakai lewat useActionState; status sebelumnya dan FormData tidak dibutuhkan.
 export async function hapusVersi(regulationId: string, versionId: string): Promise<StatusForm> {
-  await wajibAdmin();
+  const admin = await wajibAdmin();
 
   const target = await cariTarget(regulationId, versionId);
   if (!target.regulasi || !target.versi) return { pesan: target.pesan };
@@ -231,7 +243,10 @@ export async function hapusVersi(regulationId: string, versionId: string): Promi
   // Baris DB dihapus lebih dulu (hanya bila berkasnya masih sama), baru berkas di disk.
   const fileKey = target.versi.fileKey;
   try {
-    await deleteDraftVersion(regulationId, versionId, fileKey);
+    await deleteDraftVersion(regulationId, versionId, fileKey, {
+      actorId: admin.id,
+      keterangan: `${target.regulasi.name}, versi ${target.versi.versionNumber}`,
+    });
   } catch (e) {
     if (e instanceof VersionNotEditableError) {
       return { pesan: await pesanSetelahGagal(regulationId, versionId, pesanTolakHapusVersi) };
