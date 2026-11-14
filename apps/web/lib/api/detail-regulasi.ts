@@ -17,7 +17,6 @@ export type DetailRegulasi = RingkasanRegulasi & {
     versionNumber: string;
     effectiveDate: string;
     status: Regulation["versions"][number]["status"];
-    changeSummary: string | null;
     fileSize: number | null;
   }[];
 };
@@ -32,12 +31,11 @@ export function petakanDetailRegulasi(regulasi: Regulation, hariIni: string): De
     description,
     currentVersion: petakanVersiBerlaku(versions, hariIni),
     versions: sortVersionsNewestFirst(versions).map(
-      ({ id, versionNumber, effectiveDate, status, changeSummary, fileSize }) => ({
+      ({ id, versionNumber, effectiveDate, status, fileSize }) => ({
         id,
         versionNumber,
         effectiveDate,
         status,
-        changeSummary,
         fileSize,
       }),
     ),

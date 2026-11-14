@@ -17,7 +17,6 @@ const versi = (id: string, effectiveDate: string, status: Version["status"] = "S
   versionNumber: `v-${id}`,
   effectiveDate,
   status,
-  changeSummary: "ringkasan",
   fileSize: 100,
 });
 
@@ -75,11 +74,22 @@ describe("GET /api/v1/regulations/{slug}: sukses", () => {
           versionNumber: `v-${id}`,
           effectiveDate: { baru: "2026-01-01", tengah: "2023-01-01", lama: "2020-01-01" }[id],
           status: id === "baru" ? "SAH" : "DIGANTIKAN",
-          changeSummary: "ringkasan",
           fileSize: 100,
         })),
       },
     });
+  });
+
+  it("200: item versions tidak memuat changeSummary dan tetap memuat fileSize", async () => {
+    dataMock.mockResolvedValue(regulasi("pph", [versi("a", "2026-01-01"), versi("b", "2020-01-01", "DIGANTIKAN")]));
+
+    const { data } = await (await panggil("pph")).json();
+
+    expect(data.versions).toHaveLength(2);
+    for (const item of data.versions) {
+      expect(item).not.toHaveProperty("changeSummary");
+      expect(item).toHaveProperty("fileSize", 100);
+    }
   });
 
   it("200 dengan currentVersion null bila belum ada versi berlaku", async () => {

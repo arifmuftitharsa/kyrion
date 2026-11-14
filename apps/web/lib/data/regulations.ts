@@ -23,6 +23,8 @@ const withPublicVersions = {
     versions: {
       where: { status: { in: [...PERNAH_DISAHKAN] } },
       orderBy: [{ effectiveDate: "desc" }, { createdAt: "desc" }],
+      // Ringkasan perubahan hanya untuk admin; tidak boleh dibaca dari DB di jalur publik.
+      omit: { changeSummary: true },
     },
   },
 } satisfies Prisma.RegulationDefaultArgs;
@@ -44,7 +46,6 @@ function toRegulation(row: RegulationRow, today: string): Regulation {
         // Kolom date dibaca sebagai 00.00 UTC, jadi bagian tanggal UTC selalu tepat.
         effectiveDate: version.effectiveDate.toISOString().slice(0, 10),
         status: version.status,
-        changeSummary: version.changeSummary,
         fileSize: version.fileSize,
       })),
       today,

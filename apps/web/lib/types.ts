@@ -18,8 +18,6 @@ export interface Version {
   /** Tanggal berlaku dalam format ISO "YYYY-MM-DD". */
   effectiveDate: string;
   status: VersionStatus;
-  /** Null untuk versi pertama (tidak ada versi sebelumnya). */
-  changeSummary: string | null;
   /** Ukuran berkas PDF dalam byte; null bila versi belum punya berkas. */
   fileSize: number | null;
 }

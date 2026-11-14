@@ -154,11 +154,8 @@ components:
       allOf:
         - $ref: "#/components/schemas/VersiBerlaku"
         - type: object
-          required: [changeSummary, fileSize]
+          required: [fileSize]
           properties:
-            changeSummary:
-              type: [string, "null"]
-              description: Ringkasan perubahan; `null` untuk versi pertama.
             fileSize:
               type: [integer, "null"]
               description: Ukuran berkas PDF dalam byte; `null` bila versi belum punya berkas.
@@ -312,13 +309,11 @@ components:
                   versionNumber: "2.0"
                   effectiveDate: "2026-06-01"
                   status: SAH
-                  changeSummary: Ringkasan perubahan rekaan.
                   fileSize: 123456
                 - id: 00000000-0000-7000-8000-000000000001
                   versionNumber: "1.0"
                   effectiveDate: "2026-01-01"
                   status: DIGANTIKAN
-                  changeSummary: null
                   fileSize: null
     VersiBerlaku200:
       description: Versi yang berlaku pada tanggal acuan (contoh sintetis).

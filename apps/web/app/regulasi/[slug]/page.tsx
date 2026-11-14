@@ -4,6 +4,7 @@ import BandingVersi from "@/components/BandingVersi";
 import CurrentVersionInfo from "@/components/CurrentVersionInfo";
 import VersionTimeline from "@/components/VersionTimeline";
 import { getRegulationBySlug } from "@/lib/data/regulations";
+import { putuskanAkses } from "@/lib/akses/keputusan";
 import { todayInJakarta } from "@/lib/domain/tanggal";
 import { findEffectiveVersion } from "@/lib/domain/versi";
 import { wajibMasuk } from "@/lib/sesi";
@@ -21,7 +22,8 @@ export default async function RegulationDetailPage({
   params,
   searchParams,
 }: RegulationDetailPageProps) {
-  await wajibMasuk();
+  const sesi = await wajibMasuk();
+  const admin = putuskanAkses(sesi, "admin") === "izinkan";
   // Di Next.js 16 params berupa Promise, jadi wajib di-await.
   const { slug } = await params;
   // searchParams juga Promise; dibaca untuk perbandingan versi (F-04).
@@ -72,13 +74,17 @@ export default async function RegulationDetailPage({
         </h2>
         <VersionTimeline
           versions={regulation.versions}
-          regulationSlug={regulation.slug}
+          tautanBerkas={
+            admin
+              ? (id) => `/admin/regulasi/${regulation.slug}/versi/${id}/berkas`
+              : undefined
+          }
           today={today}
         />
       </section>
 
-      {/* Perbandingan butuh minimal dua versi yang pernah disahkan. */}
-      {regulation.versions.length >= 2 && (
+      {/* Hanya Admin; butuh minimal dua versi yang pernah disahkan. */}
+      {admin && regulation.versions.length >= 2 && (
         <BandingVersi slug={regulation.slug} versions={regulation.versions} dari={dari} ke={ke} />
       )}
     </div>

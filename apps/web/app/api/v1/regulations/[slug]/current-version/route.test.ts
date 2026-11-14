@@ -17,7 +17,6 @@ const versi = (id: string, effectiveDate: string, status: Version["status"] = "S
   versionNumber: `v-${id}`,
   effectiveDate,
   status,
-  changeSummary: null,
   fileSize: 100,
 });
 
