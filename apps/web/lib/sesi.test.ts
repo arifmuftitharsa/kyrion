@@ -20,7 +20,11 @@ vi.mock("@/lib/data/users", () => ({ findActiveUserById: vi.fn() }));
 const getSession = vi.fn();
 const userMock = vi.mocked(findActiveUserById);
 
-const sesiAda = () => getSession.mockResolvedValue({ user: { id: "u1", role: "ADMIN", email: "lama@x.id" } });
+const sesiAda = () =>
+  getSession.mockResolvedValue({
+    session: { id: "s1" },
+    user: { id: "u1", role: "ADMIN", email: "lama@x.id" },
+  });
 const dbPunya = (role: "ADMIN" | "SIVITAS") =>
   userMock.mockResolvedValue({ id: "u1", email: "db@kampus.ac.id", role });
 
@@ -41,10 +45,15 @@ describe("bacaSesi", () => {
     expect(await bacaSesi()).toBeNull();
   });
 
-  it("sesi sah -> userId, email, role dari DB, bukan dari sesi", async () => {
+  it("sesi sah -> userId, sesiId, email, role dari DB, bukan dari sesi", async () => {
     sesiAda();
     dbPunya("SIVITAS");
-    expect(await bacaSesi()).toEqual({ userId: "u1", email: "db@kampus.ac.id", role: "SIVITAS" });
+    expect(await bacaSesi()).toEqual({
+      userId: "u1",
+      sesiId: "s1",
+      email: "db@kampus.ac.id",
+      role: "SIVITAS",
+    });
   });
 });
 
@@ -76,6 +85,6 @@ describe("wajibMasuk", () => {
   it.each(["SIVITAS", "ADMIN"] as const)("%s -> sesi", async (role) => {
     sesiAda();
     dbPunya(role);
-    expect(await wajibMasuk()).toEqual({ userId: "u1", email: "db@kampus.ac.id", role });
+    expect(await wajibMasuk()).toEqual({ userId: "u1", sesiId: "s1", email: "db@kampus.ac.id", role });
   });
 });

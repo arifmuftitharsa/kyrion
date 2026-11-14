@@ -9,14 +9,14 @@ describe("pilihMenu", () => {
     expect(pilihMenu(null).bisaKeluar).toBe(false);
   });
 
-  it("Sivitas: hanya Daftar Regulasi, dengan Keluar", () => {
-    expect(labels("SIVITAS")).toEqual(["Daftar Regulasi"]);
+  it("Sivitas: Daftar Regulasi dan Sesi, dengan Keluar", () => {
+    expect(labels("SIVITAS")).toEqual(["Daftar Regulasi", "Sesi"]);
     expect(pilihMenu("SIVITAS").bisaKeluar).toBe(true);
   });
 
-  it("Admin: Daftar Regulasi, Kelola Regulasi, Periksa Berkas; dengan Keluar", () => {
-    expect(labels("ADMIN")).toEqual(["Daftar Regulasi", "Kelola Regulasi", "Periksa Berkas"]);
-    expect(pilihMenu("ADMIN").tautan.at(-1)?.href).toBe("/admin/verifikasi");
+  it("Admin: Daftar Regulasi, Kelola Regulasi, Periksa Berkas, Sesi; dengan Keluar", () => {
+    expect(labels("ADMIN")).toEqual(["Daftar Regulasi", "Kelola Regulasi", "Periksa Berkas", "Sesi"]);
+    expect(pilihMenu("ADMIN").tautan.at(-1)?.href).toBe("/akun/sesi");
     expect(pilihMenu("ADMIN").bisaKeluar).toBe(true);
   });
 });

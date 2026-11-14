@@ -6,7 +6,7 @@ import { type Syarat, putuskanAkses } from "@/lib/akses/keputusan";
 import { getAuth } from "@/lib/auth";
 import { findActiveUserById } from "@/lib/data/users";
 
-export type SesiPengguna = { userId: string; email: string; role: "ADMIN" | "SIVITAS" };
+export type SesiPengguna = { userId: string; sesiId: string; email: string; role: "ADMIN" | "SIVITAS" };
 
 /**
  * Sesi Better Auth dari cookie. Peran di sesi hanya petunjuk: peran dan status aktif
@@ -19,7 +19,7 @@ export const bacaSesi = cache(async (): Promise<SesiPengguna | null> => {
   if (!sesi) return null;
   const pengguna = await findActiveUserById(sesi.user.id);
   if (!pengguna) return null;
-  return { userId: pengguna.id, email: pengguna.email, role: pengguna.role };
+  return { userId: pengguna.id, sesiId: sesi.session.id, email: pengguna.email, role: pengguna.role };
 });
 
 // Satu-satunya tempat keputusan akses halaman diterjemahkan ke efek Next. Panggil di luar

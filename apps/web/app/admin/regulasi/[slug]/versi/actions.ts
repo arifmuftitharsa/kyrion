@@ -9,7 +9,7 @@ import {
   batalkanVersiDraf,
   createVersion,
   deleteDraftVersion,
-  sahkanVersiDraf,
+  sahkanVersiDenganAudit,
   findVersion,
   updateDraftVersion,
   type AdminVersion,
@@ -290,13 +290,11 @@ export async function sahkanVersi(
   if (alasan) return { pesan: pesanTolakSahkan(alasan, status) };
 
   try {
-    await sahkanVersiDraf({
-      regulationId,
-      versionId,
+    await sahkanVersiDenganAudit({
+      regulasi: target.regulasi,
+      versi: target.versi,
       penanda: new Date(penanda),
-      actorId: admin.id,
-      keterangan: `${target.regulasi.name}, versi ${target.versi.versionNumber}`,
-      waktu: new Date(),
+      admin,
     });
   } catch (e) {
     if (e instanceof VersionWithoutFileError) return { pesan: PESAN_TANPA_BERKAS };
