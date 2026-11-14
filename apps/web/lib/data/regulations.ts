@@ -7,12 +7,11 @@ import {
   RegulationNotFoundError,
   SlugTakenError,
 } from "@/lib/domain/regulasi";
-import { berkasSelect, toBerkasTersimpan } from "@/lib/data/versions";
 import { todayInJakarta } from "@/lib/domain/tanggal";
 import { PERNAH_DISAHKAN, terapkanStatusTurunan } from "@/lib/domain/versi";
 import { getPrisma } from "@/lib/prisma";
 import type { MasukanRegulasi } from "@/lib/skema";
-import type { BerkasTersimpan, Regulation } from "@/lib/types";
+import type { Regulation } from "@/lib/types";
 
 // Hanya versi yang pernah disahkan yang keluar dari lapisan data (F-02), agar
 // DRAF dan DIBATALKAN tidak pernah terkirim ke halaman publik maupun browser.
@@ -23,6 +22,8 @@ const withPublicVersions = {
     versions: {
       where: { status: { in: [...PERNAH_DISAHKAN] } },
       orderBy: [{ effectiveDate: "desc" }, { createdAt: "desc" }],
+      // Ringkasan perubahan hanya untuk admin; tidak boleh dibaca dari DB di jalur publik.
+      omit: { changeSummary: true },
     },
   },
 } satisfies Prisma.RegulationDefaultArgs;
@@ -44,7 +45,6 @@ function toRegulation(row: RegulationRow, today: string): Regulation {
         // Kolom date dibaca sebagai 00.00 UTC, jadi bagian tanggal UTC selalu tepat.
         effectiveDate: version.effectiveDate.toISOString().slice(0, 10),
         status: version.status,
-        changeSummary: version.changeSummary,
         fileSize: version.fileSize,
       })),
       today,
@@ -74,21 +74,6 @@ export async function getRegulationBySlug(
     where: { slug },
   });
   return row ? toRegulation(row, todayInJakarta(new Date())) : undefined;
-}
-
-/**
- * Berkas versi untuk unduhan publik (F-05): hanya versi yang pernah disahkan
- * (SAH/DIGANTIKAN) milik regulasi `slug`. Draf dan Dibatalkan tidak pernah keluar.
- */
-export async function findPublicVersionFile(
-  slug: string,
-  versionId: string,
-): Promise<BerkasTersimpan | undefined> {
-  const row = await getPrisma().version.findFirst({
-    select: berkasSelect,
-    where: { id: versionId, regulation: { slug }, status: { in: [...PERNAH_DISAHKAN] } },
-  });
-  return toBerkasTersimpan(row);
 }
 
 /** Mengembalikan regulasi pada kategori (slug) tertentu; tanpa kategori berarti semua. */

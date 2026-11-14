@@ -2,7 +2,7 @@
 
 Kyrion, dari kata Yunani *kyrion* yang berarti "yang sah, yang berlaku", adalah aplikasi web yang membantu sivitas akademika Universitas Pertamina mengetahui ketentuan resmi mana yang sedang berlaku, apa yang berubah antarversi, dan apakah sebuah dokumen regulasi asli.
 
-> Status: **v0.2 (Tugas 2 PAW)**: antarmuka publik dan halaman admin dengan data dari PostgreSQL. Rilis sebelumnya, v0.1 (Tugas 1 PAW, Milestone 1), dibekukan pada tag `v0.1`.
+> Status: **v0.3 (Tugas 3 PAW) sedang dikerjakan**: akses khusus sivitas yang sudah masuk (login OTP email) dengan pembedaan peran Sivitas dan Admin. v0.2 (Tugas 2 PAW) dibekukan pada tag `v0.2`, dan v0.1 (Tugas 1 PAW, Milestone 1) pada tag `v0.1`.
 
 ## Daftar Isi
 
@@ -27,39 +27,33 @@ Regulasi kampus dirilis sebagai berkas PDF terpisah yang direvisi setiap tahun a
 
 | Peran | Kebutuhan |
 |---|---|
-| Pengunjung | Melihat daftar regulasi dan versi yang berlaku tanpa perlu masuk. |
-| Mahasiswa | Memastikan ketentuan yang diikuti adalah versi sah, lalu memverifikasi dokumen yang dimiliki. |
-| Admin Akademik | Mengelola regulasi dan menerbitkan versi baru. |
+| Sivitas (mahasiswa dan staf yang sudah masuk) | Melihat daftar regulasi, versi yang berlaku, dan riwayat versi. |
+| Admin Akademik | Mengelola regulasi dan versi, mengunduh berkas PDF versi, dan membandingkan versi. |
 
-Catatan: v0.2 menambah fitur **Admin Akademik** (kelola kategori, regulasi, versi Draf beserta berkas PDF, dan butir perubahan versi) di balik login. Login memakai akun Admin di tabel `users` dengan kata sandi yang disimpan sebagai hash scrypt. Peran SIVITAS sudah ada di skema tetapi belum dipakai, dan pengesahan versi belum tersedia.
+Catatan: sejak v0.3 aplikasi hanya untuk akun yang sudah masuk. Tamu yang membuka halaman diarahkan ke `/masuk`, dan API v1 menjawab 401. Masuk memakai kode OTP yang dikirim ke email kampus (`universitaspertamina.ac.id` atau `student.universitaspertamina.ac.id`), tanpa kata sandi. Email kampus yang sah yang meminta kode untuk pertama kali otomatis menjadi akun berperan Sivitas; peran Admin diberikan lewat seed. Peran dan status aktif akun dibaca ulang dari tabel `users` pada setiap permintaan, sehingga akun nonaktif langsung kehilangan akses.
 
 ## Fitur
 
-**Halaman publik**
+**Halaman untuk akun yang sudah masuk (Sivitas dan Admin)**
 
-1. **Daftar regulasi dengan filter kategori** (`/`). Setiap regulasi ditampilkan sebagai kartu yang memuat kategori, nama, deskripsi, versi berlaku, status, dan tanggal berlaku. Versi berlaku dihitung dari tanggal hari ini (WIB); regulasi tanpa versi menampilkan "Belum ada versi.". Filter memakai parameter URL `?kategori=...` dengan daftar kategori dari tabel `categories`, dan kategori yang tidak dikenal diabaikan.
-2. **Detail regulasi dengan linimasa versi** (`/regulasi/[slug]`). Header menampilkan versi yang berlaku hari ini. Riwayat versi diurutkan dari yang terbaru, dan hanya versi berstatus **Sah** atau **Digantikan** yang ditampilkan ke publik; status dibedakan dengan warna, simbol, dan teks. Versi yang tanggal berlakunya belum tiba diberi keterangan "Mulai berlaku". Slug yang tidak ada akan menampilkan halaman 404. Versi yang punya berkas menampilkan tautan **Unduh PDF**; unduhan publik hanya untuk versi Sah atau Digantikan, dan hash berkas dicocokkan ulang sebelum dikirim. Bila regulasi punya minimal dua versi, bagian **Bandingkan Versi** (`?dari=&ke=`) menampilkan butir perubahan di antara dua versi beserta sumber dan halamannya.
-3. **Formulir verifikasi dokumen** (`/verifikasi`). Pengguna memilih regulasi, lalu versi (pilihan versi bergantung pada regulasi), lalu mengunggah PDF. Validasi sisi klien memeriksa bahwa:
-   - semua field terisi;
-   - berkas berformat PDF (MIME `application/pdf` atau ekstensi `.pdf`);
-   - ukuran berkas maksimal 10 MB.
+1. **Daftar regulasi dengan filter kategori** (`/`). Hanya untuk akun yang sudah masuk. Setiap regulasi ditampilkan sebagai kartu yang memuat kategori, nama, deskripsi, versi berlaku, status, dan tanggal berlaku. Versi berlaku dihitung dari tanggal hari ini (WIB); regulasi tanpa versi menampilkan "Belum ada versi.". Filter memakai parameter URL `?kategori=...` dengan daftar kategori dari tabel `categories`, dan kategori yang tidak dikenal diabaikan.
+2. **Detail regulasi dengan linimasa versi** (`/regulasi/[slug]`). Header menampilkan versi yang berlaku hari ini. Riwayat versi diurutkan dari yang terbaru, dan hanya versi berstatus **Sah** atau **Digantikan** yang ditampilkan; status dibedakan dengan warna, simbol, dan teks, dan versi yang belum berlaku diberi keterangan "Mulai berlaku". Slug yang tidak ada menampilkan halaman 404. Sivitas melihat metadata dan linimasa versi saja: tanpa ringkasan perubahan, tanpa tautan Unduh PDF, dan tanpa Bandingkan Versi. Admin melihat halaman yang sama dengan tautan **Unduh PDF** pada tiap versi berberkas (`/admin/regulasi/[slug]/versi/[versionId]/berkas`; hash dan tag integritas diperiksa sebelum dikirim) dan bagian **Bandingkan Versi** (`?dari=&ke=`) bila regulasi punya minimal dua versi. Sivitas yang membuka halaman `/admin/**` mendapat 404, dan unduh berkas admin menjawab 403 bagi Sivitas serta 401 bagi tamu.
+3. **Periksa Berkas (Admin, kerangka)** (`/admin/verifikasi`). Halaman hanya untuk Admin dan baru menampilkan keterangan bahwa pemeriksa berkas belum aktif. `/verifikasi` publik sudah tidak ada. Komponen `VerifyForm`, `VerifyResult`, dan `lib/validation/verify-form.ts` masih ada di repo tetapi belum dipakai rute mana pun.
 
-   Pesan galat ditampilkan per field dalam Bahasa Indonesia.
+**Masuk dan halaman admin**
 
-**Halaman admin (baru di v0.2)**
-
-4. **Masuk** (`/masuk`). Login dengan akun Admin dari seed (kata sandi berhash scrypt). Email salah dan kata sandi salah mendapat pesan yang sama, dan akun nonaktif ditolak. Sesi disimpan di cookie HttpOnly. Saat login, header menampilkan Kelola Regulasi dan tombol Keluar.
+4. **Masuk dengan kode OTP** (`/masuk`). Pengguna mengisi email kampus, lalu memasukkan kode 6 digit yang dikirim ke email (berlaku 5 menit, maksimal 3 percobaan; permintaan kode dibatasi jeda dan batas laju). Tanpa kata sandi. Email di luar dua domain kampus ditolak dan akun nonaktif tidak dapat membuat sesi. Sesi berlaku 7 hari. Header menampilkan Daftar Regulasi dan Keluar bagi Sivitas; Admin juga melihat Kelola Regulasi dan Periksa Berkas.
 5. **Kelola regulasi** (`/admin/regulasi`). Daftar semua regulasi beserta jumlah versinya; tambah, ubah, dan hapus regulasi. Kategori dipilih dari tabel kategori. Slug dibuat server dari nama, dan hanya regulasi tanpa versi yang dapat dihapus.
-6. **Kelola versi** (`/admin/regulasi/[slug]/versi`). Daftar semua versi dengan keempat status (Draf, Sah, Digantikan, Dibatalkan). Versi baru selalu Draf, dan hanya Draf yang dapat diubah atau dihapus. Tanggal mulai berlaku diisi lewat tiga kolom (tanggal, nama bulan, tahun). Form versi menerima unggah PDF opsional (maksimal 10 MB, divalidasi dengan magic bytes `%PDF-`); daftar menampilkan tautan Unduh PDF dan jumlah perubahan tiap versi.
+6. **Kelola versi** (`/admin/regulasi/[slug]/versi`). Daftar semua versi dengan keempat status (Draf, Sah, Digantikan, Dibatalkan). Versi baru selalu Draf, dan hanya Draf yang dapat diubah atau dihapus. Tanggal mulai berlaku diisi lewat tiga kolom (tanggal, nama bulan, tahun). Form versi menerima unggah PDF opsional (maksimal 10 MB, divalidasi dengan magic bytes `%PDF-`); daftar menampilkan tautan Unduh PDF dan jumlah perubahan tiap versi. Admin dapat mengesahkan versi Draf (syarat: berkas lengkap dan tanggal berlaku belum dipakai versi sah lain) atau membatalkannya lewat UI, keduanya dicatat di log audit.
 7. **Kelola kategori** (`/admin/kategori`, dari tombol di halaman Kelola Regulasi). Tambah, ganti nama, dan hapus kategori. Slug dibuat server dari nama sehingga nama serupa (beda huruf besar-kecil atau spasi) ditolak, dan hanya kategori tanpa regulasi yang dapat dihapus.
 8. **Kelola perubahan** (`/admin/regulasi/[slug]/versi/[versionId]/perubahan`). Mencatat butir perubahan sebuah versi: deskripsi, sumber (Changelog atau Perbandingan), dan halaman opsional. Hanya versi Draf yang perubahannya dapat ditambah, diubah, atau dihapus; versi Sah, Digantikan, dan Dibatalkan terkunci.
 
 Semua masukan admin divalidasi di server dengan Zod, dengan galat per field. Aturan dan hasil uji ada di bagian Tugas 2.
 
-**Batasan v0.2:**
+**Batasan (v0.3, sampai tahap ini):**
 - Data regulasi tersimpan di PostgreSQL. Data awalnya adalah **data sintetis** (fiktif) dari seed `apps/web/prisma/seed.ts`.
-- **Hasil verifikasi (`/verifikasi`) masih simulasi.** Isi PDF yang diunggah di halaman itu tidak dibaca. Fungsi sidik berkas (`lib/crypto/fingerprint.ts`) sudah dipakai saat unggah dan unduh berkas versi di halaman admin, tetapi belum dihubungkan ke alur verifikasi.
-- **Belum ada** pengesahan atau pembatalan versi lewat UI, pembedaan peran SIVITAS, ganti atau reset kata sandi, maupun perbandingan perubahan otomatis (butir perubahan dicatat manual oleh Admin).
+- **Pemeriksa berkas belum aktif.** `/admin/verifikasi` masih kerangka. Fungsi sidik berkas (`lib/crypto/fingerprint.ts`) sudah dipakai saat unggah dan unduh berkas versi di halaman admin, tetapi belum dihubungkan ke alur pemeriksaan.
+- **Belum ada** halaman akun dan endpoint API tambahan, penggantian peran akun lewat UI, maupun perbandingan perubahan otomatis (butir perubahan dicatat manual oleh Admin). CSP dan HSTS juga belum ada.
 
 ## Teknologi
 
@@ -97,22 +91,29 @@ kyrion/
     │   ├── not-found.tsx           # Halaman 404 global
     │   ├── globals.css
     │   ├── favicon.ico
-    │   ├── masuk/                  # Halaman masuk dan Server Action masuk/keluar
-    │   ├── regulasi/               # layout, template, error; [slug]/page.tsx = detail + riwayat versi + banding; [slug]/versi/[versionId]/berkas = unduhan PDF publik
-    │   ├── verifikasi/
-    │   │   └── page.tsx            # Halaman verifikasi dokumen (simulasi)
+    │   ├── masuk/                  # Halaman masuk (OTP) dan Server Action masuk/keluar
+    │   ├── regulasi/               # layout, template, error; [slug]/page.tsx = detail + riwayat versi (+ banding, khusus Admin)
+    │   ├── api/
+    │   │   ├── auth/[...all]/      # Better Auth; hanya endpoint pada allowlist yang dilayani
+    │   │   └── v1/regulations/     # Tiga endpoint baca (daftar, detail, versi berlaku); wajib sesi
     │   └── admin/
+    │       ├── verifikasi/         # Periksa Berkas (Admin): kerangka, pemeriksa belum aktif
     │       ├── kategori/           # Kelola kategori: daftar, baru, [slug]/ubah, [slug]/hapus
     │       └── regulasi/           # Kelola regulasi: daftar, baru, [slug]/ubah, [slug]/hapus
     │           └── [slug]/versi/   # Kelola versi: daftar, baru, [versionId]/ubah, [versionId]/hapus,
+    │                               #   [versionId]/sahkan, [versionId]/batalkan,
     │                               #   [versionId]/berkas (unduhan admin), [versionId]/perubahan/** (Change)
     ├── components/                 # Lihat tabel di bawah
     ├── lib/
-    │   ├── data/                   # Repositori Prisma: regulations, versions, categories, users, changes
-    │   ├── domain/                 # Aturan murni beserta ujinya: slug, regulasi, kategori, versi, versi-admin, tanggal, berkas-pdf, perubahan, banding
+    │   ├── akses/                  # keputusan.ts (putuskanAkses, murni) dan jaga-route.ts (adapter Route Handler: 401/403)
+    │   ├── auth/                   # Better Auth: OTP email, allowlist endpoint (izin.ts), jeda dan batas laju OTP
+    │   ├── email/                  # Pengirim email: konsol, memori, Mailtrap
+    │   ├── api/                    # Pemeta respons dan galat problem+json untuk API v1
+    │   ├── data/                   # Repositori Prisma: regulations, versions, categories, users, changes, pengesahan, audit, versi-tulis
+    │   ├── domain/                 # Aturan murni beserta ujinya: slug, regulasi, kategori, versi, versi-admin, tanggal, berkas-pdf, perubahan, banding, akun-kampus
     │   ├── crypto/
     │   │   ├── fingerprint.ts      # Sidik SHA-256 berkas (F-30); dipakai saat unggah dan unduh PDF
-    │   │   ├── password.ts         # Hash dan verifikasi kata sandi dengan scrypt dan salt acak
+    │   │   ├── password.ts         # Hash dan verifikasi kata sandi dengan scrypt; tidak dipakai login sejak v0.3 (hanya diuji oleh password.test.ts)
     │   │   ├── kanonis.ts          # Byte kanonis tujuh field versi (F-31); uji: kanonis.test.ts
     │   │   ├── mac.ts              # HMAC-SHA256, HKDF, dan tag v1$<hex64> (F-31); uji: mac.test.ts
     │   │   ├── kunci.ts            # Baca dan buat berkas kunci induk (F-31); uji: kunci.test.ts
@@ -120,9 +121,10 @@ kyrion/
     │   │   ├── data-terlindung.ts  # Baris versi ke data yang ditandatangani (F-31); uji: data-terlindung.test.ts
     │   │   └── batas.ts            # MAX_INPUT_BYTES (10 MB); tanpa impor, aman dibundel ke klien
     │   ├── validation/
-    │   │   └── verify-form.ts      # Validasi formulir verifikasi (fungsi murni, tanpa React)
+    │   │   └── verify-form.ts      # Validasi formulir verifikasi (fungsi murni, tanpa React); tidak dipakai rute mana pun
     │   ├── prisma.ts               # Satu PrismaClient (server-only)
-    │   ├── sesi.ts                 # Sesi cookie: bacaSesi() dan wajibAdmin() (memeriksa baris users aktif berperan ADMIN)
+    │   ├── menu.ts                 # Pemilihan menu header menurut peran (hanya tampilan, bukan otorisasi)
+    │   ├── sesi.ts                 # Sesi Better Auth: bacaSesi(), wajibMasuk(), wajibAdmin(); peran dan status aktif dibaca ulang dari tabel users
     │   ├── penyimpanan.ts          # Simpan, baca, dan hapus PDF di disk (di luar public/)
     │   ├── unduhan-pdf.ts          # Respons unduhan PDF; hash dicocokkan ulang sebelum dikirim
     │   ├── skema.ts                # Skema Zod: regulasi, kategori, versi, perubahan, banding, masuk
@@ -136,7 +138,7 @@ kyrion/
     │   └── seed.ts                 # Seed data sintetis (idempoten)
     ├── generated/prisma/           # Hasil prisma generate (diabaikan Git)
     ├── prisma.config.ts            # Konfigurasi Prisma 7: env dari .env.local, perintah seed
-    ├── proxy.ts                    # Pemeriksaan cookie sesi untuk /admin/**
+    ├── proxy.ts                    # Pemeriksaan keberadaan cookie sesi untuk semua halaman kecuali /masuk, /api, dan aset (bukan otorisasi)
     ├── storage/                    # PDF versi (KYRION_STORAGE_DIR; diabaikan Git)
     ├── public/
     └── package.json
@@ -144,26 +146,29 @@ kyrion/
 
 | Komponen | Peran |
 |---|---|
-| `SiteHeader` | Nama Kyrion dan navigasi utama. Tamu melihat Masuk; admin melihat Kelola Regulasi dan tombol Keluar (hanya tampilan, otorisasi tetap di `wajibAdmin()`). |
+| `SiteHeader` | Nama Kyrion dan navigasi utama menurut peran lewat `lib/menu.ts`: tamu melihat Masuk; Sivitas melihat Daftar Regulasi dan Keluar; Admin juga melihat Kelola Regulasi dan Periksa Berkas (hanya tampilan; otorisasi di `wajibMasuk()`, `wajibAdmin()`, dan `jagaRoute()`). |
 | `TautanNav` | Client Component. Tautan navigasi dengan `aria-current` pada halaman aktif. |
 | `CategoryFilter` | Tautan filter kategori (`?kategori=...`) dengan opsi "Semua" dan `aria-current` pada kategori aktif. |
 | `RegulationCard` | Kartu ringkasan satu regulasi beserta versi yang berlaku hari ini. |
 | `CurrentVersionInfo` | Satu baris versi berlaku hari ini (nomor, status, tanggal), atau keterangan bila belum ada versi atau belum ada yang berlaku. Dipakai kartu dan halaman detail. |
 | `StatusBadge` | Penanda status versi (Draf, Sah, Digantikan, Dibatalkan) berupa warna, simbol, dan teks. |
-| `VersionTimeline` | Daftar riwayat versi, diurutkan dari yang terbaru; versi yang belum berlaku diberi keterangan "Mulai berlaku"; versi yang punya berkas menampilkan tautan Unduh PDF. |
-| `BandingVersi` | Server Component. Formulir GET `?dari=&ke=` dan hasil perbandingan perubahan antarversi (butir, sumber, halaman), dengan pesan galat untuk pilihan yang tidak valid. |
-| `VerifyForm` | Client Component. Mengelola pilihan regulasi/versi, berkas, dan pesan galat validasi. |
-| `VerifyResult` | Menampilkan hasil verifikasi simulasi (`role="status"`) beserta penegasan bahwa pencocokan hash dokumen belum dihubungkan. |
-| `FormMasuk`, `FormRegulasi`, `FormKategori`, `FormVersi`, `FormPerubahan` | Client Component. Formulir dengan `useActionState` yang memanggil Server Action dan menampilkan galat per field. `FormVersi` juga memuat unggah PDF dengan cek ukuran di klien. |
+| `VersionTimeline` | Daftar riwayat versi, diurutkan dari yang terbaru; versi yang belum berlaku diberi keterangan "Mulai berlaku"; tautan Unduh PDF pada versi berberkas hanya tampil bila halaman memberi prop `tautanBerkas` (hanya Admin). |
+| `BandingVersi` | Server Component, hanya dirender untuk Admin. Formulir GET `?dari=&ke=` dan hasil perbandingan perubahan antarversi (butir, sumber, halaman), dengan pesan galat untuk pilihan yang tidak valid. |
+| `VerifyForm` | Client Component. Mengelola pilihan regulasi/versi, berkas, dan pesan galat validasi. Belum dipakai rute mana pun sampai pemeriksa berkas diaktifkan. |
+| `VerifyResult` | Menampilkan hasil verifikasi simulasi (`role="status"`) beserta penegasan bahwa pencocokan hash dokumen belum dihubungkan. Belum dipakai rute mana pun sampai pemeriksa berkas diaktifkan. |
+| `FormMasuk` | Client Component. Dua langkah: meminta kode OTP ke email, lalu memasukkan kode. |
+| `FormRegulasi`, `FormKategori`, `FormVersi`, `FormPerubahan` | Client Component. Formulir dengan `useActionState` yang memanggil Server Action dan menampilkan galat per field. `FormVersi` juga memuat unggah PDF dengan cek ukuran di klien. |
 | `FormHapus` | Client Component. Tombol konfirmasi hapus (regulasi, versi, kategori, dan perubahan) yang menampilkan pesan penolakan dari server. |
 
 Client Component hanya yang disebut di tabel ini dan berkas `error.tsx`; selebihnya Server Component.
+
+Semua rute dikirim dengan header keamanan dasar (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, dan `Permissions-Policy` yang mematikan kamera, mikrofon, dan geolokasi), header `X-Powered-By` dimatikan (`next.config.ts`), dan CSP serta HSTS belum ada.
 
 ## Cara Menjalankan
 
 Prasyarat: Node.js 24, npm, dan Docker Desktop (untuk PostgreSQL).
 
-Aplikasi v0.2 membaca data dari PostgreSQL, sehingga basis data dan berkas environment harus disiapkan lebih dulu. Langkah lengkap (Docker Compose, `.env`, migrasi, seed, `npm run dev`) ada di [Tugas 2, bagian 2](#2-menjalankan-secara-lokal).
+Aplikasi membaca data dari PostgreSQL, sehingga basis data dan berkas environment harus disiapkan lebih dulu. Langkah lengkap (Docker Compose, `.env`, migrasi, seed, `npm run dev`) ada di [Tugas 2, bagian 2](#2-menjalankan-secara-lokal).
 
 Untuk build produksi, jalankan dari `apps/web`:
 
@@ -184,7 +189,7 @@ npm test
 
 ## Tugas 2 (v0.2): PostgreSQL, Prisma, dan CRUD Admin
 
-> Bagian umum di awal README sudah mengikuti v0.2. Bagian "Bukti Tugas 1" dan "Kriptografi (Tugas 1)" di bawah tetap menggambarkan v0.1 (tag `v0.1`), dengan satu catatan status per v0.2 di bagian Kriptografi. Bagian ini merinci pengujian v0.2.
+> Bagian Tugas 2 ini menggambarkan v0.2 pada tag `v0.2`; bagian umum di awal README mengikuti v0.3 sampai tahap ini. Bagian "Bukti Tugas 1" dan "Kriptografi (Tugas 1)" di bawah tetap menggambarkan v0.1 (tag `v0.1`), dengan satu catatan status per v0.2 di bagian Kriptografi. Bagian ini merinci pengujian v0.2.
 
 ### 1. Ringkasan
 

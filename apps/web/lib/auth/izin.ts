@@ -1,10 +1,9 @@
 // Allowlist endpoint Better Auth (default-tolak: endpoint baru dari pembaruan versi otomatis ditolak).
 // Kunci = path templat endpoint (sama dengan ctx.path di hooks.before), nilai = metode HTTP yang diizinkan.
+// Hanya dua endpoint yang dipakai FormMasuk. /get-session lewat HTTP mengembalikan token sesi
+// (better-auth 1.7.22, @better-auth/core/dist/db/get-tables.mjs baris 105) dan tak dipakai siapa pun;
+// keluar() memakai auth.api.signOut tanpa HTTP.
 export const ENDPOINT_DIIZINKAN: Readonly<Record<string, readonly string[]>> = {
-  "/ok": ["GET"],
-  "/error": ["GET"],
-  "/get-session": ["GET"],
-  "/sign-out": ["POST"],
   "/email-otp/send-verification-otp": ["POST"],
   "/sign-in/email-otp": ["POST"],
 };

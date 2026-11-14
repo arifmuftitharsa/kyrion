@@ -1,3 +1,4 @@
+import { jagaRoute } from "@/lib/akses/jaga-route";
 import { bacaQueryRegulasi, petakanRegulasi, susunGalatField } from "@/lib/api/daftar-regulasi";
 import { buatMasalah } from "@/lib/api/masalah";
 import { getRegulationsByCategory } from "@/lib/data/regulations";
@@ -5,7 +6,8 @@ import { todayInJakarta } from "@/lib/domain/tanggal";
 
 // F-01: daftar regulasi beserta versi yang berlaku hari ini.
 export async function GET(request: Request): Promise<Response> {
-  // Pemeriksaan sesi (401) menyusul di tahap lain.
+  const jaga = await jagaRoute("masuk", request, "problem");
+  if ("respons" in jaga) return jaga.respons;
   const query = bacaQueryRegulasi(new URL(request.url).searchParams);
   if (!query.success) {
     return buatMasalah("validation-error", request, {

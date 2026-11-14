@@ -11,7 +11,6 @@ const version = (
   versionNumber,
   effectiveDate,
   status,
-  changeSummary: null,
   fileSize: null,
 });
 

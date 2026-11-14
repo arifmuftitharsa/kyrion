@@ -1,3 +1,4 @@
+import { jagaRoute } from "@/lib/akses/jaga-route";
 import { susunGalatField } from "@/lib/api/daftar-regulasi";
 import { bacaQueryKosong, petakanDetailRegulasi } from "@/lib/api/detail-regulasi";
 import { buatMasalah } from "@/lib/api/masalah";
@@ -10,7 +11,8 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ slug: string }> },
 ): Promise<Response> {
-  // Pemeriksaan sesi (401) menyusul di tahap lain.
+  const jaga = await jagaRoute("masuk", request, "problem");
+  if ("respons" in jaga) return jaga.respons;
   const { slug } = await params;
 
   // Slug berformat salah diperlakukan sama dengan slug yang tidak ada.

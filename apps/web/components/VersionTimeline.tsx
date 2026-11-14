@@ -5,13 +5,13 @@ import type { Version } from "@/lib/types";
 
 interface VersionTimelineProps {
   versions: Version[];
-  /** Slug regulasi, untuk tautan unduh berkas versi. */
-  regulationSlug: string;
+  /** Pembuat URL unduh berkas versi; tanpa prop ini tidak ada tautan unduh (peran non-admin). */
+  tautanBerkas?: (versionId: string) => string;
   /** Tanggal acuan WIB (ISO "YYYY-MM-DD") dari halaman, untuk membedakan versi yang belum berlaku. */
   today: string;
 }
 
-export default function VersionTimeline({ versions, regulationSlug, today }: VersionTimelineProps) {
+export default function VersionTimeline({ versions, tautanBerkas, today }: VersionTimelineProps) {
   if (versions.length === 0) {
     return <p className="text-slate-700">Belum ada versi.</p>;
   }
@@ -40,13 +40,10 @@ export default function VersionTimeline({ versions, regulationSlug, today }: Ver
               {formatDate(version.effectiveDate)}
             </time>
           </p>
-          {version.changeSummary && (
-            <p className="mt-1 text-slate-700">{version.changeSummary}</p>
-          )}
-          {version.fileSize !== null && (
+          {tautanBerkas && version.fileSize !== null && (
             <p className="mt-1 text-sm">
               <a
-                href={`/regulasi/${regulationSlug}/versi/${version.id}/berkas`}
+                href={tautanBerkas(version.id)}
                 className="text-blue-800 underline underline-offset-4 hover:text-blue-900"
               >
                 Unduh PDF versi {version.versionNumber} ({formatUkuranBerkas(version.fileSize)})

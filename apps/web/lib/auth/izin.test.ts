@@ -3,6 +3,7 @@ import { permintaanDiizinkan } from "./izin";
 
 // Daftar endpoint ber-path Better Auth 1.7.22 (inti + emailOTP) beserta metodenya.
 const DITOLAK: ReadonlyArray<[string, string]> = [
+  ["/ok", "GET"], ["/error", "GET"], ["/get-session", "GET"], ["/sign-out", "POST"],
   ["/sign-in/social", "POST"], ["/sign-in/email", "POST"], ["/sign-up/email", "POST"],
   ["/callback/:id", "GET"], ["/callback/:id", "POST"],
   ["/update-session", "POST"], ["/update-user", "POST"], ["/change-password", "POST"],
@@ -21,12 +22,11 @@ const DITOLAK: ReadonlyArray<[string, string]> = [
 
 describe("permintaanDiizinkan", () => {
   it.each([
-    ["/ok", "GET"], ["/error", "GET"], ["/get-session", "GET"], ["/sign-out", "POST"],
     ["/email-otp/send-verification-otp", "POST"], ["/sign-in/email-otp", "POST"],
   ])("menerima %s %s", (p, m) => expect(permintaanDiizinkan(p, m)).toBe(true));
 
   it.each([
-    ["/ok", "POST"], ["/get-session", "POST"], ["/sign-in/email-otp", "GET"], ["/sign-out", "GET"],
+    ["/sign-in/email-otp", "GET"], ["/email-otp/send-verification-otp", "GET"],
   ])("menolak metode salah %s %s", (p, m) => expect(permintaanDiizinkan(p, m)).toBe(false));
 
   it.each(DITOLAK)("menolak %s %s", (p, m) => expect(permintaanDiizinkan(p, m)).toBe(false));
