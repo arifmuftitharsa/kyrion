@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { type Syarat, putuskanAkses } from "@/lib/akses/keputusan";
@@ -10,14 +11,16 @@ export type SesiPengguna = { userId: string; email: string; role: "ADMIN" | "SIV
 /**
  * Sesi Better Auth dari cookie. Peran di sesi hanya petunjuk: peran dan status aktif
  * dibaca ulang dari tabel users di setiap pemanggilan; akun nonaktif atau hilang = tidak masuk.
+ * cache() hanya mendedup dalam SATU render pass (header, layout, halaman); di Server Action dan
+ * Route Handler tidak berefek. Keputusan akses tetap dibaca ulang dari DB di setiap request.
  */
-export async function bacaSesi(): Promise<SesiPengguna | null> {
+export const bacaSesi = cache(async (): Promise<SesiPengguna | null> => {
   const sesi = await getAuth().api.getSession({ headers: await headers() });
   if (!sesi) return null;
   const pengguna = await findActiveUserById(sesi.user.id);
   if (!pengguna) return null;
   return { userId: pengguna.id, email: pengguna.email, role: pengguna.role };
-}
+});
 
 // Satu-satunya tempat keputusan akses halaman diterjemahkan ke efek Next. Panggil di luar
 // try/catch: redirect() dan notFound() bekerja dengan melempar.
