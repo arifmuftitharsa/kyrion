@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Kyrion",
   description:
-    "Daftar regulasi kampus, riwayat versi, dan verifikasi dokumen (v0.2, data dari database; verifikasi masih simulasi).",
+    "Daftar regulasi kampus dan riwayat versinya untuk sivitas akademika Universitas Pertamina.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
