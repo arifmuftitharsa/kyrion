@@ -4,18 +4,19 @@ import { pilihMenu } from "./menu";
 const labels = (peran: Parameters<typeof pilihMenu>[0]) => pilihMenu(peran).tautan.map((t) => t.label);
 
 describe("pilihMenu", () => {
-  it("tamu: umum + Masuk, tanpa Keluar", () => {
-    expect(labels(null)).toEqual(["Daftar Regulasi", "Verifikasi Dokumen", "Masuk"]);
+  it("tamu: hanya Masuk, tanpa Keluar", () => {
+    expect(labels(null)).toEqual(["Masuk"]);
     expect(pilihMenu(null).bisaKeluar).toBe(false);
   });
 
-  it("Sivitas: umum, dengan Keluar", () => {
-    expect(labels("SIVITAS")).toEqual(["Daftar Regulasi", "Verifikasi Dokumen"]);
+  it("Sivitas: hanya Daftar Regulasi, dengan Keluar", () => {
+    expect(labels("SIVITAS")).toEqual(["Daftar Regulasi"]);
     expect(pilihMenu("SIVITAS").bisaKeluar).toBe(true);
   });
 
-  it("Admin: umum + Kelola Regulasi, dengan Keluar", () => {
-    expect(labels("ADMIN")).toEqual(["Daftar Regulasi", "Verifikasi Dokumen", "Kelola Regulasi"]);
+  it("Admin: Daftar Regulasi, Kelola Regulasi, Periksa Berkas; dengan Keluar", () => {
+    expect(labels("ADMIN")).toEqual(["Daftar Regulasi", "Kelola Regulasi", "Periksa Berkas"]);
+    expect(pilihMenu("ADMIN").tautan.at(-1)?.href).toBe("/admin/verifikasi");
     expect(pilihMenu("ADMIN").bisaKeluar).toBe(true);
   });
 });
