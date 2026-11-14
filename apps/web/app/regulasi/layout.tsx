@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getRegulations } from "@/lib/data/regulations";
+import { wajibMasuk } from "@/lib/sesi";
 import { focusRing } from "@/lib/styles";
 
 export default async function RegulasiLayout({
@@ -7,6 +8,7 @@ export default async function RegulasiLayout({
 }: {
   children: React.ReactNode;
 }) {
+  await wajibMasuk();
   const regulations = await getRegulations();
 
   return (

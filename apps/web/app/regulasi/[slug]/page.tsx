@@ -6,6 +6,7 @@ import VersionTimeline from "@/components/VersionTimeline";
 import { getRegulationBySlug } from "@/lib/data/regulations";
 import { todayInJakarta } from "@/lib/domain/tanggal";
 import { findEffectiveVersion } from "@/lib/domain/versi";
+import { wajibMasuk } from "@/lib/sesi";
 import { focusRing } from "@/lib/styles";
 
 // Bentuk slug yang sah: huruf kecil/angka, dipisah satu strip.
@@ -20,6 +21,7 @@ export default async function RegulationDetailPage({
   params,
   searchParams,
 }: RegulationDetailPageProps) {
+  await wajibMasuk();
   // Di Next.js 16 params berupa Promise, jadi wajib di-await.
   const { slug } = await params;
   // searchParams juga Promise; dibaca untuk perbandingan versi (F-04).

@@ -39,6 +39,26 @@ describe.each(["problem", "teks"] as const)("jagaRoute bentuk %s", (bentuk) => {
   });
 });
 
+describe.each(["problem", "teks"] as const)("jagaRoute syarat masuk, bentuk %s", (bentuk) => {
+  it("SIVITAS -> lolos", async () => {
+    sesiMock.mockResolvedValue(sivitas);
+    expect(await jagaRoute("masuk", request, bentuk)).toEqual({ sesi: sivitas });
+  });
+
+  it("ADMIN -> lolos", async () => {
+    sesiMock.mockResolvedValue(admin);
+    expect(await jagaRoute("masuk", request, bentuk)).toEqual({ sesi: admin });
+  });
+
+  it("anonim -> 401", async () => {
+    sesiMock.mockResolvedValue(null);
+    const hasil = await jagaRoute("masuk", request, bentuk);
+    if (!("respons" in hasil)) throw new Error("harus ditolak");
+    expect(hasil.respons.status).toBe(401);
+    if (bentuk === "teks") expect(await hasil.respons.text()).toBe("Perlu masuk.");
+  });
+});
+
 describe("jagaRoute isi respons", () => {
   it("problem: application/problem+json", async () => {
     sesiMock.mockResolvedValue(null);

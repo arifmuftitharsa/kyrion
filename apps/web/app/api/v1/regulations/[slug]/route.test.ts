@@ -1,11 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { jagaRoute } from "@/lib/akses/jaga-route";
+import { buatMasalah } from "@/lib/api/masalah";
 import { getRegulationBySlug } from "@/lib/data/regulations";
 import type { Regulation, Version } from "@/lib/types";
 import { GET } from "./route";
 
 // Lapisan data ditiru: modul asli (Prisma, next/server, server-only) tidak pernah dimuat.
+vi.mock("@/lib/akses/jaga-route", () => ({ jagaRoute: vi.fn() }));
 vi.mock("@/lib/data/regulations", () => ({ getRegulationBySlug: vi.fn() }));
 
+const jagaMock = vi.mocked(jagaRoute);
 const dataMock = vi.mocked(getRegulationBySlug);
 
 const versi = (id: string, effectiveDate: string, status: Version["status"] = "SAH"): Version => ({
@@ -31,6 +35,7 @@ const panggil = (slug: string, query = "") =>
   });
 
 beforeEach(() => {
+  jagaMock.mockResolvedValue({ sesi: { userId: "u1", email: "a@kampus.ac.id", role: "SIVITAS" } });
   // Hanya Date yang dibekukan: 2026-11-12 pukul 12.00 WIB.
   vi.useFakeTimers({ toFake: ["Date"] });
   vi.setSystemTime(new Date("2026-11-12T05:00:00Z"));
@@ -148,5 +153,19 @@ describe("GET /api/v1/regulations/{slug}: 500 internal-error", () => {
     expect(teks).not.toContain("rahasia-koneksi-db");
     expect(log).toHaveBeenCalledWith("Galat detail regulasi:", "Error");
     expect(JSON.stringify(log.mock.calls)).not.toContain("rahasia-koneksi-db");
+  });
+});
+describe("tanpa sesi", () => {
+  it("401 application/problem+json, lapisan data tidak dipanggil", async () => {
+    jagaMock.mockImplementation(async (_syarat, request) => ({
+      respons: buatMasalah("unauthenticated", request, { detail: "Perlu masuk." }),
+    }));
+
+    const res = await panggil("pph");
+
+    expect(jagaMock).toHaveBeenCalledWith("masuk", expect.any(Request), "problem");
+    expect(res.status).toBe(401);
+    expect(res.headers.get("Content-Type")).toBe("application/problem+json");
+    expect(dataMock).not.toHaveBeenCalled();
   });
 });

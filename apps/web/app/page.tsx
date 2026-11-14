@@ -4,6 +4,7 @@ import { getPublicCategories, type PublicCategory } from "@/lib/data/categories"
 import { getRegulationsByCategory } from "@/lib/data/regulations";
 import { todayInJakarta } from "@/lib/domain/tanggal";
 import { findEffectiveVersion } from "@/lib/domain/versi";
+import { wajibMasuk } from "@/lib/sesi";
 
 interface HomePageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -22,6 +23,7 @@ function resolveCategory(
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
+  await wajibMasuk();
   // Di Next.js 16 searchParams berupa Promise, jadi wajib di-await.
   const { kategori } = await searchParams;
   const categories = await getPublicCategories();

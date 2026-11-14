@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
     // PDF maks. 10 MB (MAX_INPUT_BYTES) + overhead multipart; batas 10 MB yang
     // sebenarnya ditegakkan oleh validasiBerkasPdf di server.
     serverActions: { bodySizeLimit: "11mb" },
-    // proxy.ts mencocokkan /admin/** dan menyangga body request (bawaan 10 MB).
+    // proxy.ts mencocokkan semua halaman kecuali /masuk, /api, dan aset, serta menyangga body request (bawaan 10 MB).
     proxyClientMaxBodySize: "11mb",
   },
 };
