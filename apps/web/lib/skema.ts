@@ -69,6 +69,8 @@ export type MasukanVersi = z.infer<typeof skemaVersi>;
 
 export const skemaIdVersi = z.uuid({ error: "ID versi tidak valid" });
 
+export const skemaIdSesi = z.uuid({ error: "ID sesi tidak valid" });
+
 const PESAN_HALAMAN = "Halaman harus bilangan bulat 1 sampai 10000";
 
 // Dipakai untuk tambah dan ubah Change (F-04). Versi induk tidak ada di sini:

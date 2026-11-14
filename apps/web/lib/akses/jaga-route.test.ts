@@ -9,7 +9,7 @@ vi.mock("@/lib/sesi", () => ({ bacaSesi: vi.fn() }));
 
 const sesiMock = vi.mocked(bacaSesi);
 const request = new Request("http://localhost/admin/x/berkas");
-const admin = { userId: "u1", email: "a@kampus.ac.id", role: "ADMIN" as const };
+const admin = { userId: "u1", sesiId: "s1", email: "a@kampus.ac.id", role: "ADMIN" as const };
 const sivitas = { ...admin, role: "SIVITAS" as const };
 
 beforeEach(() => vi.clearAllMocks());

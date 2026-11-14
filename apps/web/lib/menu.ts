@@ -2,6 +2,7 @@
 import type { Tautan } from "@/components/TautanNav";
 
 const daftar: Tautan = { href: "/", label: "Daftar Regulasi" };
+const sesi: Tautan = { href: "/akun/sesi", label: "Sesi" };
 
 export function pilihMenu(peran: "ADMIN" | "SIVITAS" | null): { tautan: Tautan[]; bisaKeluar: boolean } {
   if (peran === "ADMIN") {
@@ -10,10 +11,11 @@ export function pilihMenu(peran: "ADMIN" | "SIVITAS" | null): { tautan: Tautan[]
         daftar,
         { href: "/admin/regulasi", label: "Kelola Regulasi" },
         { href: "/admin/verifikasi", label: "Periksa Berkas" },
+        sesi,
       ],
       bisaKeluar: true,
     };
   }
-  if (peran === "SIVITAS") return { tautan: [daftar], bisaKeluar: true };
+  if (peran === "SIVITAS") return { tautan: [daftar, sesi], bisaKeluar: true };
   return { tautan: [{ href: "/masuk", label: "Masuk" }], bisaKeluar: false };
 }

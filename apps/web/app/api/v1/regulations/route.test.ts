@@ -31,7 +31,7 @@ const regulasi = (slug: string, versions: Version[]): Regulation => ({
 const panggil = (query = "") => GET(new Request(`http://localhost/api/v1/regulations${query}`));
 
 beforeEach(() => {
-  jagaMock.mockResolvedValue({ sesi: { userId: "u1", email: "a@kampus.ac.id", role: "SIVITAS" } });
+  jagaMock.mockResolvedValue({ sesi: { userId: "u1", sesiId: "s1", email: "a@kampus.ac.id", role: "SIVITAS" } });
   // Hanya Date yang dibekukan: 2026-11-12 pukul 12.00 WIB.
   vi.useFakeTimers({ toFake: ["Date"] });
   vi.setSystemTime(new Date("2026-11-12T05:00:00Z"));
