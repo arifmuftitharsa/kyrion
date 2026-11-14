@@ -3,7 +3,19 @@ info:
   title: Kyrion API
   version: 0.3.0
   description: |
-    API baca Kyrion untuk regulasi beserta versinya.
+    API Kyrion untuk membaca regulasi beserta versinya, mengesahkan versi (Admin),
+    dan mengelola sesi milik sendiri.
+
+    **Autentikasi** memakai cookie sesi (lihat skema `cookieSesi`), bukan token
+    bearer. Tanpa sesi, endpoint menjawab 401.
+
+    **Pemeriksaan Origin.** Permintaan `POST` dan `DELETE` wajib membawa header
+    `Origin` yang sama persis dengan origin aplikasi; tanpa header itu, atau bila
+    berbeda, jawabannya 403. Pemeriksaan ini dilakukan sebelum pemeriksaan sesi,
+    sehingga permintaan anonim dengan Origin salah pun dijawab 403, bukan 401.
+
+    **Metode yang tidak didukung** (misalnya `POST /api/v1/sessions`) dijawab 405
+    bawaan Next.js, tanpa `application/problem+json`.
 
     Semua respons memakai `Cache-Control: no-store`. Respons sukses berupa
     `application/json` dengan pembungkus `{ "data": ... }`; respons galat berupa
@@ -18,18 +30,19 @@ info:
     memenuhi, `currentVersion` bernilai `null`. Tanggal acuan bawaan adalah hari ini
     menurut zona waktu Asia/Jakarta (WIB).
 
-    Autentikasi dan endpoint lain menyusul di v0.3.
-
     Seluruh contoh pada dokumen ini adalah data rekaan (sintetis).
 servers:
   - url: http://localhost:3000/api/v1
     description: Pengembangan lokal
-# Endpoint pada dokumen ini belum memerlukan autentikasi. Daftar kosong menyatakannya
-# secara eksplisit; skema keamanan ditambahkan saat login v0.3 dibangun.
-security: []
+security:
+  - cookieSesi: []
 tags:
   - name: Regulasi
     description: Pembacaan regulasi dan versinya.
+  - name: Pengesahan
+    description: Pengesahan versi regulasi (khusus Admin).
+  - name: Sesi
+    description: Sesi aktif milik pengguna yang sedang masuk.
 paths:
   /regulations:
     get:
@@ -48,6 +61,8 @@ paths:
           $ref: "#/components/responses/DaftarRegulasi200"
         "400":
           $ref: "#/components/responses/Galat400"
+        "401":
+          $ref: "#/components/responses/Galat401"
         "500":
           $ref: "#/components/responses/Galat500"
   /regulations/{slug}:
@@ -67,6 +82,8 @@ paths:
           $ref: "#/components/responses/DetailRegulasi200"
         "400":
           $ref: "#/components/responses/Galat400"
+        "401":
+          $ref: "#/components/responses/Galat401"
         "404":
           $ref: "#/components/responses/Galat404"
         "500":
@@ -89,11 +106,88 @@ paths:
           $ref: "#/components/responses/VersiBerlaku200"
         "400":
           $ref: "#/components/responses/Galat400"
+        "401":
+          $ref: "#/components/responses/Galat401"
+        "404":
+          $ref: "#/components/responses/Galat404"
+        "500":
+          $ref: "#/components/responses/Galat500"
+  /regulations/{slug}/versions/{versionId}/approval:
+    post:
+      tags: [Pengesahan]
+      operationId: sahkanVersi
+      summary: Mengesahkan versi berstatus Draf (khusus Admin)
+      description: |
+        Hanya peran Admin. Permintaan tidak memiliki badan; tidak ada penguncian
+        optimistik dari klien. Pengaman utamanya adalah status `DRAF` yang diperiksa
+        ulang di dalam transaksi. `Origin` wajib sama dengan origin aplikasi (403 bila
+        tidak). Slug atau `versionId` berformat salah, regulasi yang tidak ada, dan
+        versi yang bukan milik regulasi itu sama-sama menghasilkan 404.
+      parameters:
+        - $ref: "#/components/parameters/SlugRegulasi"
+        - $ref: "#/components/parameters/IdVersi"
+      responses:
+        "200":
+          $ref: "#/components/responses/Pengesahan200"
+        "401":
+          $ref: "#/components/responses/Galat401"
+        "403":
+          $ref: "#/components/responses/Galat403"
+        "404":
+          $ref: "#/components/responses/Galat404"
+        "409":
+          $ref: "#/components/responses/Galat409"
+        "500":
+          $ref: "#/components/responses/Galat500"
+  /sessions:
+    get:
+      tags: [Sesi]
+      operationId: daftarSesi
+      summary: Daftar sesi aktif milik pengguna yang sedang masuk
+      description: |
+        Hanya sesi milik sendiri yang belum kedaluwarsa. Respons tidak memuat token,
+        alamat IP, maupun user agent. `current` bernilai `true` untuk sesi yang
+        dipakai permintaan ini. Metode selain GET dijawab 405 bawaan Next.js.
+      responses:
+        "200":
+          $ref: "#/components/responses/DaftarSesi200"
+        "401":
+          $ref: "#/components/responses/Galat401"
+        "500":
+          $ref: "#/components/responses/Galat500"
+  /sessions/{id}:
+    delete:
+      tags: [Sesi]
+      operationId: cabutSesi
+      summary: Mencabut satu sesi milik sendiri
+      description: |
+        Boleh mencabut sesi yang sedang dipakai (sama dengan keluar). `id` yang bukan
+        UUID, sesi yang tidak ada, dan sesi milik pengguna lain sengaja tidak
+        dibedakan: semuanya 404. `Origin` wajib sama dengan origin aplikasi (403 bila
+        tidak).
+      parameters:
+        - $ref: "#/components/parameters/IdSesi"
+      responses:
+        "204":
+          $ref: "#/components/responses/Tanpa204"
+        "401":
+          $ref: "#/components/responses/Galat401"
+        "403":
+          $ref: "#/components/responses/Galat403"
         "404":
           $ref: "#/components/responses/Galat404"
         "500":
           $ref: "#/components/responses/Galat500"
 components:
+  securitySchemes:
+    cookieSesi:
+      type: apiKey
+      in: cookie
+      name: better-auth.session_token
+      description: |
+        Cookie sesi Better Auth (`httpOnly`, `SameSite=Lax`). Di HTTPS (bila
+        `BETTER_AUTH_URL` berawalan `https://`) namanya memakai awalan `__Secure-`,
+        yaitu `__Secure-better-auth.session_token`.
   parameters:
     SlugRegulasi:
       name: slug
@@ -109,6 +203,22 @@ components:
       description: Slug kategori untuk menyaring daftar. Tanpa nilai ini, semua regulasi dikembalikan.
       schema:
         $ref: "#/components/schemas/Slug"
+    IdVersi:
+      name: versionId
+      in: path
+      required: true
+      description: ID versi (UUID).
+      schema:
+        type: string
+        format: uuid
+    IdSesi:
+      name: id
+      in: path
+      required: true
+      description: ID sesi (UUID).
+      schema:
+        type: string
+        format: uuid
     TanggalAcuanQuery:
       name: date
       in: query
@@ -221,6 +331,45 @@ components:
       properties:
         data:
           $ref: "#/components/schemas/VersiBerlakuPadaTanggal"
+    PengesahanResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [id, status]
+          properties:
+            id:
+              type: string
+              format: uuid
+            status:
+              type: string
+              const: SAH
+    SesiRingkas:
+      type: object
+      description: Hanya id dan waktu; tanpa token, IP, atau user agent.
+      required: [id, createdAt, expiresAt, current]
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+        current:
+          type: boolean
+          description: "`true` untuk sesi yang dipakai permintaan ini."
+    DaftarSesiResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/SesiRingkas"
     GalatField:
       type: object
       required: [field, message]
@@ -333,6 +482,122 @@ components:
                 versionNumber: "1.0"
                 effectiveDate: "2026-01-01"
                 status: DIGANTIKAN
+    Pengesahan200:
+      description: Versi berhasil disahkan (contoh sintetis).
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PengesahanResponse"
+          example:
+            data:
+              id: 00000000-0000-7000-8000-000000000003
+              status: SAH
+    DaftarSesi200:
+      description: Sesi aktif milik sendiri (contoh sintetis).
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/DaftarSesiResponse"
+          example:
+            data:
+              - id: 00000000-0000-7000-8000-0000000000a1
+                createdAt: "2026-11-14T01:00:00.000Z"
+                expiresAt: "2026-11-21T01:00:00.000Z"
+                current: true
+              - id: 00000000-0000-7000-8000-0000000000a2
+                createdAt: "2026-11-10T08:30:00.000Z"
+                expiresAt: "2026-11-17T08:30:00.000Z"
+                current: false
+    Tanpa204:
+      description: Berhasil, tanpa badan respons.
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+    Galat401:
+      description: Belum masuk (tidak ada sesi yang sah).
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Masalah"
+          example:
+            type: /problems/unauthenticated
+            title: Belum masuk
+            status: 401
+            detail: Perlu masuk.
+            instance: /api/v1/sessions
+    Galat403:
+      description: |
+        Ditolak. Dua sebab pada dokumen ini: peran bukan Admin (endpoint pengesahan),
+        atau header `Origin` tidak sama dengan origin aplikasi (`POST` dan `DELETE`).
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Masalah"
+          examples:
+            peran:
+              summary: Peran bukan Admin
+              value:
+                type: /problems/forbidden
+                title: Tidak berwenang
+                status: 403
+                detail: Tidak diizinkan.
+                instance: /api/v1/regulations/regulasi-contoh-satu/versions/00000000-0000-7000-8000-000000000003/approval
+            origin:
+              summary: Origin tidak diizinkan
+              value:
+                type: /problems/forbidden
+                title: Tidak berwenang
+                status: 403
+                detail: Origin tidak diizinkan.
+                instance: /api/v1/sessions/00000000-0000-7000-8000-0000000000a2
+    Galat409:
+      description: |
+        Versi tidak dapat disahkan pada keadaannya sekarang (`state-conflict`). Tiga
+        kemungkinan pesan `detail`, semuanya tetap.
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Masalah"
+          examples:
+            bukanDraf:
+              summary: Versi bukan Draf atau sudah berubah
+              value:
+                type: /problems/state-conflict
+                title: Keadaan tidak mengizinkan
+                status: 409
+                detail: Versi bukan Draf atau sudah berubah.
+                instance: /api/v1/regulations/regulasi-contoh-satu/versions/00000000-0000-7000-8000-000000000003/approval
+            tanpaBerkas:
+              summary: Versi belum punya berkas PDF lengkap
+              value:
+                type: /problems/state-conflict
+                title: Keadaan tidak mengizinkan
+                status: 409
+                detail: Versi belum punya berkas PDF lengkap. Unggah berkas lewat Ubah sebelum mengesahkan.
+                instance: /api/v1/regulations/regulasi-contoh-satu/versions/00000000-0000-7000-8000-000000000003/approval
+            tanggalKembar:
+              summary: Tanggal berlaku sudah dipakai versi sah lain
+              value:
+                type: /problems/state-conflict
+                title: Keadaan tidak mengizinkan
+                status: 409
+                detail: Sudah ada versi lain yang disahkan dengan tanggal berlaku yang sama. Ubah tanggal berlaku versi ini.
+                instance: /api/v1/regulations/regulasi-contoh-satu/versions/00000000-0000-7000-8000-000000000003/approval
     Galat400:
       description: Parameter query tidak valid, tidak dikenal, atau diulang.
       headers:
@@ -352,7 +617,10 @@ components:
               - field: date
                 message: Tanggal harus berformat YYYY-MM-DD yang sah
     Galat404:
-      description: Regulasi tidak ditemukan, termasuk slug berformat salah.
+      description: |
+        Sumber daya tidak ditemukan. Untuk regulasi dan versi, termasuk slug atau ID
+        berformat salah. Untuk sesi, `id` bukan UUID, sesi tidak ada, dan sesi milik
+        pengguna lain sengaja tidak dibedakan.
       headers:
         Cache-Control:
           $ref: "#/components/headers/CacheControl"
@@ -360,12 +628,31 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/Masalah"
-          example:
-            type: /problems/not-found
-            title: Tidak ditemukan
-            status: 404
-            detail: Regulasi tidak ditemukan.
-            instance: /api/v1/regulations/regulasi-tidak-ada
+          examples:
+            regulasi:
+              summary: Regulasi tidak ditemukan
+              value:
+                type: /problems/not-found
+                title: Tidak ditemukan
+                status: 404
+                detail: Regulasi tidak ditemukan.
+                instance: /api/v1/regulations/regulasi-tidak-ada
+            versi:
+              summary: Versi tidak ditemukan
+              value:
+                type: /problems/not-found
+                title: Tidak ditemukan
+                status: 404
+                detail: Versi tidak ditemukan.
+                instance: /api/v1/regulations/regulasi-contoh-satu/versions/00000000-0000-7000-8000-000000000009/approval
+            sesi:
+              summary: Sesi tidak ditemukan
+              value:
+                type: /problems/not-found
+                title: Tidak ditemukan
+                status: 404
+                detail: Sesi tidak ditemukan.
+                instance: /api/v1/sessions/00000000-0000-7000-8000-000000000009
     Galat500:
       description: Galat server. Pesan galat asli tidak pernah dikirim.
       headers:
