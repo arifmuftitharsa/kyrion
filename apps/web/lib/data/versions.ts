@@ -310,6 +310,26 @@ export async function sahkanVersiDraf(p: ParamSahkan): Promise<void> {
   await getPrisma().$transaction((tx) => isiTransaksiSahkan(tx, p));
 }
 
+/**
+ * Pintu bersama Server Action dan API: membentuk keterangan audit dan waktu, lalu memanggil
+ * sahkanVersiDraf. Galat bertipe dari isiTransaksiSahkan diteruskan apa adanya.
+ */
+export async function sahkanVersiDenganAudit(p: {
+  regulasi: { id: string; name: string };
+  versi: { id: string; versionNumber: string };
+  penanda: Date;
+  admin: { id: string };
+}): Promise<void> {
+  await sahkanVersiDraf({
+    regulationId: p.regulasi.id,
+    versionId: p.versi.id,
+    penanda: p.penanda,
+    actorId: p.admin.id,
+    keterangan: `${p.regulasi.name}, versi ${p.versi.versionNumber}`,
+    waktu: new Date(),
+  });
+}
+
 /** Pembatalan atomik bersama log audit; berkas tidak dihapus. */
 export async function batalkanVersiDraf(p: ParamBatalkan): Promise<void> {
   await getPrisma().$transaction((tx) => isiTransaksiBatalkan(tx, p));
