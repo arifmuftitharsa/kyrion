@@ -1,6 +1,11 @@
 import type { Prisma } from "@/generated/prisma/client";
+import { dataTerlindungDariBaris } from "../crypto/data-terlindung";
+import type { Penandatangan } from "../crypto/penandatangan";
+import { tandatanganiPengesahan } from "../crypto/tanda-tangan-pengesahan";
 import { PERNAH_DISAHKAN } from "../domain/versi";
 import {
+  PESAN_KUNCI_BELUM_SIAP,
+  PenandatanganBelumSiapError,
   VersionEffectiveDateTakenError,
   VersionNotEditableError,
   VersionWithoutFileError,
@@ -21,6 +26,8 @@ export interface ParamSahkan extends ParamBatalkan {
   /** versions.updatedAt yang dilihat admin di halaman konfirmasi. */
   penanda: Date;
   waktu: Date;
+  /** Sudah divalidasi pemanggil (kunci privat dan keyring); dicek lagi terhadap signing_keys di transaksi. */
+  penandatangan: Penandatangan;
 }
 
 const GALAT_BUKAN_DRAF = "Versi tidak lagi berstatus DRAF atau sudah berubah";
@@ -29,7 +36,14 @@ const GALAT_BUKAN_DRAF = "Versi tidak lagi berstatus DRAF atau sudah berubah";
 export async function isiTransaksiSahkan(tx: Prisma.TransactionClient, p: ParamSahkan): Promise<void> {
   const saat = await tx.version.findFirst({
     where: { id: p.versionId, regulationId: p.regulationId, status: "DRAF" },
-    select: { effectiveDate: true, fileKey: true, fileName: true, fileSize: true, fileSha256: true },
+    select: {
+      versionNumber: true,
+      effectiveDate: true,
+      fileKey: true,
+      fileName: true,
+      fileSize: true,
+      fileSha256: true,
+    },
   });
   if (!saat) throw new VersionNotEditableError(GALAT_BUKAN_DRAF);
 
@@ -48,9 +62,31 @@ export async function isiTransaksiSahkan(tx: Prisma.TransactionClient, p: ParamS
   });
   if (kembar) throw new VersionEffectiveDateTakenError("Tanggal berlaku sudah dipakai versi sah lain");
 
+  // Kunci harus terdaftar dan AKTIF di DB; tanda tangan dibuat dari nilai yang dibaca di transaksi ini.
+  const kunci = await tx.signingKey.findFirst({
+    where: { id: p.penandatangan.idKunci, status: "AKTIF" },
+    select: { id: true },
+  });
+  if (!kunci) throw new PenandatanganBelumSiapError(PESAN_KUNCI_BELUM_SIAP);
+
+  const data = dataTerlindungDariBaris({ ...saat, id: p.versionId, regulationId: p.regulationId });
+  if (!data) throw new VersionWithoutFileError("Versi tidak punya berkas lengkap");
+  const tandaTangan = tandatanganiPengesahan({
+    penandatangan: p.penandatangan,
+    versi: data,
+    approvedById: p.actorId,
+    approvedAt: p.waktu,
+  });
+
   const { count } = await tx.version.updateMany({
     where: { id: p.versionId, regulationId: p.regulationId, status: "DRAF", updatedAt: p.penanda },
-    data: { status: "SAH", approvedById: p.actorId, approvedAt: p.waktu },
+    data: {
+      status: "SAH",
+      approvedById: p.actorId,
+      approvedAt: p.waktu,
+      signature: new Uint8Array(tandaTangan),
+      signingKeyId: p.penandatangan.idKunci,
+    },
   });
   if (count === 0) throw new VersionNotEditableError(GALAT_BUKAN_DRAF);
 

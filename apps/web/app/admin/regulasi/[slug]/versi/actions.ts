@@ -23,8 +23,10 @@ import {
 } from "@/lib/domain/berkas-pdf";
 import { RegulationNotFoundError } from "@/lib/domain/regulasi";
 import {
+  PESAN_KUNCI_BELUM_SIAP,
   PESAN_TANGGAL_KEMBAR,
   PESAN_TANPA_BERKAS,
+  PenandatanganBelumSiapError,
   VersionEffectiveDateTakenError,
   VersionNotEditableError,
   VersionNumberTakenError,
@@ -299,6 +301,7 @@ export async function sahkanVersi(
   } catch (e) {
     if (e instanceof VersionWithoutFileError) return { pesan: PESAN_TANPA_BERKAS };
     if (e instanceof VersionEffectiveDateTakenError) return { pesan: PESAN_TANGGAL_KEMBAR };
+    if (e instanceof PenandatanganBelumSiapError) return { pesan: PESAN_KUNCI_BELUM_SIAP };
     if (e instanceof VersionNotEditableError) {
       const terbaru = await findVersion(regulationId, versionId);
       if (!terbaru) return { pesan: PESAN_VERSI_TIDAK_ADA };
