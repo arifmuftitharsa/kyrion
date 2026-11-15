@@ -32,6 +32,14 @@ enum AuditAction {
   @@map("audit_action")
 }
 
+enum SigningKeyStatus {
+  AKTIF
+  DIROTASI
+  DICABUT
+
+  @@map("signing_key_status")
+}
+
 model User {
   id           String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
   // Selalu huruf kecil; dinormalisasi oleh skema Zod dan seed sebelum disimpan.
@@ -103,6 +111,9 @@ model Version {
   // Tag HMAC-SHA256 "v1$<hex64>" atas metadata dan hash berkas (F-31); kuncinya di luar DB.
   // Null untuk versi tanpa berkas; versi berkas lama diisi skrip backfill.
   integrityTag   String?       @map("integrity_tag")
+  // Tanda tangan Ed25519 (64 byte) atas payload pengesahan; keduanya null atau keduanya terisi.
+  signature      Bytes?
+  signingKeyId   String?       @map("signing_key_id")
   // Null untuk versi yang belum disahkan dan untuk baris SAH dari seed (tanpa pengesah).
   approvedById   String?       @map("approved_by_id") @db.Uuid
   approvedAt     DateTime?     @map("approved_at") @db.Timestamptz(3)
@@ -112,10 +123,27 @@ model Version {
   regulation     Regulation    @relation(fields: [regulationId], references: [id], onDelete: Restrict)
   // Restrict: pengguna yang pernah mengesahkan versi tidak bisa dihapus.
   approvedBy     User?         @relation("PengesahVersi", fields: [approvedById], references: [id], onDelete: Restrict)
+  // Restrict: kunci yang pernah menandatangani versi tidak bisa dihapus.
+  signingKey     SigningKey?   @relation(fields: [signingKeyId], references: [id], onDelete: Restrict)
   changes        Change[]
 
   @@unique([regulationId, versionNumber])
   @@map("versions")
+}
+
+// Kunci publik penandatangan (F-32). Baris kunci tidak pernah dihapus.
+model SigningKey {
+  // Sidik kunci publik: hex huruf kecil 32 karakter.
+  id        String           @id
+  // SPKI DER Ed25519, 44 byte.
+  publicKey Bytes            @map("public_key")
+  status    SigningKeyStatus
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  rotatedAt DateTime?        @map("rotated_at") @db.Timestamptz(3)
+  revokedAt DateTime?        @map("revoked_at") @db.Timestamptz(3)
+  versions  Version[]
+
+  @@map("signing_keys")
 }
 
 enum ChangeSource {
