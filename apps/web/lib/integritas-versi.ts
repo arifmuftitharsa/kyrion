@@ -17,7 +17,7 @@ let kunciInduk: Buffer | undefined;
  * di-cache; kegagalan (berkas belum ada, izin salah) dicoba lagi pada panggilan
  * berikutnya, jadi memperbaiki berkas kunci tidak butuh restart server.
  */
-async function muatKunciInduk(): Promise<Buffer> {
+export async function muatKunciInduk(): Promise<Buffer> {
   kunciInduk ??= await bacaKunciInduk(process.env.KYRION_MASTER_KEY_FILE);
   return kunciInduk;
 }
