@@ -286,7 +286,7 @@ Penomoran melanjutkan K-1 sampai K-6. ID kerja Tugas 3 dicantumkan dalam tanda k
 | # | Field | Keterangan |
 |---|---|---|
 | 1 | domain | `kyrion/pengesahan-versi/v1` |
-| 2 | tujuh field terlindung F-31 | `id`, `regulationId`, `versionNumber`, `effectiveDate`, `fileSha256`, `fileName`, `fileSize` |
+| 2 | keluaran `kanonisasiVersi` utuh: label `kyrion:version:v1` lalu tujuh field terlindung F-31 | `id`, `regulationId`, `versionNumber`, `effectiveDate`, `fileSha256`, `fileName`, `fileSize` |
 | 3 | literal | `SAH` |
 | 4 | `approvedById` | |
 | 5 | `approvedAt` | ISO 8601 UTC milidetik, dibuat di aplikasi dan disimpan dengan nilai yang sama |
