@@ -3,7 +3,7 @@ import { periksaBerkasVersi } from "@/lib/integritas-versi";
 import { bacaBerkas } from "@/lib/penyimpanan";
 import type { BerkasTersimpan } from "@/lib/types";
 
-// Respons unduhan PDF (F-05) untuk Route Handler publik dan admin. Sebelum dikirim,
+// Respons unduhan PDF (F-05) untuk Route Handler admin (satu-satunya pemanggil). Sebelum dikirim,
 // hash berkas di disk dihitung ulang (F-30) dan tag HMAC catatan versi diperiksa (F-31).
 
 function teks(pesan: string, status: number): Response {
@@ -28,7 +28,7 @@ export async function responsPdf(berkas: BerkasTersimpan): Promise<Response> {
   try {
     bytes = await bacaBerkas(berkas.key);
   } catch (error) {
-    console.error("Berkas tidak dapat dibaca:", berkas.key, error);
+    console.error("Berkas tidak dapat dibaca:", berkas.key, error instanceof Error ? error.name : "galat tidak dikenal");
     return teks("Berkas tidak ditemukan di penyimpanan.", 500);
   }
 
