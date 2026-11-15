@@ -2,7 +2,7 @@
 
 Dokumen ini menjelaskan **alasan** di balik desain API Kyrion. Bentuk persisnya (path, parameter, skema, contoh) ada di [`openapi.yaml`](./openapi.yaml); dokumen ini tidak mengulanginya.
 
-Status: mencakup tiga endpoint baca yang sudah diimplementasikan. Endpoint lain dan autentikasi dicatat di bagian 9 sebagai rencana, belum sebagai kontrak.
+Status: mencakup semua endpoint di `openapi.yaml`: tiga endpoint baca regulasi, pengesahan versi (POST), dan dua endpoint sesi milik sendiri (GET, DELETE), ditambah route catch-all untuk jalur `/api` yang tidak dikenal. Autentikasi memakai cookie sesi (bagian 12).
 
 ## 1. Dari kebutuhan ke resource
 
@@ -26,14 +26,18 @@ Resource utamanya **regulasi**. Versi tidak dijadikan resource tingkat atas kare
 
 ## 3. Metode dan kode status
 
-Ketiga endpoint hanya membaca, jadi semuanya `GET`: aman dan idempoten.
+Tiga endpoint regulasi hanya membaca, jadi semuanya `GET`: aman dan idempoten. Pengesahan memakai `POST`, pencabutan sesi memakai `DELETE`, dan daftar sesi memakai `GET`.
 
 | Status | Kapan | Alasan |
 |---|---|---|
 | 200 | Permintaan sah, termasuk bila hasilnya kosong | Daftar kosong dan "belum ada versi berlaku" adalah jawaban yang sah, bukan galat |
 | 400 | Parameter query tidak sah, tidak dikenal, atau diulang | Kesalahan ada pada bentuk permintaan |
+| 401 | Tidak ada sesi yang sah | Pengguna belum masuk |
+| 403 | Peran bukan Admin (pengesahan), atau header `Origin` tidak sama dengan origin aplikasi (`POST` dan `DELETE`) | Pengguna dikenal tetapi tidak berwenang, atau asal permintaan ditolak |
 | 404 | Regulasi tidak ada, atau slug berformat salah | Resource yang dituju tidak ada |
+| 409 | Versi tidak dapat disahkan: bukan Draf atau sudah berubah, belum punya berkas PDF lengkap, atau tanggal berlaku sudah dipakai versi sah lain | Permintaan sah, tetapi keadaan versi tidak mengizinkan |
 | 500 | Galat tak terduga di server | Rincian disimpan di log server, tidak dikirim |
+| 503 | Penandatangan belum siap saat pengesahan | Masalah konfigurasi sisi operator, bukan kesalahan permintaan |
 
 Tiga keputusan yang perlu dijelaskan:
 
@@ -78,24 +82,19 @@ Versi yang berlaku pada tanggal T adalah, di antara versi yang pernah disahkan (
 
 ## 8. Tembolok
 
-Semua respons memakai `Cache-Control: no-store`. Isi regulasi bisa berubah saat versi baru disahkan, dan akses nantinya dibatasi untuk sivitas, sehingga respons tidak boleh disimpan perantara.
+Semua respons memakai `Cache-Control: no-store`. Isi regulasi bisa berubah saat versi baru disahkan, dan respons memerlukan sesi, sehingga respons tidak boleh disimpan perantara.
 
 ## 9. Yang belum ada
 
 | Hal | Keadaan | Rencana |
 |---|---|---|
-| Autentikasi dan otorisasi | Endpoint baca sementara belum memeriksa sesi; di `openapi.yaml` dinyatakan `security: []` | Pemeriksaan sesi dan jawaban 401 ditambahkan saat login v0.3 dibangun, lalu spesifikasi diperbarui |
-| Endpoint pengesahan versi | Belum diimplementasikan | `POST /api/v1/regulations/{slug}/versions/{versionId}/approval` |
-| Endpoint sesi milik sendiri | Belum diimplementasikan | `GET /api/v1/sessions` dan `DELETE /api/v1/sessions/{id}` |
 | Paginasi daftar | Tidak ada | Belum dibutuhkan pada jumlah regulasi saat ini; pembungkus `data` memungkinkan penambahan kelak |
-| Penentu seri dua versi bertanggal sama | Sementara: mengikuti urutan dari lapisan data | Diputuskan saat pengesahan versi dibangun |
+| Penentu seri dua versi bertanggal sama | Sisi tulis: pengesahan ditolak bila ada versi lain pada regulasi yang sama berstatus SAH atau DIGANTIKAN dengan tanggal berlaku sama. Pemeriksaannya di `isiTransaksiSahkan` (`lib/data/pengesahan.ts`), di dalam transaksi pengesahan; hasilnya `VersionEffectiveDateTakenError`, dijawab 409 (API) atau `PESAN_TANGGAL_KEMBAR` (UI). UI juga punya pra-cek (`alasanTolakSahkan`) untuk pesan cepat. Sisi baca: tetap mengikuti urutan dari lapisan data, masih sementara. | Perlindungan terhadap dua pengesahan bersamaan atas tanggal yang sama belum diuji. |
 | Lisensi dan URL produksi di spesifikasi | Belum ada; dua peringatan Redocly dibiarkan | Diisi saat berkas lisensi dan deployment tersedia |
-
-Endpoint pada kolom "Rencana" belum menjadi kontrak dan belum ditulis di `openapi.yaml`.
 
 ## 10. Pengujian
 
-- Setiap endpoint punya uji Vitest pada handler-nya, mencakup jalur berhasil dan jalur gagal (400, 404, 500).
+- Setiap endpoint punya uji Vitest pada handler-nya, mencakup jalur berhasil dan jalur gagal (400, 401, 403, 404, 409, 500, 503, sesuai endpoint).
 - Lapisan data ditiru di uji handler, sehingga uji tidak membutuhkan basis data dan memeriksa handler saja. Yang **tidak** dibuktikan uji ini adalah kueri ke basis data sungguhan; itu diperiksa dengan permintaan nyata ke server pengembangan.
 - Aturan versi berlaku diuji terpisah sebagai fungsi murni.
 - Spesifikasi diperiksa dengan `npx @redocly/cli lint docs/api/openapi.yaml`.
@@ -109,3 +108,25 @@ Label "Digantikan" dihitung saat dibaca (`terapkanStatusTurunan` di `lib/domain/
 - **Nilai di basis data tidak sama dengan label di aplikasi.** Hasil `psql` yang menampilkan SAH untuk versi yang di aplikasi tampil Digantikan bukan galat.
 - **Versi yang disahkan dengan tanggal berlaku lebih awal dari versi berlaku saat ini langsung tampil Digantikan.** Itu disengaja: yang menentukan label adalah tanggal berlaku terhadap hari ini (WIB), bukan urutan pengesahan.
 - Guard dan operasi tulis (`versiBolehDiubah`, `versiBolehDihapus`, filter `DRAF`) tetap memakai status tersimpan.
+
+## 12. Autentikasi dan akses
+
+Autentikasi memakai cookie sesi (skema `cookieSesi` di `openapi.yaml`), bukan token bearer. Keputusan hak peran ada di fungsi murni `putuskanAkses` (`lib/akses/keputusan.ts`), dan `jagaRoute` (`lib/akses/jaga-route.ts`) menerjemahkannya menjadi respons untuk Route Handler.
+
+- **Tanpa sesi: 401.** `putuskanAkses` mengembalikan "masuk" bila sesi kosong; `jagaRoute` menjawab `/problems/unauthenticated` dengan `detail` "Perlu masuk.".
+- **Peran tidak cukup: 403.** Peran ADMIN selalu diizinkan, SIVITAS hanya untuk syarat "masuk", dan peran lain, termasuk yang tidak dikenal, ditolak (deny by default). Jawabannya `/problems/forbidden` dengan `detail` "Tidak diizinkan.".
+- **Pengesahan khusus Admin.** Handler `POST` di `app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.ts` memanggil `jagaRoute("admin", ...)`, sehingga peran selain ADMIN dijawab 403.
+- **Origin.** `periksaOrigin` (`lib/api/origin.ts`) dipakai rute berbasis cookie (`POST`, `DELETE`), karena Next.js hanya memeriksa Origin untuk Server Action. Origin yang diizinkan adalah origin `BETTER_AUTH_URL`; permintaan tanpa header `Origin` ditolak (tanpa fallback `Referer`) dengan 403 dan `detail` "Origin tidak diizinkan.". Pada endpoint pengesahan, pemeriksaan ini dipanggil sebelum `jagaRoute`, sehingga permintaan anonim dengan Origin salah dijawab 403, bukan 401.
+
+## 13. Penandatangan belum siap (503)
+
+Pengesahan gagal tertutup bila penandatangan belum siap. Ada dua pemicu di kode:
+
+- Kunci privat atau keyring tidak valid. `siapkanPenandatanganDariEnv` (`lib/data/penandatangan-env.ts`) membungkus galat penandatangan dan keyring menjadi `PenandatanganBelumSiapError` dengan pesan tetap, tanpa jalur berkas.
+- Kunci tidak terdaftar atau tidak berstatus AKTIF di tabel `signing_keys` saat transaksi pengesahan (`lib/data/pengesahan.ts`).
+
+API menjawab 503 `/problems/service-unavailable` (Galat503 di `openapi.yaml`); Server Action menampilkan `PESAN_KUNCI_BELUM_SIAP`. Penyebabnya konfigurasi sisi operator, bukan kesalahan permintaan.
+
+## 14. Jalur `/api` yang tidak dikenal
+
+`app/api/[[...jalur]]/route.ts` menjawab 404 `application/problem+json` (`detail` "Sumber daya tidak ditemukan.") untuk GET, POST, PUT, PATCH, dan DELETE. Route ini sengaja tanpa `jagaRoute` dan `periksaOrigin`, sehingga anonim maupun pengguna masuk mendapat jawaban yang sama dan keberadaan jalur tidak bocor. Segmen yang lebih spesifik (`auth/[...all]`, `v1/...`) tetap diutamakan router.

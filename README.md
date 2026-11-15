@@ -237,6 +237,7 @@ Buka http://localhost:3000, lalu masuk lewat `/masuk` dengan email Admin dari `A
 - Perintah `prisma` membaca `DATABASE_URL` dari `.env.local` lewat `prisma.config.ts`, jadi berkas itu harus sudah ada.
 - Prisma 7 tidak menjalankan `generate` dan seed otomatis setelah `migrate dev`, sehingga keduanya dijalankan eksplisit.
 - Uji otomatis: `npm test`. Build produksi: `npm run build`, lalu `npm start`.
+- Untuk menjalankan pengesahan versi, kunci penandatangan harus disiapkan dulu: lihat [Menyiapkan kunci penandatangan](#menyiapkan-kunci-penandatangan-untuk-menjalankan-pengesahan).
 
 > **Peringatan:** seed memakai `upsert` sehingga aman dijalankan ulang tanpa menggandakan data, tetapi baris seed yang sudah diubah manual akan dikembalikan ke nilai awalnya. Butir perubahan milik versi seed dihapus lalu dibuat ulang, dan akun Admin dikembalikan ke peran ADMIN dan aktif pada setiap seed.
 
@@ -363,7 +364,7 @@ Uji otomatis: `npm test` menjalankan **106 uji Vitest di 12 berkas** (semua lulu
 
 - Judul tab masih judul halaman asal pada halaman yang memanggil `notFound()` sendiri.
 - Peran SIVITAS ada di skema tetapi belum dipakai, dan belum ada ganti atau reset kata sandi.
-- Pengesahan dan pembatalan versi belum tersedia di UI, sehingga uji unduhan publik memerlukan `psql` untuk menandai versi Sah.
+- Pengesahan dan pembatalan versi tersedia di UI Admin (halaman Sahkan dan Batalkan); pengesahan memerlukan kunci penandatangan yang siap.
 - Sesi tersimpan di memori server dan hilang saat server dimulai ulang.
 - Butir perubahan dicatat manual oleh Admin; perbandingan otomatis belum ada.
 - Cascade dari `versions` ke `changes` dijaga basis data (FK `ON DELETE CASCADE`). Yang dijaga aplikasi adalah larangan menghapus versi non-Draf; bila sebuah versi dihapus langsung lewat `psql`, butir perubahannya ikut terhapus.
@@ -564,6 +565,20 @@ Hanya nama; nilainya diisi di `apps/web/.env.local`:
 - `KYRION_MASTER_KEY_FILE`
 
 Berkas kunci dan keyring harus berada di luar repository. Peran tiap kunci dijelaskan di [docs/kriptografi/peran-kunci.md](docs/kriptografi/peran-kunci.md).
+
+### Menyiapkan kunci penandatangan (untuk menjalankan pengesahan)
+
+0. Pastikan database dev berjalan dan sudah dimigrasi, seperti di setup umum: `docker compose up -d db` (dari root repository), lalu `npx prisma migrate dev` (dari `apps/web`). Perintah `buat` menulis baris ke tabel `signing_keys` lewat Prisma dan membaca `DATABASE_URL` dari `.env.local`.
+1. Pengesahan versi memerlukan kunci penandatangan dan gagal tertutup tanpanya: UI menampilkan pesan kunci belum siap, API menjawab 503.
+2. Urutan (folder `apps/web`):
+   1. Isi `KYRION_KEYRING_FILE` di `.env.local` dengan jalur berkas keyring di luar repository. Skrip menolak jalan bila variabel ini kosong.
+   2. Buat kunci, dengan `--out` ke berkas di luar repository:
+      `npx tsx prisma/kelola-kunci.ts buat --out <berkas>`
+   3. Isi `KYRION_SIGNING_KEY_FILE` di `.env.local` dengan berkas dari `--out`.
+   4. Mulai ulang server dev.
+3. Berkas kunci privat dan keyring harus di luar repository: kode menolak jalur di dalam repository. Berkas kunci privat yang sudah ada tidak ditimpa. Contoh pola jalur ada di komentar `prisma/kelola-kunci.ts`. Jangan di-commit.
+4. Perintah `buat` menulis berkas keyring dan baris `signing_keys` di basis data sekaligus.
+5. `KYRION_MASTER_KEY_FILE` dijelaskan di bagian lain README ini.
 
 ### Perintah kunci
 
