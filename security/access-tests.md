@@ -1,3 +1,15 @@
+> **Snapshot sec-0.2, tidak diperbarui.** Untuk v0.3 lihat `security/access-tests-v0.3.md` dan bukti di `security/bukti/`.
+> Butir di berkas ini yang tidak berlaku lagi di v0.3 (8 dari 8 butir yang dipetakan terverifikasi dari kode saat ini; jalur relatif ke `apps/web/`):
+>
+> 1. "Login dengan email dan kata sandi" (D-P1, D-N1, hash scrypt): kini login hanya OTP email, kolom `password` tidak dipakai. Bukti: `lib/auth/index.ts:70-81`, `prisma/schema.prisma:209`.
+> 2. "Halaman publik `/`, `/verifikasi`, `/regulasi/<slug>`" boleh anonim: kini anonim dialihkan ke `/masuk`, dan `/verifikasi` menjadi `/admin/verifikasi` khusus Admin. Bukti: `proxy.ts:8-13`, `app/page.tsx:26`, `app/regulasi/layout.tsx:11`, `app/admin/verifikasi/page.tsx:8`.
+> 3. "`proxy.ts` memeriksa cookie `sesi` pada rute `/admin`": kini memeriksa cookie sesi Better Auth untuk semua halaman kecuali `/masuk`, `/api`, dan aset Next. Bukti: `proxy.ts:5-9,17-19`.
+> 4. "Server Action admin (12 fungsi)": kini 15 aksi terjaga (kategori 3, regulasi 3, versi 5, perubahan 3, verifikasi 1). Bukti: `app/admin/aksi-admin.test.ts:157`.
+> 5. "Sesi disimpan di memori proses, hilang saat restart, tidak dibagi antar instance": kini sesi disimpan di tabel `sessions` basis data. Bukti: `prisma/schema.prisma:194-207`, `lib/auth/index.ts:56`.
+> 6. "Belum ada pembatasan laju percobaan masuk": kini ada batas 3 per menit per jalur OTP dan jeda per email (keduanya di memori proses). Bukti: `lib/auth/index.ts:62-68,102`, `lib/auth/jeda.ts:1-2`.
+> 7. "Header masih menampilkan menu admin selama cookie ada": kini menu dipilih dari peran yang dibaca ulang dari basis data. Bukti: `components/SiteHeader.tsx:11-12`, `lib/menu.ts:7-21`, `lib/sesi.ts:17-23`.
+> 8. "Peran Sivitas menunggu v0.3": peran Sivitas kini ada dan diuji. Bukti: `prisma/schema.prisma:19-23`, `lib/akses/keputusan.ts:12`, `lib/menu.ts:19`.
+
 # Uji Akses (sec-0.2)
 
 Dokumen ini memuat matriks hak akses per peran, uji positif dan negatif terhadap Kyrion yang berjalan di VM staging, serta bukti tiap uji. Kontrol yang diuji merujuk risiko R-03 (T-06, ketiadaan pemeriksaan sesi dan peran pada Server Action) di `risk-register.md`; uji login merujuk R-04 (T-02) dan R-06 (T-08).
