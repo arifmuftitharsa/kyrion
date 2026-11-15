@@ -20,6 +20,7 @@ import {
   isiTransaksiHapus,
   type PelakuAudit,
 } from "@/lib/data/versi-tulis";
+import { siapkanPenandatanganDariEnv } from "@/lib/data/penandatangan-env";
 import { getPrisma } from "@/lib/prisma";
 import type { MasukanVersi } from "@/lib/skema";
 import type { BerkasTersimpan, VersionStatus } from "@/lib/types";
@@ -320,7 +321,10 @@ export async function sahkanVersiDenganAudit(p: {
   penanda: Date;
   admin: { id: string };
 }): Promise<void> {
+  // Sebelum transaksi dibuka: kunci tidak siap = ditolak, tanpa jalur pengesahan tanpa tanda tangan.
+  const penandatangan = await siapkanPenandatanganDariEnv();
   await sahkanVersiDraf({
+    penandatangan,
     regulationId: p.regulasi.id,
     versionId: p.versi.id,
     penanda: p.penanda,

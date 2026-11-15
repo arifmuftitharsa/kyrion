@@ -1,0 +1,21 @@
+{
+  "versi": 1,
+  "kunci": [
+    {
+      "id": "67328362d70d5366f23f1a2765ff26df",
+      "kunciPublik": "MCowBQYDK2VwAyEAK7etgh+ZgLfwceIGTmuKlv+ABZs8LOR+lKoDVHeejGE=",
+      "status": "dicabut",
+      "dibuatPada": "2026-11-15T09:55:32.904Z",
+      "dirotasiPada": "2026-11-15T09:56:15.516Z",
+      "dicabutPada": "2026-11-15T09:56:59.964Z"
+    },
+    {
+      "id": "2a279ccd21787896ef491a9e2ca1ed33",
+      "kunciPublik": "MCowBQYDK2VwAyEAioO1TORtDdhzDL+c8phjW8vjUUSX/hE13qvo4z6BBbc=",
+      "status": "aktif",
+      "dibuatPada": "2026-11-15T09:56:15.516Z",
+      "dirotasiPada": null,
+      "dicabutPada": null
+    }
+  ]
+}

@@ -39,7 +39,7 @@ function wajib(sah: boolean, nama: keyof DataVersiTerlindung): void {
  * batas antarfield tegas, sehingga "ab"+"c" dan "a"+"bc" tidak pernah sama.
  * NFC menyamakan "é" tunggal dengan "e" + aksen terpisah.
  */
-function bagian(teks: string): Buffer {
+export function bagian(teks: string): Buffer {
   const isi = Buffer.from(teks.normalize("NFC"), "utf8");
   const panjang = Buffer.alloc(4);
   panjang.writeUInt32BE(isi.length);

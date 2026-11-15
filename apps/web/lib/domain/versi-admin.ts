@@ -79,3 +79,14 @@ export class VersionNumberTakenError extends Error {}
 
 /** Mutasi bersyarat tidak mengenai baris: status bukan DRAF lagi atau versi hilang. */
 export class VersionNotEditableError extends Error {}
+
+export const PESAN_KUNCI_BELUM_SIAP =
+  "Pengesahan tidak dapat dilakukan: kunci penandatangan belum siap; hubungi operator.";
+
+/** Kunci penandatangan tidak siap (berkas/keyring tidak valid, atau kunci tidak AKTIF di DB). Pengesahan ditolak. */
+export class PenandatanganBelumSiapError extends Error {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = "PenandatanganBelumSiapError";
+  }
+}

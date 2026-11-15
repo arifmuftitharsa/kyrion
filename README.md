@@ -16,6 +16,7 @@ Kyrion, dari kata Yunani *kyrion* yang berarti "yang sah, yang berlaku", adalah 
 - [Bukti Tugas 1](#bukti-tugas-1)
 - [Kriptografi (Tugas 1)](#kriptografi-tugas-1)
 - [Kriptografi: krip-0.2 (F-31)](#kriptografi-krip-02-f-31)
+- [Kriptografi: krip-0.3 (F-32, F-33)](#kriptografi-krip-03-f-32-f-33)
 - [Dokumen Teknis Praktikum PAW](#dokumen-teknis-praktikum-paw)
 - [Penggunaan AI](#penggunaan-ai)
 
@@ -543,6 +544,87 @@ Skrip pembuat kunci tidak pernah mencetak isi kunci dan menolak menimpa berkas y
 - [KEPUTUSAN.md](KEPUTUSAN.md): keputusan rancangan Tugas 2.
 
 Keterbatasan Windows: bit izin POSIX tidak berlaku di Windows, sehingga pemeriksaan izin berkas kunci dilewati dan pembatasan akses bergantung pada ACL folder.
+
+## Kriptografi: krip-0.3 (F-32, F-33)
+
+### Ringkasan
+
+- **F-32**: tanda tangan digital Ed25519 (`node:crypto`) dibuat saat pengesahan versi.
+- **F-33**: halaman `/admin/verifikasi` (hanya Admin) untuk memeriksa berkas PDF terhadap versi yang tercatat.
+- **Siklus hidup kunci** (buat, putar, cabut) dijalankan lewat skrip operator.
+
+Tag Kriptografi untuk tahap ini adalah `krip-0.3`; `v0.3` adalah pengumpulan PAW.
+
+### Variabel lingkungan
+
+Hanya nama; nilainya diisi di `apps/web/.env.local`:
+
+- `KYRION_SIGNING_KEY_FILE`
+- `KYRION_KEYRING_FILE`
+- `KYRION_MASTER_KEY_FILE`
+
+Berkas kunci dan keyring harus berada di luar repository. Peran tiap kunci dijelaskan di [docs/kriptografi/peran-kunci.md](docs/kriptografi/peran-kunci.md).
+
+### Perintah kunci
+
+Dari folder `apps/web`:
+
+```bash
+npx tsx prisma/kelola-kunci.ts buat --out <berkas>
+```
+
+```bash
+npx tsx prisma/kelola-kunci.ts putar --out <berkas>
+```
+
+```bash
+npx tsx prisma/kelola-kunci.ts cabut --id <id>
+```
+
+### Cara menjalankan uji
+
+Dari folder `apps/web`:
+
+```bash
+npx vitest run lib/crypto lib/data app/admin/verifikasi
+npm test
+```
+
+Hasil, hanya dari berkas bukti yang dijalankan Arif pada 15 November 2026:
+
+- [krip-0.3-vitest.txt](docs/kriptografi/bukti/krip-0.3-vitest.txt): 19 berkas, 270 lulus, 3 dilewati (273).
+- [krip-0.3-pemeriksaan.txt](docs/kriptografi/bukti/krip-0.3-pemeriksaan.txt): `tsc` dan lint keluar 0; `npm test` 56 berkas, 679 lulus, 3 dilewati (682).
+
+Tiga uji yang dilewati: dua di `kunci.test.ts` dan satu di `penandatangan.test.ts`. Ketiganya uji izin POSIX yang tidak berjalan di Windows.
+
+### Fitur dan bukti
+
+| Fitur | Berkas kode utama | Dokumen | Bukti |
+|---|---|---|---|
+| F-32 tanda tangan pengesahan | `lib/crypto/tanda-tangan.ts`, `lib/crypto/payload-pengesahan.ts`, `lib/crypto/penandatangan.ts`, `lib/data/pengesahan.ts` | [alur-tanda-tangan.md](docs/kriptografi/alur-tanda-tangan.md), [tabel-skenario-krip-0.3.md](docs/kriptografi/tabel-skenario-krip-0.3.md) | [krip-0.3-vitest.txt](docs/kriptografi/bukti/krip-0.3-vitest.txt) |
+| F-33 halaman `/admin/verifikasi` | `lib/crypto/verifikasi-pengesahan.ts`, `lib/data/verifikasi-berkas.ts`, `app/admin/verifikasi/`, `components/FormPeriksaBerkas.tsx` | [alur-tanda-tangan.md](docs/kriptografi/alur-tanda-tangan.md), [tabel-skenario-krip-0.3.md](docs/kriptografi/tabel-skenario-krip-0.3.md) | [krip-0.3-vitest.txt](docs/kriptografi/bukti/krip-0.3-vitest.txt); tangkapan layar `krip-0.3-k6-*.png` di [docs/kriptografi/bukti](docs/kriptografi/bukti) |
+| Siklus hidup kunci | `prisma/kelola-kunci.ts`, `lib/crypto/operasi-kunci.ts`, `lib/crypto/keyring.ts` | [peran-kunci.md](docs/kriptografi/peran-kunci.md), [tabel-skenario-krip-0.3.md](docs/kriptografi/tabel-skenario-krip-0.3.md) | [krip-0.3-vitest.txt](docs/kriptografi/bukti/krip-0.3-vitest.txt); `krip-0.3-k3-probe.txt` dan `krip-0.3-k4-keyring.json` di [docs/kriptografi/bukti](docs/kriptografi/bukti) |
+
+### Dokumen terkait
+
+- [KEPUTUSAN.md](KEPUTUSAN.md), bagian 10: keputusan rancangan Tugas 3.
+- [docs/kriptografi/peran-kunci.md](docs/kriptografi/peran-kunci.md)
+- [docs/kriptografi/alur-tanda-tangan.md](docs/kriptografi/alur-tanda-tangan.md)
+- [docs/kriptografi/tabel-skenario-krip-0.3.md](docs/kriptografi/tabel-skenario-krip-0.3.md)
+- [docs/kriptografi/bukti](docs/kriptografi/bukti): berkas bukti keluaran perintah dan tangkapan layar.
+
+### Keterbatasan
+
+Ringkasan; daftar lengkap di [KEPUTUSAN.md](KEPUTUSAN.md), bagian 10.6:
+
+- Mode berkas `0o600` tidak ditegakkan di Windows; folder kunci dilindungi dengan ACL.
+- Tanda tangan ulang setelah pencabutan kunci belum ada (ditunda ke v1.0).
+- Versi Sah dari seed tidak berberkas dan tidak bertanda tangan.
+- Tidak ada pemulihan otomatis setelah kegagalan sesudah keyring ditulis.
+
+### Penggunaan AI
+
+Kode krip-0.3 ditulis oleh Claude Code berdasarkan rencana yang saya telaah terlebih dahulu. Saya menjalankan `tsc`, lint, uji otomatis, dan uji manual sendiri; bukti hanya berasal dari perintah yang saya jalankan. Rinciannya ada di [AI_LOG.md](AI_LOG.md), entri [KRIP] K1 sampai K7.
 
 ## Dokumen Teknis Praktikum PAW
 

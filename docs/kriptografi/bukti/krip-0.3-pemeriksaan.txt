@@ -1,0 +1,76 @@
+﻿tsc exit: 0
+
+> web@0.1.0 lint
+> eslint
+
+lint exit: 0
+
+> web@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.4 C:/Projects/kyrion/apps/web
+
+ ✓ lib/domain/versi.test.ts (16 tests) 21ms
+ ✓ lib/domain/banding.test.ts (10 tests) 19ms
+ ✓ lib/crypto/kunci.test.ts (20 tests | 2 skipped) 77ms
+ ✓ app/api/v1/sessions/route.test.ts (9 tests) 62ms
+ ✓ lib/sesi.test.ts (9 tests) 38ms
+ ✓ lib/api/masalah.test.ts (16 tests) 14ms
+ ✓ app/admin/verifikasi/actions.test.ts (6 tests) 41ms
+ ✓ lib/akses/jaga-route.test.ts (14 tests) 12ms
+ ✓ lib/crypto/kanonis.test.ts (20 tests) 11ms
+ ✓ lib/auth/izin.test.ts (44 tests) 9ms
+ ✓ lib/domain/akun-kampus.test.ts (20 tests) 8ms
+ ✓ lib/crypto/fingerprint.test.ts (11 tests) 18ms
+ ✓ lib/status-boolean.test.ts (2 tests) 30ms
+ ✓ lib/crypto/payload-pengesahan.test.ts (21 tests) 12ms
+ ✓ lib/domain/berkas-pdf.test.ts (18 tests) 8ms
+ ✓ lib/crypto/mac.test.ts (9 tests) 11ms
+ ✓ lib/data/pengesahan.test.ts (20 tests) 23ms
+ ✓ lib/api/origin.test.ts (13 tests) 39ms
+ ✓ lib/email/konfigurasi.test.ts (18 tests) 42ms
+ ✓ lib/email/mailtrap.test.ts (18 tests) 30ms
+ ✓ lib/crypto/keyring.test.ts (25 tests) 129ms
+ ✓ lib/auth/konfigurasi.test.ts (10 tests) 10ms
+ ✓ lib/email/konsol.test.ts (6 tests) 7ms
+ ✓ lib/data/audit.test.ts (5 tests) 7ms
+ ✓ lib/domain/versi-admin.test.ts (21 tests) 7ms
+ ✓ components/VersionTimeline.test.ts (3 tests) 15ms
+ ✓ lib/crypto/penandatangan.test.ts (10 tests | 1 skipped) 184ms
+ ✓ lib/crypto/tanda-tangan.test.ts (10 tests) 11ms
+ ✓ app/api/v1/regulations/route.test.ts (10 tests) 48ms
+ ✓ app/api/v1/sessions/[id]/route.test.ts (9 tests) 54ms
+ ✓ app/api/v1/regulations/[slug]/current-version/route.test.ts (20 tests) 52ms
+ ✓ lib/auth/otp.test.ts (5 tests) 6ms
+ ✓ app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts (18 tests) 55ms
+ ✓ app/api/v1/regulations/[slug]/route.test.ts (15 tests) 56ms
+ ✓ lib/data/versi-tulis.test.ts (7 tests) 10ms
+ ✓ lib/crypto/verifikasi.test.ts (27 tests) 12ms
+ ✓ lib/crypto/data-terlindung.test.ts (12 tests) 7ms
+ ✓ lib/api/sesi.test.ts (2 tests) 6ms
+ ✓ lib/domain/kategori.test.ts (10 tests) 5ms
+ ✓ lib/crypto/verifikasi-pengesahan.test.ts (39 tests) 46ms
+ ✓ lib/masuk/pesan.test.ts (13 tests) 4ms
+ ✓ lib/crypto/operasi-kunci.test.ts (21 tests) 307ms
+ ✓ lib/email/memori.test.ts (2 tests) 4ms
+ ✓ lib/domain/tanggal.test.ts (6 tests) 4ms
+ ✓ lib/menu.test.ts (3 tests) 3ms
+ ✓ lib/data/versions.test.ts (3 tests) 7ms
+ ✓ proxy.test.ts (13 tests) 5ms
+ ✓ lib/format.test.ts (4 tests) 3ms
+ ✓ lib/domain/perubahan.test.ts (6 tests) 3ms
+ ✓ lib/auth/jeda.test.ts (6 tests) 3ms
+ ✓ lib/akses/keputusan.test.ts (8 tests) 3ms
+ ✓ lib/data/sesi.test.ts (3 tests) 3ms
+ ✓ lib/domain/slug.test.ts (4 tests) 3ms
+ ✓ lib/domain/regulasi.test.ts (4 tests) 2ms
+ ✓ lib/data/penandatangan-env.test.ts (4 tests) 4ms
+ ✓ app/akun/sesi/actions.test.ts (4 tests) 3ms
+
+ Test Files  56 passed (56)
+      Tests  679 passed | 3 skipped (682)
+   Start at  18:07:21
+   Duration  883ms (import 54%, transform 24%, tests 18%, worker 5%)
+
+test exit: 0

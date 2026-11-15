@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { isiTransaksiSahkan } from "@/lib/data/pengesahan";
+import { siapkanPenandatanganDariEnv } from "@/lib/data/penandatangan-env";
+import { PenandatanganBelumSiapError } from "@/lib/domain/versi-admin";
 import { getPrisma } from "@/lib/prisma";
 import { sahkanVersiDenganAudit } from "./versions";
 
@@ -9,6 +11,7 @@ vi.mock("next/server", () => ({ connection: vi.fn() }));
 vi.mock("@/generated/prisma/client", () => ({ Prisma: { PrismaClientKnownRequestError: class {} } }));
 vi.mock("@/lib/integritas-versi", () => ({ tandatanganiVersi: vi.fn() }));
 vi.mock("@/lib/prisma", () => ({ getPrisma: vi.fn() }));
+vi.mock("@/lib/data/penandatangan-env", () => ({ siapkanPenandatanganDariEnv: vi.fn() }));
 vi.mock("@/lib/data/pengesahan", () => ({ isiTransaksiSahkan: vi.fn(), isiTransaksiBatalkan: vi.fn() }));
 vi.mock("@/lib/data/versi-tulis", () => ({
   catatUnggahBerkas: vi.fn(),
@@ -17,11 +20,13 @@ vi.mock("@/lib/data/versi-tulis", () => ({
 }));
 
 const tx = { penanda: "tx" };
+const penandatangan = { kunciPrivat: "kunci", idKunci: "a".repeat(32) };
 
 beforeEach(() => {
   vi.clearAllMocks();
   vi.useFakeTimers({ toFake: ["Date"] });
   vi.setSystemTime(new Date("2026-11-14T03:00:00Z"));
+  vi.mocked(siapkanPenandatanganDariEnv).mockResolvedValue(penandatangan as never);
   vi.mocked(getPrisma).mockReturnValue({
     $transaction: vi.fn((fn: (t: unknown) => Promise<void>) => fn(tx)),
   } as unknown as ReturnType<typeof getPrisma>);
@@ -44,7 +49,23 @@ describe("sahkanVersiDenganAudit", () => {
       actorId: "u1",
       keterangan: "Aturan Contoh, versi 2.0",
       waktu: new Date("2026-11-14T03:00:00Z"),
+      penandatangan,
     });
+  });
+
+  it("penandatangan tidak siap: ditolak sebelum transaksi dibuka", async () => {
+    const galat = new PenandatanganBelumSiapError("belum siap");
+    vi.mocked(siapkanPenandatanganDariEnv).mockRejectedValue(galat);
+    await expect(
+      sahkanVersiDenganAudit({
+        regulasi: { id: "r1", name: "A" },
+        versi: { id: "v1", versionNumber: "1" },
+        penanda: new Date(),
+        admin: { id: "u1" },
+      }),
+    ).rejects.toBe(galat);
+    expect(getPrisma).not.toHaveBeenCalled();
+    expect(isiTransaksiSahkan).not.toHaveBeenCalled();
   });
 
   it("galat dari transaksi diteruskan apa adanya", async () => {

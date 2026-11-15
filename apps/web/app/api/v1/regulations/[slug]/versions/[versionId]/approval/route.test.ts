@@ -7,6 +7,7 @@ import { findVersion, getPenandaVersi, sahkanVersiDenganAudit } from "@/lib/data
 import {
   PESAN_TANGGAL_KEMBAR,
   PESAN_TANPA_BERKAS,
+  PenandatanganBelumSiapError,
   VersionEffectiveDateTakenError,
   VersionNotEditableError,
   VersionWithoutFileError,
@@ -171,5 +172,14 @@ describe("POST approval: galat domain dan lainnya", () => {
     expect(r.body.type).toBe("/problems/internal-error");
     expect(JSON.stringify(r.body)).not.toContain("jejak-rahasia");
     expect(console.error).toHaveBeenCalledWith("Galat pengesahan versi:", "TypeError");
+  });
+
+  it("penandatangan belum siap -> 500 internal-error generik, pesan galat tidak bocor", async () => {
+    sahkanMock.mockRejectedValue(new PenandatanganBelumSiapError("rahasia-jalur"));
+    const r = await status(await panggil());
+    expect(r.status).toBe(500);
+    expect(r.body.type).toBe("/problems/internal-error");
+    expect(JSON.stringify(r.body)).not.toContain("rahasia-jalur");
+    expect(console.error).toHaveBeenCalledWith("Galat pengesahan versi:", "PenandatanganBelumSiapError");
   });
 });
