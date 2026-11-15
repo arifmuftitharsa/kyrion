@@ -1,0 +1,907 @@
+﻿
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.4 [39m[90mC:/Projects/kyrion/apps/web[39m
+
+ [32mΓ£ô[39m lib/crypto/tanda-tangan.test.ts[2m > [22mRFC 8032 TEST 1[2m > [22mtandatangani menghasilkan tanda tangan RFC[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/tanda-tangan.test.ts[2m > [22mRFC 8032 TEST 1[2m > [22mverifikasi tanda tangan RFC lolos[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mtanda tangan 64 byte dan lolos verifikasi[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mpesan diubah 1 byte: false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mtanda tangan diubah 1 byte: false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mkunci publik lain: false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mpanjang tanda tangan 63 dan 65 byte: false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mmasukan sampah: false dan tidak melempar[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mdua kali tandatangani pesan sama: identik[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/tanda-tangan.test.ts[2m > [22midKunci[2m > [22m32 hex huruf kecil, deterministik, beda antarkunci[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenghasilkan byte persis sesuai acuan eksternal[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mdiawali label yang diberi awalan panjang 4 byte big-endian[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mdeterministik untuk data yang sama[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenyamakan '├⌐' tunggal (NFC) dengan 'e' + aksen terpisah (NFD)[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmembedakan data bila nilai dua field bertukar tempat (urutan field bagian dari format)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmembedakan data bila batas antarbagian bergeser (awalan panjang)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak id bukan UUID dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak id UUID huruf besar dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak regulationId bukan UUID dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak tanggal tidak mustahil tapi format salah (tanpa nol) dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak tanggal mustahil (30 Februari) dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSha256 huruf besar dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSha256 63 karakter dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSha256 bukan hex dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSize negatif dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSize pecahan dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSize NaN dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak versionNumber dengan surrogate yatim dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileName dengan surrogate yatim dengan RangeError[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mpesan galat hanya menyebut nama field, bukan nilainya[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/[[...jalur]]/route.test.ts[2m > [22mjalur /api tak dikenal[2m > [22mGET -> 404 problem+json[32m 24[2mms[22m[39m
+ [32mΓ£ô[39m app/api/[[...jalur]]/route.test.ts[2m > [22mjalur /api tak dikenal[2m > [22mPOST -> 404 problem+json[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/[[...jalur]]/route.test.ts[2m > [22mjalur /api tak dikenal[2m > [22mPUT -> 404 problem+json[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/api/[[...jalur]]/route.test.ts[2m > [22mjalur /api tak dikenal[2m > [22mPATCH -> 404 problem+json[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/api/[[...jalur]]/route.test.ts[2m > [22mjalur /api tak dikenal[2m > [22mDELETE -> 404 problem+json[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/api/[[...jalur]]/route.test.ts[2m > [22mjalur /api tak dikenal[2m > [22m/api polos -> 404 problem+json, instance /api[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22mvalidation-error: status, header, type, title[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22munauthenticated: status, header, type, title[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22mforbidden: status, header, type, title[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22mnot-found: status, header, type, title[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22mstate-conflict: status, header, type, title[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22minternal-error: status, header, type, title[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22mservice-unavailable: status, header, type, title[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22mvalidation-error: anggota body dan ekstensi errors[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22munauthenticated: anggota body dan ekstensi errors[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22mforbidden: anggota body dan ekstensi errors[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22mnot-found: anggota body dan ekstensi errors[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22mstate-conflict: anggota body dan ekstensi errors[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22minternal-error: anggota body dan ekstensi errors[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22mservice-unavailable: anggota body dan ekstensi errors[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22minternal-error: detail persis kalimat tetap[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22mtipe dan runtime: internal-error menolak detail, jenis lain menolak errors[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22minstance hanya pathname (dengan query)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/masalah.test.ts[2m > [22mbuatMasalah[2m > [22minstance hanya pathname (tanpa query)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/fingerprint.test.ts[2m > [22mfingerprint[2m > [22mmenghasilkan SHA-256 sesuai vektor uji resmi FIPS 180-2 untuk "abc"[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/fingerprint.test.ts[2m > [22mfingerprint[2m > [22mmenghasilkan SHA-256 yang benar untuk input kosong[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/fingerprint.test.ts[2m > [22mfingerprint[2m > [22mmenerima input tepat sebesar MAX_INPUT_BYTES[32m 9[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/fingerprint.test.ts[2m > [22mfingerprint[2m > [22mmelempar InputTooLargeError untuk input sebesar MAX_INPUT_BYTES + 1[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan true untuk data asli dan false bila satu byte diubah[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: string bukan hex (64 karakter z)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: hex 63 karakter[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: hex 65 karakter[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: hex huruf besar dari hash yang benar[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: string kosong[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmelempar InputTooLargeError (bukan mengembalikan false) untuk data di atas MAX_INPUT_BYTES[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22mcakupan terdeteksi (pengaman agar penelusuran tidak kosong)[2m > [22msetiap kategori punya berkas[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/kategori/[slug]/hapus/page.tsx[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/kategori/[slug]/ubah/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/kategori/baru/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/kategori/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/[slug]/hapus/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/[slug]/ubah/page.tsx[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/[slug]/versi/[versionId]/batalkan/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/[slug]/versi/[versionId]/hapus/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/[slug]/versi/[versionId]/perubahan/[changeId]/hapus/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/[slug]/versi/[versionId]/perubahan/[changeId]/ubah/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/[slug]/versi/[versionId]/perubahan/baru/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/[slug]/versi/[versionId]/perubahan/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/[slug]/versi/[versionId]/sahkan/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/[slug]/versi/[versionId]/ubah/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/[slug]/versi/baru/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/[slug]/versi/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/baru/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/regulasi/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(a) halaman admin memanggil wajibAdmin([2m > [22madmin/verifikasi/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(b) halaman lain (kecuali HALAMAN_TERBUKA) memanggil wajibMasuk( atau wajibAdmin([2m > [22makun/sesi/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(b) halaman lain (kecuali HALAMAN_TERBUKA) memanggil wajibMasuk( atau wajibAdmin([2m > [22mpage.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(b) halaman lain (kecuali HALAMAN_TERBUKA) memanggil wajibMasuk( atau wajibAdmin([2m > [22mregulasi/[slug]/page.tsx[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(c) Server Action: await pertama tiap fungsi ekspor adalah penjaga[2m > [22madmin/kategori/actions.ts -> await pertama wajibAdmin([32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(c) Server Action: await pertama tiap fungsi ekspor adalah penjaga[2m > [22madmin/regulasi/[slug]/versi/[versionId]/perubahan/actions.ts -> await pertama wajibAdmin([32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(c) Server Action: await pertama tiap fungsi ekspor adalah penjaga[2m > [22madmin/regulasi/[slug]/versi/actions.ts -> await pertama wajibAdmin([32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(c) Server Action: await pertama tiap fungsi ekspor adalah penjaga[2m > [22madmin/regulasi/actions.ts -> await pertama wajibAdmin([32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(c) Server Action: await pertama tiap fungsi ekspor adalah penjaga[2m > [22madmin/verifikasi/actions.ts -> await pertama wajibAdmin([32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(c) Server Action: await pertama tiap fungsi ekspor adalah penjaga[2m > [22makun/sesi/actions.ts -> await pertama wajibMasuk([32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(c) Server Action: await pertama tiap fungsi ekspor adalah penjaga[2m > [22mmasuk/actions.ts: himpunan fungsi sama dengan yang dinyatakan terbuka[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(d) route.ts[2m > [22mhimpunan route.ts sama persis dengan inventaris tertulis[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(d) route.ts[2m > [22madmin/regulasi/[slug]/versi/[versionId]/berkas/route.ts memanggil jagaRoute([32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(d) route.ts[2m > [22mapi/v1/regulations/[slug]/current-version/route.ts memanggil jagaRoute([32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(d) route.ts[2m > [22mapi/v1/regulations/[slug]/route.ts memanggil jagaRoute([32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(d) route.ts[2m > [22mapi/v1/regulations/[slug]/versions/[versionId]/approval/route.ts memanggil jagaRoute([32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(d) route.ts[2m > [22mapi/v1/regulations/route.ts memanggil jagaRoute([32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(d) route.ts[2m > [22mapi/v1/sessions/[id]/route.ts memanggil jagaRoute([32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(d) route.ts[2m > [22mapi/v1/sessions/route.ts memanggil jagaRoute([32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(d) route.ts[2m > [22mpengecualian api/auth/[...all] memang ada di inventaris[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/cakupan-guard.test.ts[2m > [22m(d) route.ts[2m > [22mpengecualian api/[[...jalur]] memang ada di inventaris[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmengurai 64 karakter hex menjadi 32 byte[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmemangkas spasi dan newline di ujung[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks kosong dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks hanya spasi dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks terlalu pendek (62 karakter) dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks terlalu panjang (66 karakter) dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks bukan hex dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks berawalan 0x dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks spasi di tengah dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks dua baris dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mpesan galat tidak memuat isi teks[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmenolak lokasi yang belum diatur[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmenolak berkas yang tidak ada[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmenolak berkas berisi kunci pendek atau bukan hex[32m 7[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmembaca berkas berisi hex yang sah[32m 3[2mms[22m[39m
+ [2m[90mΓåô[39m[22m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmenolak berkas yang bisa dibaca grup atau pengguna lain
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mbuatBerkasKunci[2m > [22mmembuat berkas berisi kunci 32 byte yang bisa dibaca kembali[32m 5[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mbuatBerkasKunci[2m > [22mmenghasilkan kunci berbeda tiap kali dibuat[32m 6[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/kunci.test.ts[2m > [22mbuatBerkasKunci[2m > [22mmenolak menimpa berkas yang sudah ada dan tidak mengubah isinya[32m 7[2mms[22m[39m
+ [2m[90mΓåô[39m[22m lib/crypto/kunci.test.ts[2m > [22mbuatBerkasKunci[2m > [22mmembuat berkas dengan mode 0o600
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mdeterministik[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah id mengubah payload[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah regulationId mengubah payload[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah versionNumber mengubah payload[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah effectiveDate mengubah payload[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah fileSha256 mengubah payload[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah fileName mengubah payload[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah fileSize mengubah payload[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah approvedById mengubah payload[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah approvedAt mengubah payload[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah signingKeyId mengubah payload[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mapprovedAt beda 1 ms: berbeda[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mberbeda dari kanonisasiVersi dengan tujuh field sama (pemisah domain)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak Date tidak valid[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak approvedById bukan UUID, pesan tanpa nilai[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenerima approvedById UUIDv4 dan UUIDv7[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak signingKeyId bukan 32 hex huruf kecil: abc[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak signingKeyId bukan 32 hex huruf kecil: BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak signingKeyId bukan 32 hex huruf kecil: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak signingKeyId bukan 32 hex huruf kecil: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak signingKeyId bukan 32 hex huruf kecil: gggggggggggggggggggggggggggggggg[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/banding.test.ts[2m > [22mperubahanAntaraVersi[2m > [22mmenolak versi yang sama, juga bila id tidak ada[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/banding.test.ts[2m > [22mperubahanAntaraVersi[2m > [22mdua versi berurutan: hanya perubahan versi baru[32m 11[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/banding.test.ts[2m > [22mperubahanAntaraVersi[2m > [22mdua versi berjarak: perubahan versi tengah ikut, versi lama tidak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/banding.test.ts[2m > [22mperubahanAntaraVersi[2m > [22murutan terbalik ditukar otomatis dan hasilnya sama[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/banding.test.ts[2m > [22mperubahanAntaraVersi[2m > [22mversi berstatus DRAF tidak ditemukan[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/banding.test.ts[2m > [22mperubahanAntaraVersi[2m > [22mversi berstatus DIBATALKAN tidak ditemukan[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/banding.test.ts[2m > [22mperubahanAntaraVersi[2m > [22mid tidak ada tidak ditemukan[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/banding.test.ts[2m > [22mperubahanAntaraVersi[2m > [22mversi Draf di tengah rentang tidak ikut[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/banding.test.ts[2m > [22mperubahanAntaraVersi[2m > [22mversi tanpa Change tetap muncul sebagai kelompok kosong[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/banding.test.ts[2m > [22mperubahanAntaraVersi[2m > [22mtanggal sama: posisi mengikuti urutan masukan, tanpa galat[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mfindEffectiveVersion (F-03)[2m > [22m(1) T sebelum versi pertama: tidak ada versi berlaku[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mfindEffectiveVersion (F-03)[2m > [22m(2) T tepat di tanggal berlaku: versi itu sudah berlaku[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mfindEffectiveVersion (F-03)[2m > [22m(3) T di antara dua versi: versi lama yang kini DIGANTIKAN[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mfindEffectiveVersion (F-03)[2m > [22m(4) T setelah versi terakhir: versi terakhir[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mfindEffectiveVersion (F-03)[2m > [22m(5) DRAF dan DIBATALKAN diabaikan[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mfindEffectiveVersion (F-03)[2m > [22mdaftar kosong: tidak ada versi berlaku[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mfindEffectiveVersion (F-03)[2m > [22mtanggal berlaku sama: versi yang muncul lebih dulu dipertahankan[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mterapkanStatusTurunan[2m > [22m(1) versi berlaku berlabel SAH[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mterapkanStatusTurunan[2m > [22m(2) versi pernah disahkan lain dengan tanggal <= hari ini berlabel DIGANTIKAN[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mterapkanStatusTurunan[2m > [22m(3) versi pernah disahkan bertanggal masa depan berlabel SAH[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mterapkanStatusTurunan[2m > [22m(4) DRAF dan DIBATALKAN tidak diubah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mterapkanStatusTurunan[2m > [22m(5) tanpa versi berlaku: semua pernah disahkan SAH; daftar kosong tetap kosong[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mterapkanStatusTurunan[2m > [22mSAH dan DIGANTIKAN tersimpan memberi hasil sama[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mterapkanStatusTurunan[2m > [22mtanggal sama: yang dipilih findEffectiveVersion SAH, satunya DIGANTIKAN[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22mterapkanStatusTurunan[2m > [22mtidak memutasi masukan[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi.test.ts[2m > [22msortVersionsNewestFirst[2m > [22mmengurutkan dari yang terbaru tanpa mengubah array masukan[32m 10[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmeloloskan data, berkas, dan tag asli[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field id diubah[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field regulationId diubah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field versionNumber diubah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field effectiveDate diubah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field fileSha256 diubah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field fileName diubah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field fileSize diubah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila satu bit tag diubah[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila kunci valid tetapi berbeda[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag dan data asli yang disalin ke baris dengan id lain[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag null dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag kosong dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag tanpa awalan dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag awalan versi lain dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag hex huruf besar dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag terlalu pendek dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag terlalu panjang dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag bukan hex dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag spasi di ujung dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag teks acak dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmembungkus galat internal: kunci induk salah panjang[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmembungkus galat internal: field tidak sah (RangeError dari kanonisasi)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmembungkus galat internal: berkas melebihi batas (InputTooLargeError)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mpesan galat tetap dan tidak memuat tag, kunci, atau data[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila hanya byte PDF yang diganti (langkah verifyFingerprint)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila PDF dan fileSha256 diganti bersamaan dengan tag lama[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/sesi.test.ts[2m > [22mbacaSesi[2m > [22mtanpa sesi -> null[32m 32[2mms[22m[39m
+ [32mΓ£ô[39m lib/sesi.test.ts[2m > [22mbacaSesi[2m > [22msesi ada tapi akun nonaktif atau hilang -> null[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/sesi.test.ts[2m > [22mbacaSesi[2m > [22msesi sah -> userId, sesiId, email, role dari DB, bukan dari sesi[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/sesi.test.ts[2m > [22mwajibAdmin[2m > [22manonim -> redirect /masuk[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/sesi.test.ts[2m > [22mwajibAdmin[2m > [22mSIVITAS -> notFound, bukan redirect[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/sesi.test.ts[2m > [22mwajibAdmin[2m > [22mADMIN -> { id, email }[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/sesi.test.ts[2m > [22mwajibMasuk[2m > [22manonim -> redirect /masuk[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/sesi.test.ts[2m > [22mwajibMasuk[2m > [22mSIVITAS -> sesi[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/sesi.test.ts[2m > [22mwajibMasuk[2m > [22mADMIN -> sesi[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/verifikasi/actions.test.ts[2m > [22mperiksaBerkas[2m > [22mB-09 Sivitas: wajibAdmin melempar notFound, layanan tidak dipanggil[32m 27[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/verifikasi/actions.test.ts[2m > [22mperiksaBerkas[2m > [22mB-08 bukan PDF ditolak[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/verifikasi/actions.test.ts[2m > [22mperiksaBerkas[2m > [22mB-08 di atas 10 MB ditolak[32m 12[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/verifikasi/actions.test.ts[2m > [22mperiksaBerkas[2m > [22mtanpa berkas dan berkas kosong ditolak[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/verifikasi/actions.test.ts[2m > [22mperiksaBerkas[2m > [22mPDF valid: hasil dari layanan; berkas tidak ditulis ke penyimpanan[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/verifikasi/actions.test.ts[2m > [22mperiksaBerkas[2m > [22mgalat operasional (keyring, kunci induk, DB): galat umum, bukan hasil verifikasi, tanpa detail[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/route.test.ts[2m > [22mGET /api/v1/sessions[2m > [22manonim -> 401[32m 38[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/route.test.ts[2m > [22mGET /api/v1/sessions[2m > [22msyarat jagaRoute: masuk, bentuk problem[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/route.test.ts[2m > [22mGET /api/v1/sessions[2m > [22mSIVITAS -> 200[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/route.test.ts[2m > [22mGET /api/v1/sessions[2m > [22mADMIN -> 200[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/route.test.ts[2m > [22mGET /api/v1/sessions[2m > [22muserId yang diteruskan ke data = userId sesi[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/route.test.ts[2m > [22mGET /api/v1/sessions[2m > [22mtepat kunci id, createdAt, expiresAt, current; tanpa token, ipAddress, userAgent[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/route.test.ts[2m > [22mGET /api/v1/sessions[2m > [22mcurrent benar hanya untuk sesiId saat ini[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/route.test.ts[2m > [22mGET /api/v1/sessions[2m > [22mCache-Control no-store[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/route.test.ts[2m > [22mGET /api/v1/sessions[2m > [22mgalat tak terduga -> 500, log hanya nama galat[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mmenulis status, pengesah, waktu, tanda tangan dengan penanda updatedAt, lalu audit di tx yang sama[32m 8[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22m64 byte dan terverifikasi dengan node:crypto atas payload pengesahan[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah approvedById membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah approvedAt membuat verifikasi gagal[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah signingKeyId membuat verifikasi gagal[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah versionNumber membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah effectiveDate membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah fileSha256 membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah fileName membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah fileSize membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mkunci DB tidak ada atau bukan AKTIF ditolak tanpa updateMany dan audit[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mkegagalan menandatangani (kunci privat rusak) tanpa updateMany dan audit[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mversi tidak ada sebagai DRAF melempar NotEditable tanpa tanda tangan dan audit[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanpa berkas lengkap ditolak sebelum penandatanganan[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanggal kembar ditolak sebelum penandatanganan[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mcount 0 melempar NotEditable dan audit tidak dipanggil[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mgalat catatAudit merambat[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiBatalkan[2m > [22mmengisi DIBATALKAN tanpa approved* dan mencatat audit[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiBatalkan[2m > [22mcount 0 melempar NotEditable tanpa audit[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiBatalkan[2m > [22mgalat catatAudit merambat[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m components/VersionTimeline.test.ts[2m > [22mVersionTimeline: tautan unduh menurut prop tautanBerkas[2m > [22mtanpa tautanBerkas: tidak ada tautan dan tidak ada teks Unduh PDF[32m 10[2mms[22m[39m
+ [32mΓ£ô[39m components/VersionTimeline.test.ts[2m > [22mVersionTimeline: tautan unduh menurut prop tautanBerkas[2m > [22mdengan tautanBerkas: memuat tautan buatan fungsi itu[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m components/VersionTimeline.test.ts[2m > [22mVersionTimeline: tautan unduh menurut prop tautanBerkas[2m > [22mversi tanpa berkas (fileSize null): tidak ada tautan walau tautanBerkas ada[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/status-boolean.test.ts[2m > [22mskemaStatus (perbaikan Galat 1, #7)[2m > [22m"true" menjadi true[32m 31[2mms[22m[39m
+ [32mΓ£ô[39m lib/status-boolean.test.ts[2m > [22mskemaStatus (perbaikan Galat 1, #7)[2m > [22m"false" menjadi false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/mac.test.ts[2m > [22mhmacSha256[2m > [22msesuai RFC 4231 Test Case 1[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/mac.test.ts[2m > [22mhmacSha256[2m > [22msesuai RFC 4231 Test Case 2[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/mac.test.ts[2m > [22mturunkanKunciMac[2m > [22msama dengan acuan HKDF-SHA256 hitungan Python (salt kosong)[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/mac.test.ts[2m > [22mturunkanKunciMac[2m > [22mmenghasilkan kunci berbeda dari kunci induk lain[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/mac.test.ts[2m > [22mturunkanKunciMac[2m > [22mmenolak kunci induk yang bukan 32 byte[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/mac.test.ts[2m > [22mbuatTagVersi[2m > [22msama dengan tag acuan hitungan Python[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/mac.test.ts[2m > [22mbuatTagVersi[2m > [22mberformat v1$ + 64 hex huruf kecil[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/mac.test.ts[2m > [22mbuatTagVersi[2m > [22mberubah bila satu field berubah[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/mac.test.ts[2m > [22mbuatTagVersi[2m > [22mberubah bila kunci induk berbeda[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22moriginSah[2m > [22msama persis -> sah[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22moriginSah[2m > [22mbeda host -> tidak sah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22moriginSah[2m > [22mbeda port -> tidak sah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22moriginSah[2m > [22mbeda skema -> tidak sah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22moriginSah[2m > [22msubdomain -> tidak sah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22moriginSah[2m > [22mnull -> tidak sah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22moriginSah[2m > [22mkosong -> tidak sah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22moriginSah[2m > [22mtanpa header -> tidak sah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22mperiksaOrigin[2m > [22mOrigin sah -> null[32m 35[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22mperiksaOrigin[2m > [22mOrigin https://evil.example -> 403 problem+json[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22mperiksaOrigin[2m > [22mOrigin undefined -> 403 problem+json[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22mperiksaOrigin[2m > [22mOrigin null -> 403 problem+json[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/origin.test.ts[2m > [22mperiksaOrigin[2m > [22mBETTER_AUTH_URL ber-path tetap dibandingkan sebagai origin[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenerima /email-otp/send-verification-otp POST[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenerima /sign-in/email-otp POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak metode salah /sign-in/email-otp GET[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak metode salah /email-otp/send-verification-otp GET[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /ok GET[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /error GET[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /get-session GET[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /sign-out POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /sign-in/social POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /sign-in/email POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /sign-up/email POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /callback/:id GET[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /callback/:id POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /update-session POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /update-user POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /change-password POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /change-email POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /delete-user POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /delete-user/callback GET[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /list-sessions GET[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /revoke-session POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /revoke-sessions POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /revoke-other-sessions POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /request-password-reset POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /reset-password POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /reset-password/:token GET[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /verify-password POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /send-verification-email POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /verify-email GET[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /list-accounts GET[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /account-info GET[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /link-social POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /unlink-account POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /get-access-token POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /refresh-token POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /email-otp/check-verification-otp POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /email-otp/verify-email POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /email-otp/request-password-reset POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /email-otp/reset-password POST[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /email-otp/request-email-change POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /email-otp/change-email POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak /forget-password/email-otp POST[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mmenolak path tak dikenal, kosong, dan kunci prototipe[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/izin.test.ts[2m > [22mpermintaanDiizinkan[2m > [22mtanpa metode (panggilan auth.api dari server) lolos untuk path apa pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: permintaan[2m > [22mmengirim URL, metode, header, isi JSON, signal, dan redirect sesuai spesifikasi[32m 8[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: permintaan[2m > [22mmenolak sandboxId 0 dengan RangeError tanpa memuat nilainya[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: permintaan[2m > [22mmenolak sandboxId -1 dengan RangeError tanpa memuat nilainya[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: permintaan[2m > [22mmenolak sandboxId 1.5 dengan RangeError tanpa memuat nilainya[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: permintaan[2m > [22mmenolak sandboxId NaN dengan RangeError tanpa memuat nilainya[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: permintaan[2m > [22mmenolak sandboxId 9007199254740992 dengan RangeError tanpa memuat nilainya[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: pemetaan hasil[2m > [22mstatus 401 menjadi TOKEN_DITOLAK dengan status terbawa[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: pemetaan hasil[2m > [22mstatus 429 menjadi KUOTA_ATAU_LAJU dengan status terbawa[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: pemetaan hasil[2m > [22mstatus 500 menjadi STATUS_GAGAL dengan status terbawa[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: pemetaan hasil[2m > [22mstatus 400 menjadi STATUS_GAGAL dengan status terbawa[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: pemetaan hasil[2m > [22m200 berbentuk salah (success false) menjadi RESPONS_TIDAK_SESUAI[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: pemetaan hasil[2m > [22m200 berbentuk salah (message_ids kosong) menjadi RESPONS_TIDAK_SESUAI[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: pemetaan hasil[2m > [22m200 berbentuk salah (message_ids bukan string) menjadi RESPONS_TIDAK_SESUAI[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: pemetaan hasil[2m > [22m200 berbentuk salah (JSON rusak) menjadi RESPONS_TIDAK_SESUAI[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: pemetaan hasil[2m > [22m200 berbentuk salah (2xx bukan 200) menjadi RESPONS_TIDAK_SESUAI[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: pemetaan hasil[2m > [22mbatas waktu terlampaui menjadi WAKTU_HABIS (fetch tiruan menolak saat sinyal dibatalkan)[32m 6[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: pemetaan hasil[2m > [22mfetch yang melempar hal lain menjadi JARINGAN[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/mailtrap.test.ts[2m > [22mbuatPengirimMailtrap: tanpa kebocoran[2m > [22mgalat dan konsol tidak memuat token, penerima, subjek, teks, atau isi respons[32m 7[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: EMAIL_ADAPTER[2m > [22mkosong dan tak dikenal ditolak saat NODE_ENV=test[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: EMAIL_ADAPTER[2m > [22mkosong dan tak dikenal ditolak saat NODE_ENV=development[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: EMAIL_ADAPTER[2m > [22mkosong dan tak dikenal ditolak saat NODE_ENV=production[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: memori dan konsol[2m > [22mmemori ditolak bila NODE_ENV production, kosong, undefined, atau tak dikenal[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: memori dan konsol[2m > [22mkonsol ditolak bila NODE_ENV production, kosong, undefined, atau tak dikenal[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: memori dan konsol[2m > [22mmemori lolos saat NODE_ENV test dan development[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: memori dan konsol[2m > [22mkonsol lolos saat NODE_ENV development[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: mailtrap[2m > [22mMAILTRAP_API_TOKEN bernilai undefined ditolak; pesan menyebut nama, bukan nilai[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: mailtrap[2m > [22mMAILTRAP_API_TOKEN bernilai "" ditolak; pesan menyebut nama, bukan nilai[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: mailtrap[2m > [22mMAILTRAP_SANDBOX_ID bernilai undefined ditolak; pesan menyebut nama, bukan nilai[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: mailtrap[2m > [22mMAILTRAP_SANDBOX_ID bernilai "abc" ditolak; pesan menyebut nama, bukan nilai[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: mailtrap[2m > [22mMAILTRAP_SANDBOX_ID bernilai "0" ditolak; pesan menyebut nama, bukan nilai[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: mailtrap[2m > [22mMAILTRAP_SANDBOX_ID bernilai "-5" ditolak; pesan menyebut nama, bukan nilai[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: mailtrap[2m > [22mMAILTRAP_SANDBOX_ID bernilai "1.5" ditolak; pesan menyebut nama, bukan nilai[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: mailtrap[2m > [22mEMAIL_FROM bernilai undefined ditolak; pesan menyebut nama, bukan nilai[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: mailtrap[2m > [22mEMAIL_FROM bernilai "bukan-email-sentinel" ditolak; pesan menyebut nama, bukan nilai[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: mailtrap[2m > [22mmenyebut semua variabel bermasalah sekaligus tanpa nilainya[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konfigurasi.test.ts[2m > [22mbuatPengirim: mailtrap[2m > [22mkonfigurasi lengkap lolos di production dan memanggil fetch dengan from dari konfigurasi[32m 38[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenerima keyring valid[32m 21[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: id tidak cocok dengan kunci[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: dua aktif[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: id ganda[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: status tidak dikenal[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: aktif dengan dirotasiPada[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: aktif dengan dicabutPada[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: dirotasi tanpa dirotasiPada[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: dicabut tanpa dicabutPada[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: field tak dikenal di entri[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: field tak dikenal di akar[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: versi salah[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak kunci publik yang bukan SPKI Ed25519 (RSA, sampah, base64 longgar)[32m 26[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak JSON rusak tanpa membocorkan isinya[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22msiklus kunci[2m > [22mtambah, putar, lalu cabut dari aktif dan dari dirotasi[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22msiklus kunci[2m > [22mmenolak: cabut dua kali, cabut id tak dikenal, putar tanpa aktif, tambah saat sudah ada aktif[32m 5[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22msiklus kunci[2m > [22mmenolak kunci yang sudah ada dan kunci bukan Ed25519[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22msiklus kunci[2m > [22mtidak mengubah masukan[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mkunciBolehMemverifikasi[2m > [22mdirotasi: tepat di dirotasiPada boleh, 1 ms sesudahnya tidak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mkunciBolehMemverifikasi[2m > [22mdicabut selalu ditolak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mkunciBolehMemverifikasi[2m > [22m1 ms sebelum dibuatPada ditolak (aktif dan dirotasi); tepat di dibuatPada boleh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mberkas keyring[2m > [22mberkas tidak ada adalah galat, bukan keyring kosong[32m 11[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mpemetaan status[2m > [22mdua arah, nilai tak dikenal ditolak[32m 12[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mdidalamRepository[2m > [22mmembedakan dalam, luar, dan folder bernama mirip[32m 7[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mmembuat berkas privat, entri keyring publik-saja, dan baris DB AKTIF[32m 32[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mkata kunci: id hasil buat == idKunci(kunci publik di berkas keyring)[32m 14[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mmenolak berkas --out yang sudah ada tanpa menimpanya[32m 15[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/penandatangan.test.ts[2m > [22mmuatKunciPrivat[2m > [22mmenolak lokasi belum diatur dan berkas tidak ada[32m 10[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/penandatangan.test.ts[2m > [22mmuatKunciPrivat[2m > [22mmemuat PEM Ed25519 yang bisa menandatangani[32m 16[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/penandatangan.test.ts[2m > [22mmuatKunciPrivat[2m > [22mmenolak PEM RSA[32m 41[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/penandatangan.test.ts[2m > [22mmuatKunciPrivat[2m > [22mPEM rusak ditolak dan pesan galat tidak memuat PEM[32m 9[2mms[22m[39m
+ [2m[90mΓåô[39m[22m lib/crypto/penandatangan.test.ts[2m > [22mmuatKunciPrivat[2m > [22mmenolak berkas yang bisa dibaca grup atau pengguna lain
+ [32mΓ£ô[39m lib/data/versi-tulis.test.ts[2m > [22misiTransaksiBuat[2m > [22mdengan berkas: create dan audit UNGGAH_BERKAS di tx yang sama[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/versi-tulis.test.ts[2m > [22misiTransaksiBuat[2m > [22mtanpa berkas: tidak ada audit[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/versi-tulis.test.ts[2m > [22misiTransaksiBuat[2m > [22mgalat audit merambat[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/versi-tulis.test.ts[2m > [22mcatatUnggahBerkas[2m > [22mmenulis UNGGAH_BERKAS; galat merambat[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/versi-tulis.test.ts[2m > [22misiTransaksiHapus[2m > [22mcount 1: deleteMany bersyarat lalu audit PENGHAPUSAN[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/versi-tulis.test.ts[2m > [22misiTransaksiHapus[2m > [22mcount 0: NotEditable tanpa audit[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/versi-tulis.test.ts[2m > [22misiTransaksiHapus[2m > [22mgalat audit merambat[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mberkas keyring[2m > [22mberkas rusak adalah galat[32m 9[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mberkas keyring[2m > [22mtulis lalu baca kembali sama, dan tidak meninggalkan berkas sementara[32m 12[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/keyring.test.ts[2m > [22mberkas keyring[2m > [22mmenolak menulis keyring tidak valid dan tidak mengubah berkas lama[32m 13[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mvalidasiBerkasPdf[2m > [22mmenolak berkas kosong[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mvalidasiBerkasPdf[2m > [22mmenerima PDF tepat sebesar batas F-30[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mvalidasiBerkasPdf[2m > [22mmenolak berkas satu byte di atas batas[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mvalidasiBerkasPdf[2m > [22mmenolak ZIP yang diberi ekstensi .pdf[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mvalidasiBerkasPdf[2m > [22mmenolak teks biasa[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mvalidasiBerkasPdf[2m > [22mmenolak awalan %PDF tanpa tanda hubung[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mbatas ukuran bersama klien dan server[2m > [22mmelebihiBatasUkuran: tepat di batas lolos, satu byte di atas tidak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mbatas ukuran bersama klien dan server[2m > [22mpesan klien sama dengan pesan galat server[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mambilBerkasOpsional[2m > [22mnull bila field tidak ada[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mambilBerkasOpsional[2m > [22mnull bila nilainya string, bukan File[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mambilBerkasOpsional[2m > [22mnull untuk File kosong tanpa nama (parser web biasa)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mambilBerkasOpsional[2m > [22mnull untuk File kosong bernama "undefined" (Server Action Next)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mambilBerkasOpsional[2m > [22mFile bernama 0 byte dikembalikan agar galat 'kosong' tetap muncul[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22mambilBerkasOpsional[2m > [22mFile bernama berisi dikembalikan[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22msanitasiNamaBerkas[2m > [22mmembuang path[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22msanitasiNamaBerkas[2m > [22mmembuang tanda kutip dan karakter kontrol[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22msanitasiNamaBerkas[2m > [22mmemotong nama panjang dan tetap berakhiran .pdf[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/berkas-pdf.test.ts[2m > [22msanitasiNamaBerkas[2m > [22mmemberi nama bawaan bila kosong setelah dibersihkan[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/audit.test.ts[2m > [22mcatatAudit[2m > [22mmengirim data sesuai entri ke auditLog.create tepat sekali[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/audit.test.ts[2m > [22mcatatAudit[2m > [22mketerangan boleh kosong dan disimpan sebagai null[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/audit.test.ts[2m > [22mcatatAudit[2m > [22mtidak meneruskan properti lain dari objek pemanggil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/audit.test.ts[2m > [22mcatatAudit[2m > [22mgalat dari create merambat ke pemanggil[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/audit.test.ts[2m > [22mcatatAudit[2m > [22mobjectType di luar nilai yang dikenal ditolak kompilator[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mpositif[2m > [22masli-sah: versi berlaku hari ini[32m 9[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mpositif[2m > [22masli-digantikan: ada versi lebih baru yang sudah berlaku[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mpositif[2m > [22mversi berlaku di masa depan tetap asli-sah[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mpositif[2m > [22mB-05 kunci DIROTASI tetap sah untuk approvedAt <= dirotasiPada[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mpositif[2m > [22mduplikat sha256: satu hasil per kandidat, kandidat gagal tidak tersembunyi[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mberkas tidak dikenal (tanpa kandidat): tanpa metadata versi[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mA-06 hanya DRAF/DIBATALKAN yang cocok: hasil SAMA dengan tidak dikenal[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mA-06 status DRAF diubah ke SAH tanpa tanda tangan[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mtag HMAC tidak valid[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mtag kosong[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mversi SAH seed tanpa signature[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22msignature null: tanpa tanda tangan[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22msigningKeyId null: tanpa tanda tangan[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mapprovedById null: tanpa tanda tangan[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mapprovedAt null: tanpa tanda tangan[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mhasil tidak-cocok dari kandidat memuat identitas versi tanpa status[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mB-06 kunci dicabut[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mapprovedAt setelah kunci dirotasi[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mapprovedAt sebelum kunci dibuat[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mB-07 kunci ada di tabel tetapi tidak di keyring[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mkunci ada di keyring tetapi tidak di tabel[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mkunci publik tabel berbeda dari keyring[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mstatus tabel berbeda dari keyring[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mstatus tabel tidak dikenal[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mrotatedAt tabel berbeda dari dirotasiPada keyring (1 ms)[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mrevokedAt tabel berbeda dari dicabutPada keyring (1 ms)[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mcreatedAt tabel berbeda dari dibuatPada keyring -> kunci-tidak-sinkron[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mtanda tangan diubah satu byte[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mtanda tangan panjang bukan 64 byte[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-05 effectiveDate diubah[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-05 versionNumber diubah[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-05 fileName diubah[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-05 fileSize diubah[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-08 approvedById diubah[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-08 approvedAt diubah (masih dalam masa kunci)[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-09 signingKeyId diubah ke kunci lain yang terdaftar[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-07 signature + signingKeyId disalin dari versi lain[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mgalat payload (approvedById bukan UUID) = tidak-cocok, bukan lemparan[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mkerahasiaan hasil[2m > [22mtidak memuat tanda tangan, kunci, atau tag[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22mnormalkanEmail[2m > [22mtrim lalu huruf kecil[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailKampusSah[2m > [22mmenerima uji@universitaspertamina.ac.id[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailKampusSah[2m > [22mmenerima uji@student.universitaspertamina.ac.id[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailKampusSah[2m > [22mmenolak: akhiran palsu[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailKampusSah[2m > [22mmenolak: awalan palsu[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailKampusSah[2m > [22mmenolak: subdomain[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailKampusSah[2m > [22mmenolak: belum normal (huruf besar)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailKampusSah[2m > [22mmenolak: spasi tepi[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailKampusSah[2m > [22mmenolak: dua @[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailKampusSah[2m > [22mmenolak: lokal kosong[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailKampusSah[2m > [22mmenolak: kosong[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailAdminSeed[2m > [22mmenolak: undefined[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailAdminSeed[2m > [22mmenolak: kosong[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailAdminSeed[2m > [22mmenolak: hanya spasi[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailAdminSeed[2m > [22mmenolak: domain luar[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailAdminSeed[2m > [22mmenolak: akhiran palsu[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailAdminSeed[2m > [22mmenolak: awalan palsu[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailAdminSeed[2m > [22mmenolak: subdomain[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailAdminSeed[2m > [22mmenormalkan huruf besar dan spasi lalu menerima[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/akun-kampus.test.ts[2m > [22memailAdminSeed[2m > [22mpesan galat tidak memuat nilai masukan[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/versions.test.ts[2m > [22msahkanVersiDenganAudit[2m > [22mmembentuk keterangan dan waktu, lalu memanggil isiTransaksiSahkan di transaksi[32m 5[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/versions.test.ts[2m > [22msahkanVersiDenganAudit[2m > [22mpenandatangan tidak siap: ditolak sebelum transaksi dibuka[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/versions.test.ts[2m > [22msahkanVersiDenganAudit[2m > [22mgalat dari transaksi diteruskan apa adanya[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/[id]/route.test.ts[2m > [22mDELETE /api/v1/sessions/{id}[2m > [22mOrigin https://evil.example -> 403, data tidak dipanggil[32m 36[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/[id]/route.test.ts[2m > [22mDELETE /api/v1/sessions/{id}[2m > [22mOrigin null -> 403, data tidak dipanggil[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/[id]/route.test.ts[2m > [22mDELETE /api/v1/sessions/{id}[2m > [22mOrigin null -> 403, data tidak dipanggil[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/[id]/route.test.ts[2m > [22mDELETE /api/v1/sessions/{id}[2m > [22manonim (Origin benar) -> 401[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/[id]/route.test.ts[2m > [22mDELETE /api/v1/sessions/{id}[2m > [22msyarat jagaRoute: masuk, bentuk problem[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/[id]/route.test.ts[2m > [22mDELETE /api/v1/sessions/{id}[2m > [22mid bukan UUID -> 404 tanpa memanggil data[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/[id]/route.test.ts[2m > [22mDELETE /api/v1/sessions/{id}[2m > [22mA mencabut sesi B -> cabutSesi(idB, userIdA) false -> 404[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/[id]/route.test.ts[2m > [22mDELETE /api/v1/sessions/{id}[2m > [22mSIVITAS mencabut sesi akun lain -> cabutSesi(idTarget, userIdPelaku) false -> 404 problem+json[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/[id]/route.test.ts[2m > [22mDELETE /api/v1/sessions/{id}[2m > [22mADMIN mencabut sesi akun lain -> cabutSesi(idTarget, userIdPelaku) false -> 404 problem+json[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/[id]/route.test.ts[2m > [22mDELETE /api/v1/sessions/{id}[2m > [22msesi sendiri -> 204 tanpa body dan tanpa Content-Type[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/sessions/[id]/route.test.ts[2m > [22mDELETE /api/v1/sessions/{id}[2m > [22mgalat tak terduga -> 500, log hanya nama galat[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mmenolak --out dan keyring di dalam repo, menerima folder bernama mirip di luar[32m 26[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mmenolak --out sama dengan berkas keyring[32m 7[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mmenolak bila keyring sudah punya kunci aktif; tidak ada berkas privat dibuat[32m 31[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mmenolak keyring hilang tetapi tabel berisi; berkas privat dihapus, DB rollback[32m 10[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mkeyring ada tetapi rusak ditolak (bukan dianggap kosong)[32m 9[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mputarKunciOperator[2m > [22mlama ke DIROTASI dulu, baru baru AKTIF; keyring konsisten[32m 24[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/route.test.ts[2m > [22mGET /api/v1/regulations: sukses[2m > [22m200 tanpa filter: header, bentuk data, tanpa daftar versi[32m 36[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/route.test.ts[2m > [22mGET /api/v1/regulations: sukses[2m > [22m200 dengan category: slug diteruskan ke lapisan data[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/route.test.ts[2m > [22mGET /api/v1/regulations: sukses[2m > [22mcurrentVersion null bila belum ada versi berlaku[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/route.test.ts[2m > [22mGET /api/v1/regulations: sukses[2m > [22mcategory berformat sah tetapi tak dikenal: 200 dengan data kosong[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/route.test.ts[2m > [22mGET /api/v1/regulations: 400 validation-error[2m > [22mformat slug salah[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/route.test.ts[2m > [22mGET /api/v1/regulations: 400 validation-error[2m > [22mparameter tak dikenal[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/route.test.ts[2m > [22mGET /api/v1/regulations: 400 validation-error[2m > [22mparameter ganda[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/route.test.ts[2m > [22mGET /api/v1/regulations: 400 validation-error[2m > [22mkunci __proto__[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/route.test.ts[2m > [22mGET /api/v1/regulations: 500 internal-error[2m > [22mgalat data: body generik, log hanya nama galat[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/route.test.ts[2m > [22mtanpa sesi[2m > [22m401 application/problem+json, lapisan data tidak dipanggil[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/penandatangan.test.ts[2m > [22msiapkanPenandatangan[2m > [22mlolos bila kunci privat cocok dengan entri aktif[32m 36[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/penandatangan.test.ts[2m > [22msiapkanPenandatangan[2m > [22mgalat bila kunci tidak ada di keyring[32m 25[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/penandatangan.test.ts[2m > [22msiapkanPenandatangan[2m > [22mgalat bila kunci ada tetapi dirotasi atau dicabut[32m 20[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/penandatangan.test.ts[2m > [22msiapkanPenandatangan[2m > [22mgalat bila keyring tidak ada atau lokasinya belum diatur[32m 10[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/penandatangan.test.ts[2m > [22msiapkanPenandatangan[2m > [22mPEM bukan Ed25519 atau rusak = galat[32m 24[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/otp.test.ts[2m > [22mturunkanKunciOtp[2m > [22mdeterministik; rahasia beda ΓåÆ kunci beda[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/otp.test.ts[2m > [22mhashOtp[2m > [22mdeterministik[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/otp.test.ts[2m > [22mhashOtp[2m > [22mOTP beda ΓåÆ hasil beda[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/otp.test.ts[2m > [22mhashOtp[2m > [22mrahasia beda ΓåÆ hasil beda[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/otp.test.ts[2m > [22mhashOtp[2m > [22mkeluaran heksadesimal 64 karakter dan tidak memuat OTP[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: Origin[2m > [22mOrigin https://evil.example -> 403 dan tidak lanjut[32m 37[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: Origin[2m > [22mOrigin null -> 403 dan tidak lanjut[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: Origin[2m > [22mOrigin null -> 403 dan tidak lanjut[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: akses[2m > [22manonim (Origin benar) -> 401[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: akses[2m > [22mSivitas -> 403[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: akses[2m > [22msyarat yang diminta: admin[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: 404[2m > [22mslug tidak ada[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: 404[2m > [22mslug berformat salah: tanpa query[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: 404[2m > [22mversionId bukan UUID: tanpa query[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: 404[2m > [22mversi bukan milik slug itu[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: 404[2m > [22mpenanda dibaca sebelum versi[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: sukses[2m > [22m200 { data: { id, status: SAH } }, actorId = userId, revalidatePath, no-store[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: galat domain dan lainnya[2m > [22mVersionNotEditableError -> 409 state-conflict, detail tetap[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: galat domain dan lainnya[2m > [22mVersionWithoutFileError -> 409 state-conflict, detail tetap[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: galat domain dan lainnya[2m > [22mVersionEffectiveDateTakenError -> 409 state-conflict, detail tetap[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: galat domain dan lainnya[2m > [22mpanggilan kedua (versi sudah tidak Draf) -> 409[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: galat domain dan lainnya[2m > [22mgalat lain -> 500 internal-error, log hanya nama galat[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts[2m > [22mPOST approval: galat domain dan lainnya[2m > [22mpenandatangan belum siap -> 503 service-unavailable, pesan galat tidak bocor[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/konfigurasi.test.ts[2m > [22mbacaKonfigurasiAuth[2m > [22mmenerima env valid (http dan https)[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/konfigurasi.test.ts[2m > [22mbacaKonfigurasiAuth[2m > [22mmenolak rahasia undefined tanpa membocorkan nilainya[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/konfigurasi.test.ts[2m > [22mbacaKonfigurasiAuth[2m > [22mmenolak rahasia "" tanpa membocorkan nilainya[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/konfigurasi.test.ts[2m > [22mbacaKonfigurasiAuth[2m > [22mmenolak rahasia "pendekpendekpendekpendekpendek" tanpa membocorkan nilainya[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/konfigurasi.test.ts[2m > [22mbacaKonfigurasiAuth[2m > [22mmenolak URL undefined[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/konfigurasi.test.ts[2m > [22mbacaKonfigurasiAuth[2m > [22mmenolak URL ""[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/konfigurasi.test.ts[2m > [22mbacaKonfigurasiAuth[2m > [22mmenolak URL "bukan-url"[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/konfigurasi.test.ts[2m > [22mbacaKonfigurasiAuth[2m > [22mmenolak URL "ftp://contoh.test"[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/konfigurasi.test.ts[2m > [22mbacaKonfigurasiAuth[2m > [22mmenolak URL "javascript:alert(1)"[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/konfigurasi.test.ts[2m > [22mbacaKonfigurasiAuth[2m > [22mmenyebut kedua nama bila keduanya salah[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: sukses[2m > [22m200 tanpa date: memakai hari ini WIB, header benar[32m 39[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: sukses[2m > [22m200 date di antara dua versi: versi lama berstatus Digantikan[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: sukses[2m > [22m200 date tepat di tanggal mulai berlaku: versi itu terpilih[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: sukses[2m > [22m200 date sebelum versi pertama: currentVersion null[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: sukses[2m > [22mDraf dan Dibatalkan tidak pernah terpilih[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 400 validation-error[2m > [22mformat salah (garis miring)[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 400 validation-error[2m > [22mbukan tanggal[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 400 validation-error[2m > [22mdate kosong[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 400 validation-error[2m > [22mtanggal mustahil (30 Februari)[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 400 validation-error[2m > [22mbulan mustahil (13)[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 400 validation-error[2m > [22mparameter tak dikenal[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 400 validation-error[2m > [22mparameter ganda[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 404 not-found[2m > [22mslug tidak ada di data[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 404 not-found[2m > [22mslug berformat salah SALAH!: data tidak dipanggil[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 404 not-found[2m > [22mslug berformat salah A: data tidak dipanggil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 404 not-found[2m > [22mslug berformat salah a--b: data tidak dipanggil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 404 not-found[2m > [22mslug berformat salah -a: data tidak dipanggil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 404 not-found[2m > [22mslug berformat salah diutamakan atas query salah: tetap 404[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}/current-version: 500 internal-error[2m > [22mgalat data: body generik, log hanya nama galat[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/current-version/route.test.ts[2m > [22mtanpa sesi[2m > [22m401 application/problem+json, lapisan data tidak dipanggil[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konsol.test.ts[2m > [22mbuatPengirimKonsol[2m > [22mmenolak TIDAK_DIIZINKAN dan tidak mencetak saat NODE_ENV="production"[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konsol.test.ts[2m > [22mbuatPengirimKonsol[2m > [22mmenolak TIDAK_DIIZINKAN dan tidak mencetak saat NODE_ENV=""[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konsol.test.ts[2m > [22mbuatPengirimKonsol[2m > [22mmenolak TIDAK_DIIZINKAN dan tidak mencetak saat NODE_ENV=undefined[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konsol.test.ts[2m > [22mbuatPengirimKonsol[2m > [22mmenolak TIDAK_DIIZINKAN dan tidak mencetak saat NODE_ENV="staging"[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konsol.test.ts[2m > [22mbuatPengirimKonsol[2m > [22mmencetak pesan saat NODE_ENV=development[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/konsol.test.ts[2m > [22mbuatPengirimKonsol[2m > [22mmencetak pesan saat NODE_ENV=test[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute bentuk problem[2m > [22manonim -> 401[32m 5[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute bentuk problem[2m > [22mSIVITAS dengan syarat admin -> 403[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute bentuk problem[2m > [22mADMIN -> lolos dengan sesi[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute bentuk teks[2m > [22manonim -> 401[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute bentuk teks[2m > [22mSIVITAS dengan syarat admin -> 403[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute bentuk teks[2m > [22mADMIN -> lolos dengan sesi[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute syarat masuk, bentuk problem[2m > [22mSIVITAS -> lolos[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute syarat masuk, bentuk problem[2m > [22mADMIN -> lolos[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute syarat masuk, bentuk problem[2m > [22manonim -> 401[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute syarat masuk, bentuk teks[2m > [22mSIVITAS -> lolos[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute syarat masuk, bentuk teks[2m > [22mADMIN -> lolos[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute syarat masuk, bentuk teks[2m > [22manonim -> 401[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute syarat masuk, peran tak dikenal[2m > [22mTAMU, bentuk problem -> 403[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute syarat masuk, peran tak dikenal[2m > [22mTAMU, bentuk teks -> 403[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute syarat admin, peran tak dikenal[2m > [22mTAMU, bentuk problem -> 403[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute syarat admin, peran tak dikenal[2m > [22mTAMU, bentuk teks -> 403[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute isi respons[2m > [22mproblem: application/problem+json[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/jaga-route.test.ts[2m > [22mjagaRoute isi respons[2m > [22mteks: teks biasa tanpa detail[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDiubah[2m > [22mstatus DRAF menghasilkan true[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDiubah[2m > [22mstatus SAH menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDiubah[2m > [22mstatus DIGANTIKAN menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDiubah[2m > [22mstatus DIBATALKAN menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDihapus[2m > [22mstatus DRAF menghasilkan true[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDihapus[2m > [22mstatus SAH menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDihapus[2m > [22mstatus DIGANTIKAN menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDihapus[2m > [22mstatus DIBATALKAN menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mpesan penolakan[2m > [22mmenyebut label status saat ubah ditolak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mpesan penolakan[2m > [22mmenyebut label status saat hapus ditolak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDibatalkan[2m > [22mstatus DRAF menghasilkan true[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDibatalkan[2m > [22mstatus SAH menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDibatalkan[2m > [22mstatus DIGANTIKAN menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDibatalkan[2m > [22mstatus DIBATALKAN menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDisahkan[2m > [22mDraf berberkas tanpa tanggal kembar boleh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDisahkan[2m > [22mtanpa berkas ditolak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDisahkan[2m > [22mtanggal kembar ditolak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDisahkan[2m > [22mstatus SAH ditolak lebih dulu[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDisahkan[2m > [22mstatus DIGANTIKAN ditolak lebih dulu[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDisahkan[2m > [22mstatus DIBATALKAN ditolak lebih dulu[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/versi-admin.test.ts[2m > [22mversiBolehDisahkan[2m > [22mpesan tiap alasan[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/kategori.test.ts[2m > [22mkategoriBolehDihapus[2m > [22mjumlah regulasi 0 menghasilkan true[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/kategori.test.ts[2m > [22mkategoriBolehDihapus[2m > [22mjumlah regulasi 1 menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/kategori.test.ts[2m > [22mkategoriBolehDihapus[2m > [22mjumlah regulasi 5 menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/kategori.test.ts[2m > [22mpesanTolakHapusKategori[2m > [22mmenyebut jumlah regulasi dan aturan hapus[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/kategori.test.ts[2m > [22mnama kategori mirip menghasilkan slug sama[2m > [22m"Akademik" menjadi akademik[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/kategori.test.ts[2m > [22mnama kategori mirip menghasilkan slug sama[2m > [22m"  akademik " menjadi akademik[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/kategori.test.ts[2m > [22mnama kategori mirip menghasilkan slug sama[2m > [22m"AKADEMIK" menjadi akademik[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/kategori.test.ts[2m > [22mnama kategori mirip menghasilkan slug sama[2m > [22mspasi ganda dianggap sama[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/kategori.test.ts[2m > [22mnama kategori mirip menghasilkan slug sama[2m > [22m"!!!" menghasilkan slug kosong (ditolak di action)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/kategori.test.ts[2m > [22mnama kategori mirip menghasilkan slug sama[2m > [22m"   " menghasilkan slug kosong (ditolak di action)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmemetakan baris lengkap menjadi data terlindung[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmengembalikan null bila fileSha256 kosong[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmengembalikan null bila fileName kosong[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmengembalikan null bila fileSize kosong[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmengembalikan null bila ketiga field berkas kosong (versi tanpa berkas)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmenganggap fileSize 0 sebagai nilai sah, bukan kosong[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmenghasilkan hasil sama untuk Date dan string tanggal[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mtidak menggeser tanggal akhir bulan[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mtidak menggeser tanggal akhir Februari tahun kabisat[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mtidak menggeser tanggal akhir tahun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mtidak menggeser tanggal awal tahun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmemakai basis UTC: 23.59 UTC tetap pada tanggal yang sama[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mputarKunciOperator[2m > [22mmenolak tanpa kunci aktif[32m 21[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mputarKunciOperator[2m > [22mmenolak keyring belum ada[32m 10[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mputarKunciOperator[2m > [22mDB tidak cocok (updateMany count 0): rollback, privat baru dihapus, keyring utuh[32m 18[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mcabutKunciOperator[2m > [22mmencabut kunci AKTIF: status dan revoked_at benar, peringatan tak ada aktif[32m 15[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mcabutKunciOperator[2m > [22mmencabut kunci DIROTASI: kunci aktif tetap ada[32m 31[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/memori.test.ts[2m > [22mbuatPengirimMemori[2m > [22mmenyimpan pesan terkirim sesuai urutan dan bisa dibaca ulang[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/email/memori.test.ts[2m > [22mbuatPengirimMemori[2m > [22mkosongkan() menghapus semua pesan[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/tanggal.test.ts[2m > [22mtodayInJakarta[2m > [22mmasih tanggal yang sama pada 23.59.59 WIB[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/tanggal.test.ts[2m > [22mtodayInJakarta[2m > [22mberganti tanggal tepat pada 00.00 WIB (17.00 UTC)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/tanggal.test.ts[2m > [22msusunTanggalIso[2m > [22m1/7/2027 menjadi 2027-07-01[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/tanggal.test.ts[2m > [22msusunTanggalIso[2m > [22m9/12/2026 menjadi 2026-12-09[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/tanggal.test.ts[2m > [22mpecahTanggalIso[2m > [22mmemecah tanggal ISO tanpa nol di depan[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/tanggal.test.ts[2m > [22mNAMA_BULAN[2m > [22mberisi 12 bulan dari Januari sampai Desember[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: sukses[2m > [22m200: header, versi terurut terbaru, currentVersion benar[32m 40[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: sukses[2m > [22m200: item versions tidak memuat changeSummary dan tetap memuat fileSize[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: sukses[2m > [22m200 dengan currentVersion null bila belum ada versi berlaku[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: 404 not-found[2m > [22mslug tidak ada di data[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: 404 not-found[2m > [22mslug berformat salah SALAH!: data tidak dipanggil[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: 404 not-found[2m > [22mslug berformat salah A: data tidak dipanggil[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: 404 not-found[2m > [22mslug berformat salah a--b: data tidak dipanggil[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: 404 not-found[2m > [22mslug berformat salah -a: data tidak dipanggil[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: 404 not-found[2m > [22mslug berformat salah diutamakan atas parameter query: tetap 404[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: 400 validation-error[2m > [22mparameter tak dikenal[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: 400 validation-error[2m > [22mparameter category[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: 400 validation-error[2m > [22mparameter ganda[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: 400 validation-error[2m > [22mkunci __proto__[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mGET /api/v1/regulations/{slug}: 500 internal-error[2m > [22mgalat data: body generik, log hanya nama galat[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/api/v1/regulations/[slug]/route.test.ts[2m > [22mtanpa sesi[2m > [22m401 application/problem+json, lapisan data tidak dipanggil[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/regulasi/[slug]/versi/[versionId]/berkas/route.test.ts[2m > [22mGET unduh berkas admin: penolakan menurut peran[2m > [22manonim -> 401 teks, data dan berkas tidak disentuh[32m 32[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/regulasi/[slug]/versi/[versionId]/berkas/route.test.ts[2m > [22mGET unduh berkas admin: penolakan menurut peran[2m > [22mSIVITAS -> 403 teks, data dan berkas tidak disentuh[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/regulasi/[slug]/versi/[versionId]/berkas/route.test.ts[2m > [22mGET unduh berkas admin: penolakan menurut peran[2m > [22mperan tak dikenal -> 403 teks, data dan berkas tidak disentuh[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/regulasi/[slug]/versi/[versionId]/berkas/route.test.ts[2m > [22mGET unduh berkas admin: ADMIN[2m > [22mparameter jelek (slug dan versionId) -> 404, data tidak dipanggil[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/regulasi/[slug]/versi/[versionId]/berkas/route.test.ts[2m > [22mGET unduh berkas admin: ADMIN[2m > [22mregulasi tidak ada -> 404, berkas tidak dicari[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/regulasi/[slug]/versi/[versionId]/berkas/route.test.ts[2m > [22mGET unduh berkas admin: ADMIN[2m > [22mversi milik regulasi lain: findVersionFile(regulasi.id, versionId) kosong -> 404[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/regulasi/[slug]/versi/[versionId]/berkas/route.test.ts[2m > [22mGET unduh berkas admin: ADMIN[2m > [22munduhan tidak bergantung pada status versi: 200 dengan header unduhan[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22m{"status":400,"kode":"EMAIL_BUKAN_KAMPUS"} -> Gunakan email kampus.[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22m{"status":400,"kode":"TIPE_OTP_TIDAK_DIDUKUNG"} -> Terjadi kesalahan. Coba lagi.[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22m{"status":429,"kode":"JEDA_OTP"} -> Terlalu banyak percobaan. Tunggu sekitar satu menit lalu coba lagi.[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22m{"status":403,"kode":"AKUN_TIDAK_AKTIF"} -> Terjadi kesalahan. Coba lagi.[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22m{"status":400,"kode":"INVALID_OTP"} -> Kode salah atau sudah kedaluwarsa.[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22m{"status":400,"kode":"OTP_EXPIRED"} -> Kode salah atau sudah kedaluwarsa.[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22m{"status":403,"kode":"TOO_MANY_ATTEMPTS"} -> Percobaan habis. Minta kode baru.[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22m{"status":429} -> Terlalu banyak percobaan. Tunggu sekitar satu menit lalu coba lagi.[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22m{"status":400} -> Terjadi kesalahan. Coba lagi.[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22m{"status":500} -> Terjadi kesalahan. Coba lagi.[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22m{"status":400,"kode":"KODE_ASING"} -> Terjadi kesalahan. Coba lagi.[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22m"jaringan" -> Terjadi kesalahan. Coba lagi.[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/masuk/pesan.test.ts[2m > [22mpetakanGalatMasuk[2m > [22mkode dari server yang dikenal tetap menang atas status[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mcabutKunciOperator[2m > [22mmenolak id tak dikenal, id berformat salah, dan kunci sudah dicabut[32m 22[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mcabutKunciOperator[2m > [22mmenolak keyring di dalam repo[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mkegagalan di tengah[2m > [22mtulisKeyring gagal di dalam tx: DB rollback, privat baru dihapus, keyring lama utuh[32m 16[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mkegagalan di tengah[2m > [22mrm pembersihan gagal: galat asli tetap yang diteruskan[32m 10[2mms[22m[39m
+ [32mΓ£ô[39m lib/crypto/operasi-kunci.test.ts[2m > [22mkegagalan di tengah[2m > [22mcommit gagal setelah keyring ditulis: keyring tidak diubah, privat tidak dihapus, galat tidak pasti[32m 9[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulations[2m > [22mquery hanya versi pernah disahkan (tanpa DRAF dan DIBATALKAN) dan omit changeSummary[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulations[2m > [22mhasil hanya memuat id, versionNumber, effectiveDate, status, fileSize pada versi[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulations[2m > [22mkolom changeSummary tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulations[2m > [22mkolom fileKey tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulations[2m > [22mkolom fileName tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulations[2m > [22mkolom fileSha256 tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulations[2m > [22mkolom integrityTag tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulations[2m > [22mkolom signature tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulations[2m > [22mkolom signingKeyId tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulations[2m > [22mkolom approvedById tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationsByCategory[2m > [22mquery hanya versi pernah disahkan (tanpa DRAF dan DIBATALKAN) dan omit changeSummary[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationsByCategory[2m > [22mhasil hanya memuat id, versionNumber, effectiveDate, status, fileSize pada versi[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationsByCategory[2m > [22mkolom changeSummary tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationsByCategory[2m > [22mkolom fileKey tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationsByCategory[2m > [22mkolom fileName tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationsByCategory[2m > [22mkolom fileSha256 tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationsByCategory[2m > [22mkolom integrityTag tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationsByCategory[2m > [22mkolom signature tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationsByCategory[2m > [22mkolom signingKeyId tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationsByCategory[2m > [22mkolom approvedById tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationBySlug[2m > [22mquery hanya versi pernah disahkan (tanpa DRAF dan DIBATALKAN) dan omit changeSummary[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationBySlug[2m > [22mhasil hanya memuat id, versionNumber, effectiveDate, status, fileSize pada versi[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationBySlug[2m > [22mkolom changeSummary tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationBySlug[2m > [22mkolom fileKey tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationBySlug[2m > [22mkolom fileName tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationBySlug[2m > [22mkolom fileSha256 tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationBySlug[2m > [22mkolom integrityTag tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationBySlug[2m > [22mkolom signature tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationBySlug[2m > [22mkolom signingKeyId tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationBySlug[2m > [22mkolom approvedById tidak muncul pada hasil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationBySlug[2m > [22mslug dipakai sebagai where; baris tidak ada -> undefined[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/regulations.test.ts[2m > [22mgetRegulationsByCategory[2m > [22mslug kategori menyaring lewat where; tanpa slug where kosong[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/sesi.test.ts[2m > [22mpetakanSesi[2m > [22mhanya id, createdAt, expiresAt, current[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/sesi.test.ts[2m > [22mpetakanSesi[2m > [22mcurrent false untuk sesi lain[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/users.test.ts[2m > [22mfindActiveUserById[2m > [22mwhere memuat id DAN isActive: true; select hanya id, email, role[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/users.test.ts[2m > [22mfindActiveUserById[2m > [22makun nonaktif atau tidak ada (findFirst null) -> undefined[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/users.test.ts[2m > [22mfindActiveUserById[2m > [22makun aktif ADMIN -> baris apa adanya[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/users.test.ts[2m > [22mfindActiveUserById[2m > [22makun aktif SIVITAS -> baris apa adanya[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/menu.test.ts[2m > [22mpilihMenu[2m > [22mtamu: hanya Masuk, tanpa Keluar[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/menu.test.ts[2m > [22mpilihMenu[2m > [22mSivitas: Daftar Regulasi dan Sesi, dengan Keluar[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/menu.test.ts[2m > [22mpilihMenu[2m > [22mAdmin: Daftar Regulasi, Kelola Regulasi, Periksa Berkas, Sesi; dengan Keluar[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mjumlah aksi per modul dan total (diturunkan dari ekspor berkas aksi)[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mkategori: simpanKategori punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mkategori: gantiNamaKategori punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mkategori: hapusKategori punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mregulasi: simpanRegulasi punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mregulasi: ubahRegulasi punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mregulasi: hapusRegulasi punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mversi: simpanVersi punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mversi: ubahVersi punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mversi: hapusVersi punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mversi: sahkanVersi punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mversi: batalkanVersi punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mperubahan: simpanPerubahan punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mperubahan: ubahPerubahan punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mperubahan: hapusPerubahan punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mdaftar aksi yang diuji[2m > [22mverifikasi: periksaBerkas punya argumen uji[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mkategori: simpanKategori[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 20[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mkategori: simpanKategori[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mkategori: simpanKategori[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mkategori: simpanKategori[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mkategori: gantiNamaKategori[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mkategori: gantiNamaKategori[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mkategori: gantiNamaKategori[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mkategori: gantiNamaKategori[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mkategori: hapusKategori[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mkategori: hapusKategori[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mkategori: hapusKategori[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mkategori: hapusKategori[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mregulasi: simpanRegulasi[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mregulasi: simpanRegulasi[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mregulasi: simpanRegulasi[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mregulasi: simpanRegulasi[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mregulasi: ubahRegulasi[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mregulasi: ubahRegulasi[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mregulasi: ubahRegulasi[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mregulasi: ubahRegulasi[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mregulasi: hapusRegulasi[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mregulasi: hapusRegulasi[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mregulasi: hapusRegulasi[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mregulasi: hapusRegulasi[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: simpanVersi[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: simpanVersi[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: simpanVersi[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: simpanVersi[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: ubahVersi[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: ubahVersi[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: ubahVersi[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: ubahVersi[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: hapusVersi[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: hapusVersi[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: hapusVersi[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: hapusVersi[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: sahkanVersi[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: sahkanVersi[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: sahkanVersi[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: sahkanVersi[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: batalkanVersi[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: batalkanVersi[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: batalkanVersi[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mversi: batalkanVersi[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mperubahan: simpanPerubahan[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mperubahan: simpanPerubahan[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mperubahan: simpanPerubahan[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mperubahan: simpanPerubahan[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mperubahan: ubahPerubahan[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mperubahan: ubahPerubahan[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mperubahan: ubahPerubahan[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mperubahan: ubahPerubahan[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mperubahan: hapusPerubahan[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mperubahan: hapusPerubahan[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mperubahan: hapusPerubahan[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mperubahan: hapusPerubahan[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mverifikasi: periksaBerkas[2m > [22manonim -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mverifikasi: periksaBerkas[2m > [22mSIVITAS -> melempar NOT_FOUND dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mverifikasi: periksaBerkas[2m > [22makun nonaktif -> melempar REDIRECT:/masuk dan data tidak tersentuh[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/admin/aksi-admin.test.ts[2m > [22mverifikasi: periksaBerkas[2m > [22mADMIN aktif lolos penjaga: data tersentuh, galat berasal dari tiruan data bukan penjaga[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/sesi.test.ts[2m > [22mcabutSesi[2m > [22mwhere memuat id DAN userId[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/sesi.test.ts[2m > [22mcabutSesi[2m > [22mA mencabut sesi B: tidak ada baris cocok -> false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/sesi.test.ts[2m > [22mdaftarSesiAktif[2m > [22mhanya milik userId, belum kedaluwarsa, terbaru dulu, tanpa token/ip/UA[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/jeda.test.ts[2m > [22mbuatJedaOtp[2m > [22mmenolak permintaan kedua dalam 60 detik[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/jeda.test.ts[2m > [22mbuatJedaOtp[2m > [22mmenerima lagi setelah 60 detik[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/jeda.test.ts[2m > [22mbuatJedaOtp[2m > [22mpenolakan tidak memperpanjang jeda[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/jeda.test.ts[2m > [22mbuatJedaOtp[2m > [22malamat berbeda tidak saling memengaruhi[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/jeda.test.ts[2m > [22mbuatJedaOtp[2m > [22mmenegakkan batas entri dengan membuang yang tertua[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/auth/jeda.test.ts[2m > [22mbuatJedaOtp[2m > [22mmembersihkan entri kedaluwarsa sebelum menghitung batas[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/keputusan.test.ts[2m > [22mputuskanAkses[2m > [22manonim, syarat masuk[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/keputusan.test.ts[2m > [22mputuskanAkses[2m > [22manonim, syarat admin[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/keputusan.test.ts[2m > [22mputuskanAkses[2m > [22mSIVITAS, syarat masuk[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/keputusan.test.ts[2m > [22mputuskanAkses[2m > [22mSIVITAS, syarat admin[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/keputusan.test.ts[2m > [22mputuskanAkses[2m > [22mADMIN, syarat masuk[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/keputusan.test.ts[2m > [22mputuskanAkses[2m > [22mADMIN, syarat admin[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/keputusan.test.ts[2m > [22mputuskanAkses[2m > [22mperan tak dikenal, syarat masuk[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/akses/keputusan.test.ts[2m > [22mputuskanAkses[2m > [22mperan tak dikenal, syarat admin[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/perubahan.test.ts[2m > [22mpesan penolakan perubahan[2m > [22mmenyebut label status SAH saat ubah ditolak[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/perubahan.test.ts[2m > [22mpesan penolakan perubahan[2m > [22mmenyebut label status DIGANTIKAN saat ubah ditolak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/perubahan.test.ts[2m > [22mpesan penolakan perubahan[2m > [22mmenyebut label status DIBATALKAN saat ubah ditolak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/perubahan.test.ts[2m > [22mpesan penolakan perubahan[2m > [22mmenyebut label status SAH saat hapus ditolak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/perubahan.test.ts[2m > [22mpesan penolakan perubahan[2m > [22mmenyebut label status DIGANTIKAN saat hapus ditolak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/perubahan.test.ts[2m > [22mpesan penolakan perubahan[2m > [22mmenyebut label status DIBATALKAN saat hapus ditolak[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/format.test.ts[2m > [22mformatUkuranBerkas[2m > [22m500 byte menjadi 500 B[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/format.test.ts[2m > [22mformatUkuranBerkas[2m > [22m358400 byte menjadi 350 KB[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/format.test.ts[2m > [22mformatUkuranBerkas[2m > [22m1258291 byte menjadi 1,2 MB[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/format.test.ts[2m > [22mformatUkuranBerkas[2m > [22m10485760 byte menjadi 10 MB[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/slug.test.ts[2m > [22mcreateSlug[2m > [22mnama biasa[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/slug.test.ts[2m > [22mcreateSlug[2m > [22maksen dibuang, spasi dan simbol jadi satu strip[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/slug.test.ts[2m > [22mcreateSlug[2m > [22mtanpa strip di awal dan akhir[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/slug.test.ts[2m > [22mcreateSlug[2m > [22mtanpa huruf atau angka menghasilkan string kosong[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/regulasi.test.ts[2m > [22mregulasiBolehDihapus[2m > [22mjumlah versi 0 menghasilkan true[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/regulasi.test.ts[2m > [22mregulasiBolehDihapus[2m > [22mjumlah versi 1 menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/regulasi.test.ts[2m > [22mregulasiBolehDihapus[2m > [22mjumlah versi 5 menghasilkan false[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/domain/regulasi.test.ts[2m > [22mpesanTolakHapus[2m > [22mmenyebut jumlah versi dan aturan hapus[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mcocok /[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mcocok /regulasi/x[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mcocok /admin/regulasi[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mcocok /masukan[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mcocok /apiary[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mcocok /akun/sesi[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mcocok /admin/verifikasi[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mcocok /admin/regulasi/x/versi/y/berkas[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mtidak cocok /masuk[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mtidak cocok /masuk/x[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mtidak cocok /api/auth/x[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mtidak cocok /api/v1/regulations[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mtidak cocok /_next/static/a.js[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mconfig.matcher[2m > [22mtidak cocok /favicon.ico[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mproxy[2m > [22mtanpa cookie sesi -> redirect ke /masuk[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m proxy.test.ts[2m > [22mproxy[2m > [22mdengan cookie sesi -> lanjut[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanRegulasi[2m > [22mtanpa kunci changeSummary pada kedalaman mana pun[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanRegulasi[2m > [22mtanpa kunci fileKey pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanRegulasi[2m > [22mtanpa kunci fileName pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanRegulasi[2m > [22mtanpa kunci fileSha256 pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanRegulasi[2m > [22mtanpa kunci fileUploadedAt pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanRegulasi[2m > [22mtanpa kunci integrityTag pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanRegulasi[2m > [22mtanpa kunci signature pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanRegulasi[2m > [22mtanpa kunci signingKeyId pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanRegulasi[2m > [22mtanpa kunci approvedById pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanRegulasi[2m > [22mtanpa kunci approvedAt pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanRegulasi[2m > [22mkunci sah tetap ada (hasil tidak kosong)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanDetailRegulasi[2m > [22mtanpa kunci changeSummary pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanDetailRegulasi[2m > [22mtanpa kunci fileKey pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanDetailRegulasi[2m > [22mtanpa kunci fileName pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanDetailRegulasi[2m > [22mtanpa kunci fileSha256 pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanDetailRegulasi[2m > [22mtanpa kunci fileUploadedAt pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanDetailRegulasi[2m > [22mtanpa kunci integrityTag pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanDetailRegulasi[2m > [22mtanpa kunci signature pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanDetailRegulasi[2m > [22mtanpa kunci signingKeyId pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanDetailRegulasi[2m > [22mtanpa kunci approvedById pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanDetailRegulasi[2m > [22mtanpa kunci approvedAt pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanDetailRegulasi[2m > [22mkunci sah tetap ada (hasil tidak kosong)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanVersiBerlakuPadaTanggal[2m > [22mtanpa kunci changeSummary pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanVersiBerlakuPadaTanggal[2m > [22mtanpa kunci fileKey pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanVersiBerlakuPadaTanggal[2m > [22mtanpa kunci fileName pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanVersiBerlakuPadaTanggal[2m > [22mtanpa kunci fileSha256 pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanVersiBerlakuPadaTanggal[2m > [22mtanpa kunci fileUploadedAt pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanVersiBerlakuPadaTanggal[2m > [22mtanpa kunci integrityTag pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanVersiBerlakuPadaTanggal[2m > [22mtanpa kunci signature pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanVersiBerlakuPadaTanggal[2m > [22mtanpa kunci signingKeyId pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanVersiBerlakuPadaTanggal[2m > [22mtanpa kunci approvedById pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanVersiBerlakuPadaTanggal[2m > [22mtanpa kunci approvedAt pada kedalaman mana pun[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mpetakanVersiBerlakuPadaTanggal[2m > [22mkunci sah tetap ada (hasil tidak kosong)[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mkunci sah pada versi[2m > [22mdetail: tiap versi tepat id, versionNumber, effectiveDate, status, fileSize; fileSize tetap ada[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/api/bocor.test.ts[2m > [22mkunci sah pada versi[2m > [22mcurrentVersion tepat id, versionNumber, effectiveDate, status[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/akun/sesi/actions.test.ts[2m > [22mcabutSesiSaya[2m > [22msesi lain berhasil dicabut: tanpa redirect, pemilik = userId sesi[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m app/akun/sesi/actions.test.ts[2m > [22mcabutSesiSaya[2m > [22msesi sendiri dicabut -> redirect /masuk[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m app/akun/sesi/actions.test.ts[2m > [22mcabutSesiSaya[2m > [22mcabutSesi false -> pesan umum, tanpa redirect[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/akun/sesi/actions.test.ts[2m > [22mcabutSesiSaya[2m > [22mSIVITAS mencabut sesi bukan miliknya -> pesan umum yang sama, tanpa redirect[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/akun/sesi/actions.test.ts[2m > [22mcabutSesiSaya[2m > [22mADMIN mencabut sesi bukan miliknya -> pesan umum yang sama, tanpa redirect[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m app/akun/sesi/actions.test.ts[2m > [22mcabutSesiSaya[2m > [22mid bukan UUID -> pesan umum, data tidak dipanggil[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/penandatangan-env.test.ts[2m > [22msiapkanPenandatanganDariEnv[2m > [22mmeneruskan lokasi dari env dan mengembalikan penandatangan[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/penandatangan-env.test.ts[2m > [22msiapkanPenandatanganDariEnv[2m > [22mPenandatanganTidakValid dibungkus PenandatanganBelumSiapError dengan pesan tetap tanpa jalur berkas[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/penandatangan-env.test.ts[2m > [22msiapkanPenandatanganDariEnv[2m > [22mKeyringTidakValid dibungkus PenandatanganBelumSiapError dengan pesan tetap tanpa jalur berkas[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m lib/data/penandatangan-env.test.ts[2m > [22msiapkanPenandatanganDariEnv[2m > [22mgalat lain tidak dibungkus[32m 0[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m63 passed[39m[22m[90m (63)[39m
+[2m      Tests [22m [1m[32m892 passed[39m[22m[2m | [22m[33m3 skipped[39m[90m (895)[39m
+[2m   Start at [22m 22:45:34
+[2m   Duration [22m 1.22s[2m (import 48%, transform 35%, tests 13%, worker 3%)[22m
+
+[2m    Isolate [22m [33m63 workers spawned[39m[2m ┬╖ ~266ms startup each (spawn + environment, per file)[22m
+[2m            [22m [2mat least ~275ms faster with [22m[33misolate: false[39m[2m ΓÇö reuses workers across files instead of one per file[22m
+
