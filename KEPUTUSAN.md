@@ -252,3 +252,106 @@ Urut dari yang terpenting:
 - RFC 2104 (HMAC), RFC 4231 (vektor uji HMAC-SHA256), RFC 5869 (HKDF).
 - NIST SP 800-57 Bagian 1 (pemisahan kunci per tujuan).
 - OWASP Password Storage Cheat Sheet (parameter scrypt).
+
+---
+
+## 10. Tugas 3 (krip-0.3): tanda tangan pengesahan dan siklus hidup kunci
+
+Penomoran melanjutkan K-1 sampai K-6. ID kerja Tugas 3 dicantumkan dalam tanda kurung.
+
+| # | ID kerja | Keputusan | Pilihan |
+|---|---|---|---|
+| K-7 | K-A1 | Algoritma tanda tangan pengesahan (F-32) | Ed25519 |
+| K-8 | K-B1 | Penyimpanan kunci privat tanda tangan | Berkas PEM PKCS#8 di luar repository |
+| K-9 | K-B2 | Kebijakan kunci dirotasi dan dicabut | Dicabut: tolak semua, gagal tertutup; dirotasi: verifikasi hanya untuk `approvedAt` sampai `dirotasiPada` |
+| K-10 | K-B3 | Akar kepercayaan kunci publik | Keyring berkas JSON di luar basis data dan repository |
+| K-11 | K-T3-5 | Hash kata sandi scrypt dipensiunkan | Dihapus dari cabang kerja |
+
+### 10.1 Keputusan K-7 (K-A1): algoritma tanda tangan pengesahan (F-32)
+
+**Alternatif.** Ed25519, ECDSA P-256, RSA-PSS 3072. Semuanya dari `node:crypto`, tanpa dependensi baru, dengan keamanan setara sekitar 128 bit.
+
+| Kriteria | **Ed25519 (dipilih)** | ECDSA P-256 | RSA-PSS 3072 |
+|---|---|---|---|
+| Nonce | Deterministik (RFC 8032), tidak ada nonce yang bisa berulang | Butuh nonce acak k; k berulang membocorkan kunci privat | Memakai salt acak; tidak fatal bila buruk |
+| Parameter yang bisa salah pilih | Hampir tidak ada | Kurva, hash, format DER atau P1363 | Hash, MGF1, panjang salt |
+| Ukuran kunci publik / tanda tangan | 32 B / 64 B | 65 B / sekitar 72 B (DER) | 384 B / 384 B |
+| Malleability | Tidak | Ada (s dan n-s sama-sama valid) | Tidak |
+| Vektor uji resmi | RFC 8032 bagian 7.1 | NIST CAVP | NIST CAVP |
+
+**Keputusan.** Ed25519. Alasan utama: menghilangkan kelas kesalahan kritis "nonce berulang" dan tidak ada parameter yang harus dipertahankan. Tidak ada algoritma buatan sendiri. Format kanonis adalah encoding yang dipakai ulang dari F-31 (awalan panjang 4 byte dan UTF-8 NFC), dengan pemisah domain `kyrion/pengesahan-versi/v1` yang berbeda dari HMAC F-31.
+
+**Isi payload** (berurutan):
+
+| # | Field | Keterangan |
+|---|---|---|
+| 1 | domain | `kyrion/pengesahan-versi/v1` |
+| 2 | tujuh field terlindung F-31 | `id`, `regulationId`, `versionNumber`, `effectiveDate`, `fileSha256`, `fileName`, `fileSize` |
+| 3 | literal | `SAH` |
+| 4 | `approvedById` | |
+| 5 | `approvedAt` | ISO 8601 UTC milidetik, dibuat di aplikasi dan disimpan dengan nilai yang sama |
+| 6 | `signingKeyId` | Mencegah penukaran kunci |
+
+### 10.2 Keputusan K-8 (K-B1): penyimpanan kunci privat tanda tangan
+
+| Alternatif | Akibat |
+|---|---|
+| (a) Berkas PEM PKCS#8 di luar repository, path lewat `KYRION_SIGNING_KEY_FILE` | Konsisten dengan kunci induk krip-0.2 (`KYRION_MASTER_KEY_FILE`) |
+| (b) Variabel lingkungan berisi kunci base64 | Bocor lewat dump environment, log, dan `docker inspect` |
+| (c) Diturunkan dengan HKDF dari kunci induk HMAC krip-0.2 | Melanggar pemisahan kunci per tujuan: bocornya satu berkas memberi kemampuan memalsukan HMAC dan tanda tangan sekaligus, dan rotasi keduanya terikat |
+
+**Keputusan.** (a). Kunci privat tidak pernah disimpan di basis data. Berkas kunci ditulis dengan flag `wx` (tidak pernah menimpa).
+
+### 10.3 Keputusan K-9 (K-B2): kebijakan kunci dirotasi dan dicabut
+
+| Alternatif untuk kunci dicabut | Akibat |
+|---|---|
+| (a) Tolak semua tanda tangan oleh kunci itu | Gagal tertutup |
+| (b) Terima dengan peringatan | Membuat bukti tidak bermakna setelah kompromi |
+
+**Keputusan.** (a), gagal tertutup.
+
+Aturan lain:
+- Kunci dirotasi tetap memverifikasi tanda tangan dengan `approvedAt` <= `dirotasiPada`. Tanda tangan baru dengan kunci dirotasi ditolak.
+- Tanda tangan dengan `approvedAt` sebelum `dibuatPada` kunci ditolak.
+- Paling banyak satu kunci AKTIF (indeks unik parsial).
+
+### 10.4 Keputusan K-10 (K-B3): akar kepercayaan kunci publik
+
+| Alternatif | Akibat |
+|---|---|
+| (a) Tabel `signing_keys` di basis data saja | Penyerang yang bisa menulis ke basis data cukup menyisipkan kunci publik miliknya lalu menandatangani versi palsu, sehingga tanda tangan tidak menambah apa pun dibanding HMAC |
+| (b) Keyring berkas JSON berisi kunci publik saja, di luar basis data dan di luar repository (`KYRION_KEYRING_FILE`); tabel `signing_keys` harus sama persis dengannya | Verifikasi memakai kunci publik dari keyring |
+
+**Keputusan.** (b). Tabel harus sama dalam lima hal: kunci publik, status, `dibuatPada`, `dirotasiPada`, `dicabutPada` sampai milidetik. Bila berbeda, hasilnya "kunci tidak sinkron" (gagal tertutup).
+
+**Operasi operator** (`prisma/kelola-kunci.ts` buat, putar, cabut):
+1. Tulis kunci privat dulu.
+2. Dalam satu transaksi basis data, ubah tabel.
+3. Keyring ditulis TERAKHIR secara atomik (tmp lalu rename).
+
+| Kegagalan | Perilaku |
+|---|---|
+| Sebelum keyring ditulis | Rollback dan hapus kunci privat yang dibuat proses itu |
+| Setelah keyring ditulis | `KeadaanTidakPasti`; tidak ada perubahan atau penghapusan otomatis; operator memulihkan manual |
+
+### 10.5 Keputusan K-11 (K-T3-5): hash kata sandi scrypt dipensiunkan
+
+**Konteks.** `lib/crypto/password.ts` (hash scrypt kata sandi Admin) adalah bagian krip-0.2. Login Kyrion sekarang hanya OTP (Better Auth), dan tidak ada kode yang memanggil `password.ts`.
+
+| Kriteria | (a) Pertahankan `password.ts` walau tidak dipakai | **(b) Hapus dari cabang kerja (dipilih)** |
+|---|---|---|
+| Permukaan kode kriptografi | Tetap ada tanpa fungsi | Berkurang |
+| Keterlacakan bukti krip-0.2 | Utuh | Tetap utuh di tag `krip-0.2` |
+
+**Keputusan.** (b), dihapus di commit `50a7c42` bersama pemeriksa berkas lama (`VerifyForm`, `VerifyResult`, `verify-form`). Alasan: kode kriptografi mati menambah permukaan tanpa fungsi (YAGNI). Bukti krip-0.2 tetap utuh di tag `krip-0.2`. Kolom `Account.password` (`String?`, skema inti Better Auth) tetap ada dan tidak dipakai; tidak ada migrasi.
+
+### 10.6 Keterbatasan yang diketahui (Tugas 3)
+
+- CHECK di basis data menjaga bentuk data, bukan transisi status; akar kepercayaannya keyring.
+- Di Windows, mode berkas `0o600` tidak ditegakkan; folder kunci dilindungi dengan ACL (hanya akun pengguna). Di server, kunci masuk lewat volume atau secret, tidak pernah ke image Docker.
+- Tanda tangan ulang setelah pencabutan kunci belum ada; versi yang ditandatangani kunci dicabut menjadi "tidak cocok". Ditunda ke v1.0.
+- Versi Sah dari seed tidak berberkas dan tidak bertanda tangan; seed tidak diubah. Pemeriksa melaporkannya "tidak bertanda tangan", tidak pernah "asli dan sah".
+- Satu PDF yang sama bisa melekat pada beberapa versi; pemeriksa memberi satu hasil per versi kandidat tanpa agregasi.
+- Versi Sah dengan tanggal berlaku di masa depan tetap dilabeli "asli dan sah".
+- Tidak ada pemulihan otomatis setelah kegagalan sesudah keyring ditulis.
