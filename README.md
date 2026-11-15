@@ -2,7 +2,7 @@
 
 Kyrion, dari kata Yunani *kyrion* yang berarti "yang sah, yang berlaku", adalah aplikasi web yang membantu sivitas akademika Universitas Pertamina mengetahui ketentuan resmi mana yang sedang berlaku, apa yang berubah antarversi, dan apakah sebuah dokumen regulasi asli.
 
-> Status: **v0.3 (Tugas 3 PAW) sedang dikerjakan**: akses khusus sivitas yang sudah masuk (login OTP email) dengan pembedaan peran Sivitas dan Admin. v0.2 (Tugas 2 PAW) dibekukan pada tag `v0.2`, dan v0.1 (Tugas 1 PAW, Milestone 1) pada tag `v0.1`.
+> Status: **v0.3 (Tugas 3 PAW) selesai**: akses khusus sivitas yang sudah masuk (login OTP email) dengan pembedaan peran Sivitas dan Admin. v0.2 (Tugas 2 PAW) dibekukan pada tag `v0.2`, dan v0.1 (Tugas 1 PAW, Milestone 1) pada tag `v0.1`.
 
 ## Daftar Isi
 
@@ -13,6 +13,7 @@ Kyrion, dari kata Yunani *kyrion* yang berarti "yang sah, yang berlaku", adalah 
 - [Struktur Aplikasi](#struktur-aplikasi)
 - [Cara Menjalankan](#cara-menjalankan)
 - [Tugas 2 (v0.2): PostgreSQL, Prisma, dan CRUD Admin](#tugas-2-v02-postgresql-prisma-dan-crud-admin)
+- [Tugas 3 (v0.3): API, autentikasi OTP, dan keamanan](#tugas-3-v03-api-autentikasi-otp-dan-keamanan)
 - [Bukti Tugas 1](#bukti-tugas-1)
 - [Kriptografi (Tugas 1)](#kriptografi-tugas-1)
 - [Kriptografi: krip-0.2 (F-31)](#kriptografi-krip-02-f-31)
@@ -39,7 +40,7 @@ Catatan: sejak v0.3 aplikasi hanya untuk akun yang sudah masuk. Tamu yang membuk
 
 1. **Daftar regulasi dengan filter kategori** (`/`). Hanya untuk akun yang sudah masuk. Setiap regulasi ditampilkan sebagai kartu yang memuat kategori, nama, deskripsi, versi berlaku, status, dan tanggal berlaku. Versi berlaku dihitung dari tanggal hari ini (WIB); regulasi tanpa versi menampilkan "Belum ada versi.". Filter memakai parameter URL `?kategori=...` dengan daftar kategori dari tabel `categories`, dan kategori yang tidak dikenal diabaikan.
 2. **Detail regulasi dengan linimasa versi** (`/regulasi/[slug]`). Header menampilkan versi yang berlaku hari ini. Riwayat versi diurutkan dari yang terbaru, dan hanya versi berstatus **Sah** atau **Digantikan** yang ditampilkan; status dibedakan dengan warna, simbol, dan teks, dan versi yang belum berlaku diberi keterangan "Mulai berlaku". Slug yang tidak ada menampilkan halaman 404. Sivitas melihat metadata dan linimasa versi saja: tanpa ringkasan perubahan, tanpa tautan Unduh PDF, dan tanpa Bandingkan Versi. Admin melihat halaman yang sama dengan tautan **Unduh PDF** pada tiap versi berberkas (`/admin/regulasi/[slug]/versi/[versionId]/berkas`; hash dan tag integritas diperiksa sebelum dikirim) dan bagian **Bandingkan Versi** (`?dari=&ke=`) bila regulasi punya minimal dua versi. Sivitas yang membuka halaman `/admin/**` mendapat 404, dan unduh berkas admin menjawab 403 bagi Sivitas serta 401 bagi tamu.
-3. **Periksa Berkas (Admin, kerangka)** (`/admin/verifikasi`). Halaman hanya untuk Admin dan baru menampilkan keterangan bahwa pemeriksa berkas belum aktif. `/verifikasi` publik sudah tidak ada. Komponen `VerifyForm`, `VerifyResult`, dan `lib/validation/verify-form.ts` masih ada di repo tetapi belum dipakai rute mana pun.
+3. **Periksa Berkas (Admin)** (`/admin/verifikasi`). Halaman hanya untuk Admin. Admin mengunggah PDF (maksimal 10 MB, magic bytes `%PDF-`); server menghitung SHA-256 dan mencocokkannya dengan catatan versi, lalu memeriksa tag integritas dan tanda tangan pengesahan terhadap keyring. Hasilnya: asli dan sah, asli dan digantikan, atau tidak cocok. Berkas tidak disimpan. `/verifikasi` publik sudah tidak ada.
 
 **Masuk dan halaman admin**
 
@@ -53,8 +54,7 @@ Semua masukan admin divalidasi di server dengan Zod, dengan galat per field. Atu
 
 **Batasan (v0.3, sampai tahap ini):**
 - Data regulasi tersimpan di PostgreSQL. Data awalnya adalah **data sintetis** (fiktif) dari seed `apps/web/prisma/seed.ts`.
-- **Pemeriksa berkas belum aktif.** `/admin/verifikasi` masih kerangka. Fungsi sidik berkas (`lib/crypto/fingerprint.ts`) sudah dipakai saat unggah dan unduh berkas versi di halaman admin, tetapi belum dihubungkan ke alur pemeriksaan.
-- **Belum ada** halaman akun dan endpoint API tambahan, penggantian peran akun lewat UI, maupun perbandingan perubahan otomatis (butir perubahan dicatat manual oleh Admin). CSP dan HSTS juga belum ada.
+- **Belum ada** penggantian peran akun lewat UI maupun perbandingan perubahan otomatis (butir perubahan dicatat manual oleh Admin). CSP dan HSTS juga belum ada.
 
 ## Teknologi
 
@@ -82,7 +82,7 @@ kyrion/
 ├── compose.yaml                    # PostgreSQL 18 (Docker Compose), port 127.0.0.1:5433
 ├── .env.example                    # Contoh POSTGRES_* untuk compose.yaml
 ├── AI_LOG.md                       # Log penggunaan AI
-├── docs/                           # Dokumen praktikum dan bukti (praktikum, tugas-1, tugas-2)
+├── docs/                           # Dokumen praktikum dan bukti (api, kriptografi, praktikum, tugas-1, tugas-2) dan keamanan.md
 ├── security/                       # Inventaris aset, DFD, model ancaman, register risiko
 └── apps/web/
     ├── app/
@@ -93,12 +93,15 @@ kyrion/
     │   ├── globals.css
     │   ├── favicon.ico
     │   ├── masuk/                  # Halaman masuk (OTP) dan Server Action masuk/keluar
+    │   ├── akun/sesi/              # Halaman Sesi: daftar dan cabut sesi milik sendiri
     │   ├── regulasi/               # layout, template, error; [slug]/page.tsx = detail + riwayat versi (+ banding, khusus Admin)
     │   ├── api/
     │   │   ├── auth/[...all]/      # Better Auth; hanya endpoint pada allowlist yang dilayani
-    │   │   └── v1/regulations/     # Tiga endpoint baca (daftar, detail, versi berlaku); wajib sesi
+    │   │   ├── v1/regulations/     # Tiga endpoint baca (daftar, detail, versi berlaku) dan pengesahan versi (POST .../approval, Admin); wajib sesi
+    │   │   ├── v1/sessions/        # Daftar sesi aktif dan pencabutan sesi, hanya milik sendiri; wajib sesi
+    │   │   └── [[...jalur]]/       # Jalur /api yang tidak dikenal dijawab 404 problem+json
     │   └── admin/
-    │       ├── verifikasi/         # Periksa Berkas (Admin): kerangka, pemeriksa belum aktif
+    │       ├── verifikasi/         # Periksa Berkas (Admin): unggah PDF, cocokkan dengan catatan versi dan tanda tangan
     │       ├── kategori/           # Kelola kategori: daftar, baru, [slug]/ubah, [slug]/hapus
     │       └── regulasi/           # Kelola regulasi: daftar, baru, [slug]/ubah, [slug]/hapus
     │           └── [slug]/versi/   # Kelola versi: daftar, baru, [versionId]/ubah, [versionId]/hapus,
@@ -114,15 +117,12 @@ kyrion/
     │   ├── domain/                 # Aturan murni beserta ujinya: slug, regulasi, kategori, versi, versi-admin, tanggal, berkas-pdf, perubahan, banding, akun-kampus
     │   ├── crypto/
     │   │   ├── fingerprint.ts      # Sidik SHA-256 berkas (F-30); dipakai saat unggah dan unduh PDF
-    │   │   ├── password.ts         # Hash dan verifikasi kata sandi dengan scrypt; tidak dipakai login sejak v0.3 (hanya diuji oleh password.test.ts)
     │   │   ├── kanonis.ts          # Byte kanonis tujuh field versi (F-31); uji: kanonis.test.ts
     │   │   ├── mac.ts              # HMAC-SHA256, HKDF, dan tag v1$<hex64> (F-31); uji: mac.test.ts
     │   │   ├── kunci.ts            # Baca dan buat berkas kunci induk (F-31); uji: kunci.test.ts
     │   │   ├── verifikasi.ts       # Periksa hash berkas dan tag saat unduh (F-31); uji: verifikasi.test.ts
     │   │   ├── data-terlindung.ts  # Baris versi ke data yang ditandatangani (F-31); uji: data-terlindung.test.ts
     │   │   └── batas.ts            # MAX_INPUT_BYTES (10 MB); tanpa impor, aman dibundel ke klien
-    │   ├── validation/
-    │   │   └── verify-form.ts      # Validasi formulir verifikasi (fungsi murni, tanpa React); tidak dipakai rute mana pun
     │   ├── prisma.ts               # Satu PrismaClient (server-only)
     │   ├── menu.ts                 # Pemilihan menu header menurut peran (hanya tampilan, bukan otorisasi)
     │   ├── sesi.ts                 # Sesi Better Auth: bacaSesi(), wajibMasuk(), wajibAdmin(); peran dan status aktif dibaca ulang dari tabel users
@@ -155,8 +155,9 @@ kyrion/
 | `StatusBadge` | Penanda status versi (Draf, Sah, Digantikan, Dibatalkan) berupa warna, simbol, dan teks. |
 | `VersionTimeline` | Daftar riwayat versi, diurutkan dari yang terbaru; versi yang belum berlaku diberi keterangan "Mulai berlaku"; tautan Unduh PDF pada versi berberkas hanya tampil bila halaman memberi prop `tautanBerkas` (hanya Admin). |
 | `BandingVersi` | Server Component, hanya dirender untuk Admin. Formulir GET `?dari=&ke=` dan hasil perbandingan perubahan antarversi (butir, sumber, halaman), dengan pesan galat untuk pilihan yang tidak valid. |
-| `VerifyForm` | Client Component. Mengelola pilihan regulasi/versi, berkas, dan pesan galat validasi. Belum dipakai rute mana pun sampai pemeriksa berkas diaktifkan. |
-| `VerifyResult` | Menampilkan hasil verifikasi simulasi (`role="status"`) beserta penegasan bahwa pencocokan hash dokumen belum dihubungkan. Belum dipakai rute mana pun sampai pemeriksa berkas diaktifkan. |
+| `FormPeriksaBerkas` | Client Component. Unggah PDF dengan cek ukuran di klien, memanggil Server Action `periksaBerkas` (`app/admin/verifikasi/actions.ts`) lewat `useActionState`. |
+| `HasilVerifikasiBerkas` | Menampilkan hasil pemeriksaan berkas (asli-sah, asli-digantikan, tidak-cocok) dengan judul dan alasan; warna hanya penguat. |
+| `FormKonfirmasi` | Client Component. Tombol konfirmasi untuk Server Action yang sudah diikat ke ID (`useActionState`). |
 | `FormMasuk` | Client Component. Dua langkah: meminta kode OTP ke email, lalu memasukkan kode. |
 | `FormRegulasi`, `FormKategori`, `FormVersi`, `FormPerubahan` | Client Component. Formulir dengan `useActionState` yang memanggil Server Action dan menampilkan galat per field. `FormVersi` juga memuat unggah PDF dengan cek ukuran di klien. |
 | `FormHapus` | Client Component. Tombol konfirmasi hapus (regulasi, versi, kategori, dan perubahan) yang menampilkan pesan penolakan dari server. |
@@ -283,7 +284,7 @@ Versi yang berlaku tidak disimpan sebagai kolom; lapisan domain menghitungnya.
 | Kategori hanya dapat dihapus bila tanpa regulasi; nama serupa (beda huruf besar-kecil atau spasi) ditolak lewat slug. | `lib/domain/kategori.ts`, `lib/data/categories.ts`, FK `RESTRICT` |
 | Login hanya lewat OTP email (Better Auth), tanpa kata sandi; domain email kampus diwajibkan dan akun nonaktif ditolak. | `lib/auth/`, `lib/sesi.ts` |
 | Berkas PDF divalidasi (magic bytes `%PDF-`, maksimal 10 MB, juga dicek di klien), disimpan dengan nama buatan server di luar `public/`, dan sidik SHA-256 dicatat. | `lib/domain/berkas-pdf.ts`, `lib/penyimpanan.ts`, `lib/crypto/fingerprint.ts` |
-| Unduhan publik hanya untuk versi Sah dan Digantikan; hash berkas dicocokkan ulang sebelum dikirim. | `lib/data/regulations.ts`, `lib/unduhan-pdf.ts` |
+| Unduhan berkas hanya untuk Admin (semua status); hash berkas dicocokkan ulang sebelum dikirim. | `app/admin/regulasi/[slug]/versi/[versionId]/berkas/route.ts`, `lib/unduhan-pdf.ts` |
 | Change hanya dapat ditambah, diubah, dan dihapus pada versi Draf; penjaganya transaksi yang mengunci baris versi berstatus Draf. | `lib/domain/perubahan.ts`, `lib/data/changes.ts` |
 | Banding hanya antar versi Sah dan Digantikan; versi yang sama ditolak; urutan terbalik ditukar otomatis dan versi di antaranya ikut. | `lib/domain/banding.ts`, `components/BandingVersi.tsx` |
 
@@ -363,11 +364,29 @@ Uji otomatis: `npm test` menjalankan **106 uji Vitest di 12 berkas** (semua lulu
 ### 9. Keterbatasan yang diketahui
 
 - Judul tab masih judul halaman asal pada halaman yang memanggil `notFound()` sendiri.
-- Peran SIVITAS ada di skema tetapi belum dipakai, dan belum ada ganti atau reset kata sandi.
+- Sejak v0.3 peran SIVITAS dipakai dan login hanya lewat OTP email, tanpa kata sandi, sehingga tidak ada ganti atau reset kata sandi (`lib/akses/keputusan.ts`, `lib/auth/index.ts`).
 - Pengesahan dan pembatalan versi tersedia di UI Admin (halaman Sahkan dan Batalkan); pengesahan memerlukan kunci penandatangan yang siap.
-- Sesi tersimpan di memori server dan hilang saat server dimulai ulang.
+- Sejak v0.3 sesi tersimpan di tabel `sessions` basis data (`prisma/schema.prisma`), bukan di memori server. Batas laju dan jeda OTP masih di memori proses.
 - Butir perubahan dicatat manual oleh Admin; perbandingan otomatis belum ada.
 - Cascade dari `versions` ke `changes` dijaga basis data (FK `ON DELETE CASCADE`). Yang dijaga aplikasi adalah larangan menghapus versi non-Draf; bila sebuah versi dihapus langsung lewat `psql`, butir perubahannya ikut terhapus.
+
+## Tugas 3 (v0.3): API, autentikasi OTP, dan keamanan
+
+**Yang dibangun**
+
+- **API v1** dengan kontrak OpenAPI di [docs/api/openapi.yaml](docs/api/openapi.yaml) (catatan desain: [docs/api/catatan-desain.md](docs/api/catatan-desain.md)): daftar regulasi, detail, versi berlaku pada tanggal tertentu, pengesahan versi (Admin), daftar sesi, dan pencabutan sesi milik sendiri. Galat memakai `application/problem+json`.
+- **Autentikasi OTP email akun kampus** (Better Auth), peran Sivitas dan Admin, dan sesi di basis data dengan kepemilikan sesi: pengguna hanya dapat melihat dan mencabut sesinya sendiri.
+- **Keamanan OWASP Top 10:2025**: kontrol akses di server pada halaman, Server Action, dan Route Handler; pemeriksaan Origin; allowlist endpoint auth; log audit. Kategori, kontrol, bukti, dan risiko sisa ada di [docs/keamanan.md](docs/keamanan.md).
+
+**Pengujian.** `npm test` dari `apps/web` (keluaran lengkap: [security/bukti/vitest-akses-v0.3.txt](security/bukti/vitest-akses-v0.3.txt)): 63 berkas uji lulus (63), 892 uji lulus, 3 dilewati (total 895), Vitest 5.0.4. Tiga uji yang dilewati adalah uji izin berkas POSIX (`it.skipIf(!POSIX)` di `lib/crypto/kunci.test.ts` dan `lib/crypto/penandatangan.test.ts`) yang tidak berjalan di Windows.
+
+**Dokumen dan bukti:** [docs/keamanan.md](docs/keamanan.md), [security/access-tests-v0.3.md](security/access-tests-v0.3.md), dan berkas bukti di [security/bukti/](security/bukti/).
+
+**Menjalankan bukti dinamis.** Skrip [security/uji-akses-v0.3.ps1](security/uji-akses-v0.3.ps1) memakai Windows PowerShell 5.1 dan `curl.exe` terhadap dev server (bawaan `http://localhost:3000`). Satu tahap per eksekusi, dipilih dengan `-Peran`: `anonim`, `sivitas`, `admin`, `503`, atau `pemilik`. ID uji diberikan lewat `-Slug`, `-VersiSah`, `-VersiDraf`, dan `-VersiLain` (versi milik regulasi lain); parameter yang dibutuhkan tiap tahap ada di komentar kepala skrip.
+
+- Cookie sesi didapat dari login manual di peramban, lalu ditaruh di variabel lingkungan sesi PowerShell: `KY_COOKIE_SIVITAS`, `KY_COOKIE_SIVITAS2` (login kedua akun Sivitas yang sama), dan `KY_COOKIE_ADMIN`. Jangan menyimpan atau menempel nilainya ke berkas, riwayat, atau chat; skrip hanya mencetak "ada" atau "tidak ada" dan berhenti dengan pesan yang hanya menyebut nama variabel bila formatnya tidak valid.
+- Tahap `503` dan `pemilik` bersifat merusak dan wajib `-Konfirmasi`. Tahap `503` memanggil pengesahan sungguhan: bila kunci penandatangan masih aktif, versi Draf akan disahkan. Versi yang disahkan tidak dapat dikembalikan lewat aplikasi (pengesahan tidak dapat dibatalkan; Batalkan hanya untuk Draf), jadi gunakan hanya pada versi uji yang boleh hilang. Tahap `pemilik` mencabut satu sesi, sehingga `KY_COOKIE_SIVITAS2` tidak berlaku lagi.
+- Berkas bukti `security/bukti/akses-v0.3-<peran>.txt` ditimpa pada setiap run.
 
 ## Bukti Tugas 1
 
