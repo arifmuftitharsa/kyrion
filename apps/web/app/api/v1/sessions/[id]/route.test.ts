@@ -76,6 +76,22 @@ describe("DELETE /api/v1/sessions/{id}", () => {
     expect((await respons.json()).type).toBe("/problems/not-found");
   });
 
+  it.each(["SIVITAS", "ADMIN"] as const)(
+    "%s mencabut sesi akun lain -> cabutSesi(idTarget, userIdPelaku) false -> 404 problem+json",
+    async (role) => {
+      jagaMock.mockResolvedValue({
+        sesi: { userId: "user-a", sesiId: SAYA, email: "sivitas.uji.kyrion@student.universitaspertamina.ac.id", role },
+      });
+      dataMock.mockResolvedValue(false);
+      const respons = await panggil(SESI_B);
+      expect(dataMock).toHaveBeenCalledTimes(1);
+      expect(dataMock).toHaveBeenCalledWith(SESI_B, "user-a");
+      expect(respons.status).toBe(404);
+      expect(respons.headers.get("Content-Type")).toBe("application/problem+json");
+      expect(await respons.json()).toMatchObject({ type: "/problems/not-found", status: 404 });
+    },
+  );
+
   it("sesi sendiri -> 204 tanpa body dan tanpa Content-Type", async () => {
     const respons = await panggil(SAYA);
     expect(dataMock).toHaveBeenCalledWith(SAYA, "user-a");

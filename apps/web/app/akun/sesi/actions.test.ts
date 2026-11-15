@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { cabutSesi } from "@/lib/data/sesi";
@@ -46,6 +47,25 @@ describe("cabutSesiSaya", () => {
     expect(hasil.pesan).toBeTruthy();
     expect(redirect).not.toHaveBeenCalled();
   });
+
+  it.each(["SIVITAS", "ADMIN"] as const)(
+    "%s mencabut sesi bukan miliknya -> pesan umum yang sama, tanpa redirect",
+    async (role) => {
+      vi.mocked(wajibMasuk).mockResolvedValue({
+        userId: "u1",
+        sesiId: SAYA,
+        email: "sivitas.uji.kyrion@student.universitaspertamina.ac.id",
+        role,
+      });
+      vi.mocked(cabutSesi).mockResolvedValue(false);
+      const hasil = await cabutSesiSaya(LAIN);
+      expect(hasil).toEqual({ pesan: "Sesi tidak dapat dicabut. Muat ulang halaman, lalu coba lagi." });
+      expect(cabutSesi).toHaveBeenCalledTimes(1);
+      expect(cabutSesi).toHaveBeenCalledWith(LAIN, "u1");
+      expect(redirect).not.toHaveBeenCalled();
+      expect(revalidatePath).not.toHaveBeenCalled();
+    },
+  );
 
   it("id bukan UUID -> pesan umum, data tidak dipanggil", async () => {
     const hasil = await cabutSesiSaya("bukan-uuid");
