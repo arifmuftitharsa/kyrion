@@ -22,7 +22,7 @@
   - JANGAN menempel isi cookie, OTP, atau keluaran log server yang memuat OTP ke chat mana pun.
   - Cookie dikirim ke curl lewat "-K -" (stdin), tidak pernah muncul di argumen, layar, atau berkas.
   - Tahap 503 dan pemilik wajib -Konfirmasi. Tahap 503: bila kunci penandatangan masih aktif, versi DRAF
-    akan DISAHKAN sungguhan (tidak bisa dikembalikan selain lewat alur Batalkan); karena itu baris
+    akan DISAHKAN sungguhan (pengesahan tidak dapat dibatalkan; Batalkan hanya untuk Draf); karena itu baris
     KYRION_SIGNING_KEY_FILE di .env.local harus sudah diberi # dan dev server di-restart lebih dulu.
   - Cakupan: GET, POST, DELETE. HEAD dan OPTIONS tidak diuji.
   - Berkas keluaran bukti\akses-v0.3-<peran>.txt ditimpa bila sudah ada.
