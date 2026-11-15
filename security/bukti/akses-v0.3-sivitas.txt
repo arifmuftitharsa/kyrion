@@ -1,0 +1,19 @@
+S01 | sivitas | GET | / | harapan: status 200 | hasil: status 200 | PASS
+S02 | sivitas | GET | /akun/sesi | harapan: status 200 | hasil: status 200 | PASS
+S03 | sivitas | GET | /regulasi/pedoman-akademik | harapan: status 200 | hasil: status 200 | PASS
+S04 | sivitas | GET | /regulasi/pedoman-akademik | harapan: jumlah "/berkas" pada HTML = 0 | hasil: jumlah = 0 | PASS
+S05 | sivitas | GET | /admin/regulasi | harapan: status 404 | hasil: status 404 | PASS
+S06 | sivitas | GET | /admin/verifikasi | harapan: status 404 | hasil: status 404 | PASS
+S07 | sivitas | GET | /admin/regulasi/pedoman-akademik/versi/ac0069ab~/berkas | harapan: status 403; Content-Type cocok text/plain | hasil: status 403; Content-Type=text/plain; charset=utf-8 | PASS
+S08 | sivitas | GET | /api/v1/regulations | harapan: status 200; Content-Type cocok application/json | hasil: status 200; Content-Type=application/json | PASS
+S09 | sivitas | GET | /api/v1/regulations | harapan: tanpa kunci terlarang pada kedalaman mana pun | hasil: kunci: category,currentVersion,data,description,effectiveDate,id,name,slug,status,versionNumber; terlarang ditemukan: tidak ada | PASS
+S10 | sivitas | GET | /api/v1/regulations/pedoman-akademik | harapan: status 200; Content-Type cocok application/json | hasil: status 200; Content-Type=application/json | PASS
+S11 | sivitas | GET | /api/v1/regulations/pedoman-akademik | harapan: tanpa kunci terlarang pada kedalaman mana pun | hasil: kunci: category,currentVersion,data,description,effectiveDate,fileSize,id,name,slug,status,versionNumber,versions; terlarang ditemukan: tidak ada | PASS
+S12 | sivitas | GET | /api/v1/regulations/pedoman-akademik/current-version | harapan: status 200; Content-Type cocok application/json | hasil: status 200; Content-Type=application/json | PASS
+S13 | sivitas | GET | /api/v1/regulations/pedoman-akademik/current-version | harapan: tanpa kunci terlarang pada kedalaman mana pun | hasil: kunci: currentVersion,data,date,effectiveDate,id,slug,status,versionNumber; terlarang ditemukan: tidak ada | PASS
+S14 | sivitas | GET | /api/v1/sessions | harapan: status 200; Content-Type cocok application/json | hasil: status 200; Content-Type=application/json | PASS
+S15 | sivitas | GET | /api/v1/sessions | harapan: kunci tepat createdAt,current,data,expiresAt,id | hasil: kunci: createdAt,current,data,expiresAt,id | PASS
+S16 | sivitas | POST | /api/v1/regulations/pedoman-akademik/versions/ac0069ab~/approval | harapan: status 403; Content-Type cocok application/problem\+json | hasil: status 403; Content-Type=application/problem+json | PASS
+S17 | sivitas | DELETE | /api/v1/sessions/00000000~ | harapan: status 403; Content-Type cocok application/problem\+json | hasil: status 403; Content-Type=application/problem+json | PASS
+S18 | sivitas | DELETE | /api/v1/sessions/01a1df4a~ | harapan: status 404; Content-Type cocok application/problem\+json | hasil: status 404; Content-Type=application/problem+json | PASS
+18 PASS, 0 FAIL
