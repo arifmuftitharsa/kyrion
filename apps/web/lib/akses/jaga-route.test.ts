@@ -59,6 +59,14 @@ describe.each(["problem", "teks"] as const)("jagaRoute syarat masuk, bentuk %s",
   });
 });
 
+describe.each(["masuk", "admin"] as const)("jagaRoute syarat %s, peran tak dikenal", (syarat) => {
+  it.each(["problem", "teks"] as const)("TAMU, bentuk %s -> 403", async (bentuk) => {
+    sesiMock.mockResolvedValue({ ...admin, role: "TAMU" as never });
+    const hasil = await jagaRoute(syarat, request, bentuk);
+    expect("respons" in hasil && hasil.respons.status).toBe(403);
+  });
+});
+
 describe("jagaRoute isi respons", () => {
   it("problem: application/problem+json", async () => {
     sesiMock.mockResolvedValue(null);

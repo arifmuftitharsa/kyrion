@@ -12,7 +12,10 @@ const cookieMock = vi.mocked(getSessionCookie);
 const cocok = (path: string) => new RegExp(`^${config.matcher[0]}$`).test(path);
 
 describe("config.matcher", () => {
-  it.each(["/", "/regulasi/x", "/admin/regulasi", "/masukan", "/apiary"])("cocok %s", (p) =>
+  it.each([
+    "/", "/regulasi/x", "/admin/regulasi", "/masukan", "/apiary",
+    "/akun/sesi", "/admin/verifikasi", "/admin/regulasi/x/versi/y/berkas",
+  ])("cocok %s", (p) =>
     expect(cocok(p)).toBe(true),
   );
 
