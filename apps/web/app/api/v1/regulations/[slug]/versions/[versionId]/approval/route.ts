@@ -5,8 +5,10 @@ import { periksaOrigin } from "@/lib/api/origin";
 import { getAdminRegulationBySlug } from "@/lib/data/regulations";
 import { findVersion, getPenandaVersi, sahkanVersiDenganAudit } from "@/lib/data/versions";
 import {
+  PESAN_KUNCI_BELUM_SIAP,
   PESAN_TANGGAL_KEMBAR,
   PESAN_TANPA_BERKAS,
+  PenandatanganBelumSiapError,
   VersionEffectiveDateTakenError,
   VersionNotEditableError,
   VersionWithoutFileError,
@@ -51,6 +53,11 @@ export async function POST(
       if (e instanceof VersionNotEditableError) return konflik(DETAIL_BUKAN_DRAF);
       if (e instanceof VersionWithoutFileError) return konflik(PESAN_TANPA_BERKAS);
       if (e instanceof VersionEffectiveDateTakenError) return konflik(PESAN_TANGGAL_KEMBAR);
+      if (e instanceof PenandatanganBelumSiapError) {
+        // Hanya nama: pesan dan cause bisa membawa jejak konfigurasi.
+        console.error("Galat pengesahan versi:", e.name);
+        return buatMasalah("service-unavailable", request, { detail: PESAN_KUNCI_BELUM_SIAP });
+      }
       throw e;
     }
 

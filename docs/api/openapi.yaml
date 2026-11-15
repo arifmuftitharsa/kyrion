@@ -122,7 +122,8 @@ paths:
         optimistik dari klien. Pengaman utamanya adalah status `DRAF` yang diperiksa
         ulang di dalam transaksi. `Origin` wajib sama dengan origin aplikasi (403 bila
         tidak). Slug atau `versionId` berformat salah, regulasi yang tidak ada, dan
-        versi yang bukan milik regulasi itu sama-sama menghasilkan 404.
+        versi yang bukan milik regulasi itu sama-sama menghasilkan 404. Pengesahan
+        dijawab 503 bila penandatangan belum siap.
       parameters:
         - $ref: "#/components/parameters/SlugRegulasi"
         - $ref: "#/components/parameters/IdVersi"
@@ -139,6 +140,8 @@ paths:
           $ref: "#/components/responses/Galat409"
         "500":
           $ref: "#/components/responses/Galat500"
+        "503":
+          $ref: "#/components/responses/Galat503"
   /sessions:
     get:
       tags: [Sesi]
@@ -668,3 +671,18 @@ components:
             status: 500
             detail: Terjadi kesalahan pada server.
             instance: /api/v1/regulations
+    Galat503:
+      description: Layanan belum tersedia karena konfigurasi sisi operator, bukan kesalahan permintaan.
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControl"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Masalah"
+          example:
+            type: /problems/service-unavailable
+            title: Layanan belum tersedia
+            status: 503
+            detail: "Pengesahan tidak dapat dilakukan: kunci penandatangan belum siap; hubungi operator."
+            instance: /api/v1/regulations/regulasi-contoh-satu/versions/00000000-0000-7000-8000-000000000003/approval

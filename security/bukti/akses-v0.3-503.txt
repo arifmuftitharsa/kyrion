@@ -1,0 +1,6 @@
+PERINGATAN: Pastikan baris KYRION_SIGNING_KEY_FILE di .env.local diberi # dan dev server di-restart; jalankan hanya pada versi yang masih DRAF.
+X01 | 503 | POST | /api/v1/regulations/pedoman-tugas-akhir/versions/6769e8e8~/approval | harapan: status 503; Content-Type cocok application/problem\+json | hasil: status 503; Content-Type=application/problem+json | PASS
+X02 | 503 | POST | /api/v1/regulations/pedoman-tugas-akhir/versions/6769e8e8~/approval | harapan: type berakhir /problems/service-unavailable | hasil: type sesuai: ya | PASS
+X03 | 503 | POST | /api/v1/regulations/pedoman-tugas-akhir/versions/6769e8e8~/approval | harapan: detail sama dengan PESAN_KUNCI_BELUM_SIAP | hasil: detail sama: ya | PASS
+X04 | 503 | POST | /api/v1/regulations/pedoman-tugas-akhir/versions/6769e8e8~/approval | harapan: badan tanpa pola jalur berkas (backslash, .json, .key, .pem) | hasil: pola jalur ditemukan: tidak | PASS
+4 PASS, 0 FAIL

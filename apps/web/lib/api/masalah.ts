@@ -4,7 +4,8 @@ export type JenisMasalah =
   | "forbidden"
   | "not-found"
   | "state-conflict"
-  | "internal-error";
+  | "internal-error"
+  | "service-unavailable";
 
 export type GalatField = { field: string; message: string };
 
@@ -15,6 +16,7 @@ const MASALAH: Record<JenisMasalah, { status: number; title: string }> = {
   "not-found": { status: 404, title: "Tidak ditemukan" },
   "state-conflict": { status: 409, title: "Keadaan tidak mengizinkan" },
   "internal-error": { status: 500, title: "Galat server" },
+  "service-unavailable": { status: 503, title: "Layanan belum tersedia" },
 };
 
 /** Kalimat tetap; pesan galat asli tidak pernah masuk ke body. */

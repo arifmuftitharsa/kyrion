@@ -5,6 +5,7 @@ import { buatMasalah } from "@/lib/api/masalah";
 import { getAdminRegulationBySlug } from "@/lib/data/regulations";
 import { findVersion, getPenandaVersi, sahkanVersiDenganAudit } from "@/lib/data/versions";
 import {
+  PESAN_KUNCI_BELUM_SIAP,
   PESAN_TANGGAL_KEMBAR,
   PESAN_TANPA_BERKAS,
   PenandatanganBelumSiapError,
@@ -174,12 +175,14 @@ describe("POST approval: galat domain dan lainnya", () => {
     expect(console.error).toHaveBeenCalledWith("Galat pengesahan versi:", "TypeError");
   });
 
-  it("penandatangan belum siap -> 500 internal-error generik, pesan galat tidak bocor", async () => {
+  it("penandatangan belum siap -> 503 service-unavailable, pesan galat tidak bocor", async () => {
     sahkanMock.mockRejectedValue(new PenandatanganBelumSiapError("rahasia-jalur"));
     const r = await status(await panggil());
-    expect(r.status).toBe(500);
-    expect(r.body.type).toBe("/problems/internal-error");
+    expect(r.status).toBe(503);
+    expect(r.body.type).toBe("/problems/service-unavailable");
+    expect(r.body.detail).toBe(PESAN_KUNCI_BELUM_SIAP);
     expect(JSON.stringify(r.body)).not.toContain("rahasia-jalur");
     expect(console.error).toHaveBeenCalledWith("Galat pengesahan versi:", "PenandatanganBelumSiapError");
+    expect(revalidatePath).not.toHaveBeenCalled();
   });
 });

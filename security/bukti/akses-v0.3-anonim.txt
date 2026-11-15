@@ -1,0 +1,20 @@
+A01 | anonim | GET | /masuk | harapan: status 200 | hasil: status 200 | PASS
+A02 | anonim | GET | / | harapan: status 307; Location cocok /masuk$ | hasil: status 307; Location=/masuk | PASS
+A03 | anonim | GET | /regulasi/pedoman-akademik | harapan: status 307; Location cocok /masuk$ | hasil: status 307; Location=/masuk | PASS
+A04 | anonim | GET | /akun/sesi | harapan: status 307; Location cocok /masuk$ | hasil: status 307; Location=/masuk | PASS
+A05 | anonim | GET | /admin/verifikasi | harapan: status 307; Location cocok /masuk$ | hasil: status 307; Location=/masuk | PASS
+A06 | anonim | GET | /admin/regulasi/pedoman-akademik/versi/e6f8ff40~/berkas | harapan: status 307; Location cocok /masuk$ | hasil: status 307; Location=/masuk | PASS
+A07 | anonim | GET | /api/v1/regulations | harapan: status 401; Content-Type cocok application/problem\+json | hasil: status 401; Content-Type=application/problem+json | PASS
+A08 | anonim | GET | /api/v1/sessions | harapan: status 401; Content-Type cocok application/problem\+json | hasil: status 401; Content-Type=application/problem+json | PASS
+A09 | anonim | DELETE | /api/v1/sessions/00000000~ | harapan: status 401; Content-Type cocok application/problem\+json | hasil: status 401; Content-Type=application/problem+json | PASS
+A10 | anonim | DELETE | /api/v1/sessions/00000000~ | harapan: status 403; Content-Type cocok application/problem\+json | hasil: status 403; Content-Type=application/problem+json | PASS
+A11 | anonim | DELETE | /api/v1/sessions/00000000~ | harapan: status 403; Content-Type cocok application/problem\+json | hasil: status 403; Content-Type=application/problem+json | PASS
+A12 | anonim | POST | /api/v1/regulations/pedoman-akademik/versions/ac0069ab~/approval | harapan: status 401; Content-Type cocok application/problem\+json | hasil: status 401; Content-Type=application/problem+json | PASS
+A13 | anonim | GET | /api/v1/tidak-ada | harapan: status 404; Content-Type cocok application/problem\+json | hasil: status 404; Content-Type=application/problem+json | PASS
+A14 | anonim | GET | /api/auth/get-session | harapan: status 404 | hasil: status 404 | PASS
+A15 | anonim | POST | /api/auth/sign-out | harapan: status 404 | hasil: status 404 | PASS
+A16 | anonim | POST | /api/auth/email-otp/send-verification-otp | harapan: status 400 | hasil: status 400 | PASS
+A17 | anonim | POST | /api/auth/email-otp/send-verification-otp | harapan: badan memuat code = EMAIL_BUKAN_KAMPUS | hasil: code sesuai: ya | PASS
+A18 | anonim | POST | /api/auth/email-otp/send-verification-otp | harapan: status 400 | hasil: status 400 | PASS
+A19 | anonim | POST | /api/auth/email-otp/send-verification-otp | harapan: badan memuat code = TIPE_OTP_TIDAK_DIDUKUNG | hasil: code sesuai: ya | PASS
+19 PASS, 0 FAIL

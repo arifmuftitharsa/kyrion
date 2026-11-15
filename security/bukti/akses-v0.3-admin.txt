@@ -1,0 +1,11 @@
+D01 | admin | GET | /admin/regulasi | harapan: status 200 | hasil: status 200 | PASS
+D02 | admin | GET | /admin/verifikasi | harapan: status 200 | hasil: status 200 | PASS
+D03 | admin | GET | /admin/regulasi/pedoman-akademik/versi/e6f8ff40~/berkas | harapan: status 200 dan header unduhan sesuai lib/unduhan-pdf.ts:48-56 | hasil: status 200; Content-Length=11850; Content-Disposition=attachment; filename="UJI-SAH-1.pdf"; filename*=UTF-8''UJI-SAH-1.pdf; Content-Type=application/pdf; X-Content-Type-Options=nosniff; Cache-Control=no-store | PASS
+D04 | admin | GET | /admin/regulasi/pedoman-akademik/versi/ac0069ab~/berkas | harapan: status 200 dan header unduhan sesuai lib/unduhan-pdf.ts:48-56 | hasil: status 200; Content-Length=11930; Content-Disposition=attachment; filename="UJI-DRAF-7D.pdf"; filename*=UTF-8''UJI-DRAF-7D.pdf; Content-Type=application/pdf; X-Content-Type-Options=nosniff; Cache-Control=no-store | PASS
+D05 | admin | GET | /admin/regulasi/pedoman-akademik/versi/6769e8e8~/berkas | harapan: status 404; Content-Type cocok text/plain | hasil: status 404; Content-Type=text/plain; charset=utf-8 | PASS
+D06 | admin | GET | /regulasi/pedoman-akademik | harapan: status 200 | hasil: status 200 | PASS
+D07 | admin | GET | /regulasi/pedoman-akademik | harapan: jumlah "/berkas" pada HTML > 0 | hasil: jumlah = 4 | PASS
+D08 | admin | DELETE | /api/v1/sessions/01a1df42~ | harapan: status 404; Content-Type cocok application/problem\+json | hasil: status 404; Content-Type=application/problem+json | PASS
+D09 | admin | GET | /api/v1/sessions | harapan: status 200 | hasil: status 200 | PASS
+D10 | admin | GET | /api/v1/sessions | harapan: status 200 | hasil: status 200 | PASS
+10 PASS, 0 FAIL

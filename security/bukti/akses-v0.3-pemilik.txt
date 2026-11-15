@@ -1,0 +1,4 @@
+PERINGATAN: Setelah tahap ini cookie KY_COOKIE_SIVITAS2 tidak berlaku lagi.
+P01 | pemilik | DELETE | /api/v1/sessions/01a1dfe1~ | harapan: status 204 | hasil: status 204 | PASS
+P02 | pemilik | GET | /api/v1/sessions | harapan: status 401; Content-Type cocok application/problem\+json | hasil: status 401; Content-Type=application/problem+json | PASS
+2 PASS, 0 FAIL
