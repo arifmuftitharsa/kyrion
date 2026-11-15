@@ -22,6 +22,7 @@ const KASUS: [JenisMasalah, number, string][] = [
   ["not-found", 404, "Tidak ditemukan"],
   ["state-conflict", 409, "Keadaan tidak mengizinkan"],
   ["internal-error", 500, "Galat server"],
+  ["service-unavailable", 503, "Layanan belum tersedia"],
 ];
 
 describe("buatMasalah", () => {
