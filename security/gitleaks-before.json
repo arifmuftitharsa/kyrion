@@ -1,0 +1,19 @@
+{
+    "perintah":  "gitleaks git . --log-opts=\"--all\" --redact --report-format json --report-path security\\gitleaks.json",
+    "versi_gitleaks":  "8.30.1",
+    "waktu_pemindaian_utc":  "2026-11-21 15:59",
+    "commit_dipindai":  176,
+    "catatan":  "Sebelum kontrol sec-0.3, Kyrion v0.3. Kolom Author dan Email dibuang dari laporan asli (aturan Project: email sivitas nyata tidak masuk artefak).",
+    "temuan":  [
+                   {
+                       "RuleID":  "private-key",
+                       "File":  "apps/web/lib/crypto/penandatangan.test.ts",
+                       "StartLine":  52,
+                       "EndLine":  105,
+                       "Commit":  "f186ed16cd4d8d5bb0bb67b7c008c3982d2f4638",
+                       "Date":  "2026-11-15T09:29:32Z",
+                       "Message":  "krip: keyring kunci publik dan pemuat kunci privat (F-32, F-33, K2)",
+                       "Fingerprint":  "f186ed16cd4d8d5bb0bb67b7c008c3982d2f4638:apps/web/lib/crypto/penandatangan.test.ts:private-key:52"
+                   }
+               ]
+}
