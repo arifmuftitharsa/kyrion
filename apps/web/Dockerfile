@@ -10,10 +10,15 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 # Tahap build: kompilasi Next.js dan client Prisma. DATABASE_URL tiruan hanya hidup selama perintah ini.
+# BETTER_AUTH_SECRET dan BETTER_AUTH_URL tiruan hanya untuk fase build (next build mem-prerender
+# /_not-found dan konfigurasi auth divalidasi); tidak dipakai runtime, nilai asli datang lewat compose.vm.yaml.
 FROM deps AS build
 COPY . .
 RUN DATABASE_URL=postgresql://build:build@localhost:5432/build npx prisma generate \
- && DATABASE_URL=postgresql://build:build@localhost:5432/build npm run build \
+ && DATABASE_URL=postgresql://build:build@localhost:5432/build \
+    BETTER_AUTH_SECRET=build-only-dummy-secret-not-for-runtime-0000 \
+    BETTER_AUTH_URL=http://localhost:3000 \
+    npm run build \
  && rm -rf .next/cache
 
 # Tahap proddeps: hanya dependensi produksi, tanpa skrip instalasi.
