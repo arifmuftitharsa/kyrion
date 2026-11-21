@@ -10,10 +10,15 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 # Tahap build: kompilasi Next.js dan client Prisma. DATABASE_URL tiruan hanya hidup selama perintah ini.
+# BETTER_AUTH_SECRET dan BETTER_AUTH_URL tiruan hanya untuk fase build (next build mem-prerender
+# /_not-found dan konfigurasi auth divalidasi); tidak dipakai runtime, nilai asli datang lewat compose.vm.yaml.
 FROM deps AS build
 COPY . .
 RUN DATABASE_URL=postgresql://build:build@localhost:5432/build npx prisma generate \
- && DATABASE_URL=postgresql://build:build@localhost:5432/build npm run build \
+ && DATABASE_URL=postgresql://build:build@localhost:5432/build \
+    BETTER_AUTH_SECRET=build-only-dummy-secret-not-for-runtime-0000 \
+    BETTER_AUTH_URL=http://localhost:3000 \
+    npm run build \
  && rm -rf .next/cache
 
 # Tahap proddeps: hanya dependensi produksi, tanpa skrip instalasi.
@@ -23,9 +28,15 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 
 # Tahap tools: migrate dan seed sekali jalan (bukan layanan). Berjalan sebagai non-root.
-FROM build AS tools
+FROM ${NODE_IMAGE} AS tools
 RUN addgroup -g 10001 -S kyrion && adduser -S -u 10001 -G kyrion -H -s /sbin/nologin kyrion
-ENV HOME=/tmp NODE_ENV=production
+# /opt/kyrion/.git hanya PENANDA akar untuk prisma/kelola-kunci.ts (akar = cwd/../.. dan wajib
+# berisi .git), bukan repository sungguhan. Tanpanya akar menjadi "/" dan semua jalur kunci
+# dianggap di dalam repository.
+RUN mkdir -p /opt/kyrion/.git
+WORKDIR /opt/kyrion/apps/web
+COPY --from=build /app ./
+ENV HOME=/tmp NODE_ENV=production PATH=/opt/kyrion/apps/web/node_modules/.bin:${PATH}
 USER 10001:10001
 CMD ["node_modules/.bin/prisma", "migrate", "deploy"]
 

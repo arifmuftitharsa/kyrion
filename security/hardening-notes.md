@@ -114,3 +114,23 @@ Semua berkas ada di folder `security/`.
 - Container dan port: bukti/container-hardening.txt, bukti/access-port-laptop.txt
 - Image: image-scan-before.txt, image-scan-after.txt, sbom.cdx.json, Dockerfile.naif
 - Akses dan kata sandi: access-tests.md, bukti/access-*.txt, bukti/server-action-guard.txt, bukti/hash-kata-sandi.txt, img/
+
+## 11. Tahap 0 sec-0.3: VM ke v0.3
+
+Bukti: `bukti/v0.3-deploy-vm.txt`. Butir diamati Arif di VM atau lewat peramban dan tunnel SSH; yang bersumber dari luar VM ditandai. Berkas bukti tersimpan hanya untuk keadaan akhir VM dan uji penolakan `--out`. Login OTP, `pg_dump`, seed, dan uji pengesahan diamati langsung tanpa berkas bukti; tangkapan layarnya belum disimpan di `img/`.
+
+- **Sumber kode:** arsip commit `1e5a8d9` (branch `sec-0.3/tahap-0`; commit sebelumnya `dd711cc`). Snapshot VM "pra-sec-0.3" dibuat sebelum perubahan. Arsip harus diekstrak dengan `tar -p`: tanpa `-p`, berkas hasil ekstrak berizin 660 (diamati: `-rw-rw----`). Pada sec-0.2 kondisi serupa sempat menyebabkan `EACCES` saat build (lihat catatan umask di bagian awal berkas ini); dengan `-p` berkas 664.
+- **`compose.vm.yaml`:** 8 variabel baru di `app` (`BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `EMAIL_ADAPTER`, `EMAIL_FROM`, `MAILTRAP_API_TOKEN`, `MAILTRAP_SANDBOX_ID`, `KYRION_SIGNING_KEY_FILE`, `KYRION_KEYRING_FILE`), semuanya lewat `environment`. **Nilainya diperkirakan terlihat di `docker inspect` (belum dibuktikan; dibuktikan di tahap 2)**; ini kondisi "sebelum" untuk risiko rahasia dan diperbaiki di tahap 3. Volume `/srv/kyrion/keys:/keys:ro` untuk `app` dan baca-tulis untuk `tools`; folder host `/srv/kyrion/keys` milik 10001, mode 0700.
+- **Dockerfile tahap `tools`:** kini `FROM ${NODE_IMAGE}` lalu `COPY --from=build /app` (bukan `FROM build`). Ukuran `kyrion-web:tools` 1,91 GB menjadi 1,4 GB; `kyrion-web:hardened` 1,14 GB menjadi 1,25 GB. `tools` bekerja di `/opt/kyrion/apps/web`.
+- **Penyiasatan `.git`:** `/opt/kyrion/.git` adalah folder kosong yang hanya menjadi PENANDA akar, bukan repository sungguhan, karena `prisma/kelola-kunci.ts` menghitung akar = `cwd/../..` dan mensyaratkan `.git`. Maksud cek (kunci di luar repository) tetap terpenuhi selama kunci di-mount di `/keys`. Kode kriptografi (krip-0.3) tidak diubah; mengubah `kelola-kunci.ts` dicatat sebagai utang untuk Kriptografi setelah krip-0.3 dikumpulkan.
+- **Dockerfile tahap `build`:** `BETTER_AUTH_SECRET` dan `BETTER_AUTH_URL` bernilai tiruan hanya pada perintah `npm run build` (bukan `ENV`/`ARG`), karena `next build` mem-prerender `/_not-found` dan `lib/auth/konfigurasi.ts` memvalidasi kedua variabel (galat `GalatKonfigurasiAuth` saat build tanpa nilai). Pencarian kata `build-only-dummy` di `.next` image `tools` dan di `/app` image `hardened`: tidak ditemukan (exit=1). Temuan untuk PAW: Dockerfile yang sama dipakai deployment pekan 14.
+- **Migrasi:** 4 migrasi baru diterapkan (`20261113031249_audit_dan_pengesahan`, `20261113083954_better_auth_tabel_inti`, `20261113154720_hapus_password_hash`, `20261115093400_tanda_tangan_dan_kunci`); status akhir "Database schema is up to date!". Sebelum migrasi: `pg_dump` (`kyrion-pra-sec-0.3.dump`, 14455 byte, sha256 `7ac2768046cfc690f918d7d5dc3f787bcb4046934dbc99b8b0cd8677ad4a1ca2`, 46 entri) dan hitung backfill `integrity_tag` = 0.
+- **Seed:** baris `ADMIN_SEED_PASSWORD` dihapus dari `seed.env` VM (tidak dibaca seed v0.3); seed idempoten (users = 1, versions = 8, tidak berubah).
+- **Kunci penandatangan:** id `5e4349b486e5d53dc7a7ad6dfbbc19cd`, status aktif; `kunci-1.pem` dan `keyring.json` mode 0600 milik 10001.
+- **Uji:**
+  - Login OTP lewat Mailtrap sandbox berhasil; login dengan alamat kampus yang belum terdaftar otomatis membuat akun SIVITAS (users 1 menjadi 2).
+  - Negatif: `kelola-kunci.ts buat --out /opt/kyrion/x.pem` ditolak, "Operasi kunci gagal: --out berada di dalam repository.", exit=1, berkas tidak terbentuk, `signing_keys` tetap 1.
+  - Pengesahan versi 2028/2029 (PDF sintetis 630 B) berhasil; Periksa Berkas menampilkan "Hasil: Asli dan sah".
+  - Dengan izin `kunci-1.pem` 0644, pengesahan versi 2029/2030 ditolak: "Pengesahan tidak dapat dilakukan: kunci penandatangan belum siap; hubungi operator."; setelah kembali 0600, pengesahan versi yang sama berhasil.
+- **Pengamatan:** log stdout aplikasi kosong saat penolakan pengesahan, jadi tidak ada jejak untuk deteksi; sumber deteksi Bagian B harus `audit_logs` atau log Nginx. Dua versi berbeda boleh memakai PDF yang sama persis (belum diperiksa apakah disengaja). Kuota Mailtrap gratis 50 email uji per bulan (sumber: halaman harga Mailtrap, dibaca 2026-11-21; belum dicek di akun Arif). Disk VM 77% (8,6 GB bebas) setelah build.
+- **Data uji tambahan** di Pedoman Akademik: versi 2028/2029 dan 2029/2030 (sintetis, Sah).

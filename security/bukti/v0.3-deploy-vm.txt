@@ -1,0 +1,50 @@
+Tanggal (UTC): 2026-11-21 13:56:34
+Versi rilis: v0.3 (kode dari arsip commit 1e5a8d9, branch sec-0.3/tahap-0)
+Host: kyrion-staging
+
+$ sudo docker image ls --format "{{.Repository}}:{{.Tag}} {{.ID}} {{.Size}}" | grep kyrion-web
+kyrion-web:hardened 4dfad4f15693 1.25GB
+kyrion-web:tools d406c2879e62 1.4GB
+kyrion-web:v0.2-tools 9d4d41fbfee7 1.91GB
+kyrion-web:v0.2-hardened cbb9946bce20 1.14GB
+kyrion-web:naif 0c36fc86335f 3.39GB
+
+$ sudo docker compose --env-file /srv/kyrion/env/kyrion.env -f compose.vm.yaml ps
+NAME              IMAGE                  COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+kyrion-vm-app-1   kyrion-web:hardened    "docker-entrypoint.s…"   app       42 minutes ago   Up 41 minutes (healthy)   127.0.0.1:3000->3000/tcp
+kyrion-vm-db-1    postgres:18.6-trixie   "docker-entrypoint.s…"   db        2 weeks ago      Up 2 hours (healthy)      5432/tcp
+
+$ ss -tlnp 2>/dev/null | grep -E ":(22|3000|5432) "
+LISTEN 0      4096       127.0.0.1:3000      0.0.0.0:*          
+LISTEN 0      4096         0.0.0.0:22        0.0.0.0:*          
+LISTEN 0      4096            [::]:22           [::]:*          
+
+$ sudo docker inspect kyrion-vm-app-1 --format "user={{.Config.User}} readonly={{.HostConfig.ReadonlyRootfs}} capdrop={{.HostConfig.CapDrop}}"
+user=10001:10001 readonly=true capdrop=[ALL]
+
+$ sudo ls -ln /srv/kyrion/keys
+total 8
+-rw------- 1 10001 10001 307 Nov 21 13:13 keyring.json
+-rw------- 1 10001 10001 119 Nov 21 13:13 kunci-1.pem
+
+$ sudo docker compose --env-file /srv/kyrion/env/kyrion.env -f compose.vm.yaml --profile tools run --rm tools node_modules/.bin/prisma migrate status 2>&1 | tail -4
+
+10 migrations found in prisma/migrations
+
+Database schema is up to date!
+
+$ sudo docker exec kyrion-vm-db-1 sh -c "psql -U \$POSTGRES_USER -d \$POSTGRES_DB -At -c \"SELECT count(*) FROM signing_keys\""
+1
+
+$ sudo docker compose --env-file /srv/kyrion/env/kyrion.env -f compose.vm.yaml --profile tools run --rm tools sh -c "node_modules/.bin/tsx prisma/kelola-kunci.ts buat --out /opt/kyrion/x.pem; echo exit=\$?; ls -l /opt/kyrion/x.pem" 2>&1 | tail -4
+Operasi kunci gagal: --out berada di dalam repository.
+exit=1
+ls: /opt/kyrion/x.pem: No such file or directory
+
+
+$ sudo docker exec kyrion-vm-db-1 sh -c "psql -U \$POSTGRES_USER -d \$POSTGRES_DB -At -c \"SELECT count(*) FROM signing_keys\""
+1
+
+$ df -h /var/lib/docker | tail -1
+/dev/sda2        40G   29G  8.6G  77% /
+
