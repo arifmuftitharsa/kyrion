@@ -1,4 +1,4 @@
-# Compose untuk VM staging Kyrion (sec-0.2). compose.yaml di root tetap konfigurasi pengembangan.
+# Compose untuk VM staging Kyrion (sec-0.3). compose.yaml di root tetap konfigurasi pengembangan.
 # Jalankan: sudo docker compose --env-file /srv/kyrion/env/kyrion.env -f compose.vm.yaml up -d
 name: kyrion-vm
 
@@ -49,12 +49,22 @@ services:
       DATABASE_URL: ${DATABASE_URL:?DATABASE_URL wajib diisi}
       KYRION_STORAGE_DIR: ${KYRION_STORAGE_DIR:?KYRION_STORAGE_DIR wajib diisi}
       KYRION_MASTER_KEY_FILE: ${KYRION_MASTER_KEY_FILE:?KYRION_MASTER_KEY_FILE wajib diisi}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET wajib diisi}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:?BETTER_AUTH_URL wajib diisi}
+      EMAIL_ADAPTER: ${EMAIL_ADAPTER:?EMAIL_ADAPTER wajib diisi}
+      EMAIL_FROM: ${EMAIL_FROM:?EMAIL_FROM wajib diisi}
+      MAILTRAP_API_TOKEN: ${MAILTRAP_API_TOKEN:?MAILTRAP_API_TOKEN wajib diisi}
+      MAILTRAP_SANDBOX_ID: ${MAILTRAP_SANDBOX_ID:?MAILTRAP_SANDBOX_ID wajib diisi}
+      KYRION_SIGNING_KEY_FILE: ${KYRION_SIGNING_KEY_FILE:?KYRION_SIGNING_KEY_FILE wajib diisi}
+      KYRION_KEYRING_FILE: ${KYRION_KEYRING_FILE:?KYRION_KEYRING_FILE wajib diisi}
     ports:
       - "127.0.0.1:3000:3000"
     secrets:
       - kyrion_master_key
     volumes:
       - kyrion-storage:/app/storage
+      # Folder (bukan berkas) agar rename atomik keyring terlihat; app hanya membaca.
+      - /srv/kyrion/keys:/keys:ro
     networks:
       - backend
       - frontend
@@ -81,8 +91,11 @@ services:
       - no-new-privileges:true
     environment:
       DATABASE_URL: ${DATABASE_URL:?DATABASE_URL wajib diisi}
+      KYRION_KEYRING_FILE: ${KYRION_KEYRING_FILE:?KYRION_KEYRING_FILE wajib diisi}
     env_file:
       - /srv/kyrion/env/seed.env
+    volumes:
+      - /srv/kyrion/keys:/keys
     networks:
       - backend
     depends_on:

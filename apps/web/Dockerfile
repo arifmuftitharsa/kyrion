@@ -23,9 +23,15 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 
 # Tahap tools: migrate dan seed sekali jalan (bukan layanan). Berjalan sebagai non-root.
-FROM build AS tools
+FROM ${NODE_IMAGE} AS tools
 RUN addgroup -g 10001 -S kyrion && adduser -S -u 10001 -G kyrion -H -s /sbin/nologin kyrion
-ENV HOME=/tmp NODE_ENV=production
+# /opt/kyrion/.git hanya PENANDA akar untuk prisma/kelola-kunci.ts (akar = cwd/../.. dan wajib
+# berisi .git), bukan repository sungguhan. Tanpanya akar menjadi "/" dan semua jalur kunci
+# dianggap di dalam repository.
+RUN mkdir -p /opt/kyrion/.git
+WORKDIR /opt/kyrion/apps/web
+COPY --from=build /app ./
+ENV HOME=/tmp NODE_ENV=production PATH=/opt/kyrion/apps/web/node_modules/.bin:${PATH}
 USER 10001:10001
 CMD ["node_modules/.bin/prisma", "migrate", "deploy"]
 
