@@ -1,5 +1,5 @@
 # BEGIN KYRION-DOCKER-USER
-# Pembatas port yang dipublikasikan Docker (80 dan 443 milik Nginx). Risiko: R-09..R-15.
+# Pembatas port yang dipublikasikan Docker (80 dan 443 milik Nginx). Risiko: R-09,T-23.
 *filter
 :DOCKER-USER - [0:0]
 -A DOCKER-USER -m conntrack --ctstate RELATED,ESTABLISHED -j RETURN

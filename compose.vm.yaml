@@ -87,7 +87,7 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
-    # Satu-satunya layanan yang dipublikasikan ke luar VM (R-09..R-15); app dan db tidak punya "ports".
+    # Satu-satunya layanan yang dipublikasikan ke luar VM (R-09, R-10); app dan db tidak punya "ports".
     ports:
       - "80:8080"
       - "443:8443"
