@@ -1,0 +1,13 @@
+# Nmap 7.80 scan initiated Sun Nov 22 13:30:05 2026 as: "C:\\Program Files (x86)\\Nmap\\nmap.exe" -sT -p- -Pn --reason --initial-rtt-timeout 300ms --max-rtt-timeout 400ms --max-retries 1 --min-parallelism 300 --max-parallelism 500 --stats-every 30s -oN C:\\Projects\\kyrion\\security\\scan-after.txt 192.168.56.101
+Nmap scan report for kyrion.test (192.168.56.101)
+Host is up, received user-set (0.00038s latency).
+Not shown: 65532 filtered ports
+Reason: 65532 no-responses
+PORT    STATE SERVICE REASON
+22/tcp  open  ssh     syn-ack
+80/tcp  open  http    syn-ack
+443/tcp open  https   syn-ack
+
+# Nmap done at Sun Nov 22 13:34:13 2026 -- 1 IP address (1 host up) scanned in 247.30 seconds
+
+Keterangan: sesudah kontrol sec-0.3 tahap 3 (UFW default deny, DOCKER-USER, Nginx TLS), Kyrion v0.3, konfigurasi dari commit cc27253, dijalankan dari laptop Arif. Waktu UTC: 2026-11-22 06:30 sampai 06:34. Opsi timing (--initial-rtt-timeout 300ms --max-rtt-timeout 400ms --max-retries 1) berbeda dari scan-before (--min-rtt-timeout 3s) karena pada keadaan ini semua port non-terbuka dijatuhkan firewall (filtered); tidak ada port closed yang perlu menunggu penolakan Windows, jadi timeout pendek aman. Uji silang enam port dengan opsi lama: security/bukti/scan-after-pembanding.txt. Aturan SSH UFW disempitkan dari subnet 192.168.56.0/24 ke 192.168.56.1 sekitar 13:34 WIB (akhir scan); sumber scan sama sehingga hasil port 22 tidak terpengaruh.

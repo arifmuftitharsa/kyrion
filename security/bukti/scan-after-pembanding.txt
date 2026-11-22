@@ -1,0 +1,13 @@
+# Nmap 7.80 scan initiated Sun Nov 22 13:35:40 2026 as: "C:\\Program Files (x86)\\Nmap\\nmap.exe" -sT -p 22,80,443,3000,5432,8443 -Pn --reason --min-rtt-timeout 3s --max-retries 1 -oN security\\bukti\\scan-after-pembanding.txt 192.168.56.101
+Nmap scan report for kyrion.test (192.168.56.101)
+Host is up, received user-set (0.0019s latency).
+
+PORT     STATE    SERVICE    REASON
+22/tcp   open     ssh        syn-ack
+80/tcp   open     http       syn-ack
+443/tcp  open     https      syn-ack
+3000/tcp filtered ppp        no-response
+5432/tcp filtered postgresql no-response
+8443/tcp filtered https-alt  no-response
+
+# Nmap done at Sun Nov 22 13:35:47 2026 -- 1 IP address (1 host up) scanned in 7.56 seconds
