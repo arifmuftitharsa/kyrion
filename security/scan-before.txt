@@ -1,11 +1,11 @@
-# Nmap 7.80 scan initiated Sat Nov 21 22:41:22 2026 as: "C:\\Program Files (x86)\\Nmap\\nmap.exe" -sT -p- -Pn --reason -oN security\\scan-before.txt 192.168.56.101
-Nmap scan report for 192.168.56.101 (192.168.56.101)
-Host is up, received user-set (0.00058s latency).
-Not shown: 65534 filtered ports
-Reason: 65534 no-responses
+# Nmap 7.80 scan initiated Sun Nov 22 12:58:38 2026 as: "C:\\Program Files (x86)\\Nmap\\nmap.exe" -sT -p- -Pn --reason --min-rtt-timeout 3s --max-retries 1 --min-parallelism 300 --max-parallelism 500 --stats-every 30s -oN C:\\Projects\\kyrion\\security\\bukti\\scan-before-sec03.txt 192.168.56.101
+Nmap scan report for 192.168.56.101
+Host is up, received user-set (0.0020s latency).
+Not shown: 65534 closed ports
+Reason: 65534 conn-refused
 PORT   STATE SERVICE REASON
 22/tcp open  ssh     syn-ack
 
-# Nmap done at Sat Nov 21 23:25:41 2026 -- 1 IP address (1 host up) scanned in 2659.19 seconds
+# Nmap done at Sun Nov 22 13:39:24 2026 -- 1 IP address (1 host up) scanned in 2446.23 seconds
 
-Keterangan: sebelum kontrol sec-0.3, Kyrion v0.3, dijalankan dari laptop Arif. Waktu UTC: 2026-11-21 16:25
+Keterangan: sebelum kontrol sec-0.3 tahap 3 (UFW, Nginx TLS), Kyrion v0.3, commit 80b4ea2, dijalankan dari laptop Arif. Waktu UTC: mulai 2026-11-22 04:58, selesai 05:39. Semula ditulis ke security/bukti/scan-before-sec03.txt lalu dipindahkan ke sini. Opsi --min-rtt-timeout 3s --max-retries 1 --min-parallelism 300 --max-parallelism 500 dipakai karena nmap -sT di Windows melaporkan port tertutup sebagai filtered; opsi yang sama dipakai untuk scan-after.txt.

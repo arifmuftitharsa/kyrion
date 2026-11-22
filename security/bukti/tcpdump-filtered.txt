@@ -1,0 +1,36 @@
+# Bukti tcpdump di VM kyrion-staging (waktu UTC) untuk diagnosis 'filtered' dari laptop Windows. Kyrion v0.3, commit 80b4ea2.
+# Waktu tangkapan: 2026-11-22 04:31-04:32 UTC. Perintah di VM: sudo sh -c 'timeout 150 tcpdump -ni any -l "tcp port 8443 or tcp port 8444" > /tmp/td.txt 2>&1 &'
+# Berkas diambil dari VM dengan: ssh kyrion-staging "cat ~/td.txt" (salinan dari /tmp/td.txt).
+# Tafsir: setiap SYN ke port tertutup (8444) dijawab RST oleh VM dalam kurang dari 0,1 ms; laptop mengirim ulang SYN tiap 0,5 detik. Jadi VM tidak menjatuhkan paket, 'filtered' berasal dari sisi klien Windows.
+
+tcpdump: data link type LINUX_SLL2
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
+04:31:13.475738 enp0s8 In  IP 192.168.56.1.14457 > 192.168.56.101.8443: Flags [S], seq 4100821594, win 65535, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0
+04:31:13.475819 enp0s8 Out IP 192.168.56.101.8443 > 192.168.56.1.14457: Flags [S.], seq 2491764335, ack 4100821595, win 64240, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+04:31:13.476762 enp0s8 In  IP 192.168.56.1.14457 > 192.168.56.101.8443: Flags [.], ack 1, win 255, length 0
+04:31:13.479106 enp0s8 In  IP 192.168.56.1.14457 > 192.168.56.101.8443: Flags [F.], seq 1, ack 1, win 255, length 0
+04:31:13.479264 enp0s8 Out IP 192.168.56.101.8443 > 192.168.56.1.14457: Flags [F.], seq 1, ack 2, win 502, length 0
+04:31:13.479619 enp0s8 In  IP 192.168.56.1.14457 > 192.168.56.101.8443: Flags [.], ack 2, win 255, length 0
+04:31:13.494835 enp0s8 In  IP 192.168.56.1.14458 > 192.168.56.101.8444: Flags [S], seq 1050013092, win 65535, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0
+04:31:13.494868 enp0s8 Out IP 192.168.56.101.8444 > 192.168.56.1.14458: Flags [R.], seq 0, ack 1050013093, win 0, length 0
+04:31:13.996188 enp0s8 In  IP 192.168.56.1.14458 > 192.168.56.101.8444: Flags [S], seq 1050013092, win 65535, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0
+04:31:13.996236 enp0s8 Out IP 192.168.56.101.8444 > 192.168.56.1.14458: Flags [R.], seq 0, ack 1, win 0, length 0
+04:31:14.496856 enp0s8 In  IP 192.168.56.1.14458 > 192.168.56.101.8444: Flags [S], seq 1050013092, win 65535, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0
+04:31:14.496924 enp0s8 Out IP 192.168.56.101.8444 > 192.168.56.1.14458: Flags [R.], seq 0, ack 1, win 0, length 0
+04:31:14.997972 enp0s8 In  IP 192.168.56.1.14458 > 192.168.56.101.8444: Flags [S], seq 1050013092, win 65535, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0
+04:31:14.998039 enp0s8 Out IP 192.168.56.101.8444 > 192.168.56.1.14458: Flags [R.], seq 0, ack 1, win 0, length 0
+04:31:15.499903 enp0s8 In  IP 192.168.56.1.14458 > 192.168.56.101.8444: Flags [S], seq 1050013092, win 65535, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0
+04:31:15.499970 enp0s8 Out IP 192.168.56.101.8444 > 192.168.56.1.14458: Flags [R.], seq 0, ack 1, win 0, length 0
+04:32:37.274427 enp0s8 In  IP 192.168.56.1.16934 > 192.168.56.101.8443: Flags [S], seq 1696527823, win 65535, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0
+04:32:37.274427 enp0s8 In  IP 192.168.56.1.16935 > 192.168.56.101.8444: Flags [S], seq 777381510, win 65535, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0
+04:32:37.274673 enp0s8 Out IP 192.168.56.101.8443 > 192.168.56.1.16934: Flags [R.], seq 0, ack 1696527824, win 0, length 0
+04:32:37.274739 enp0s8 Out IP 192.168.56.101.8444 > 192.168.56.1.16935: Flags [R.], seq 0, ack 777381511, win 0, length 0
+04:32:37.375452 enp0s8 In  IP 192.168.56.1.16938 > 192.168.56.101.8444: Flags [S], seq 1286378439, win 65535, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0
+04:32:37.375452 enp0s8 In  IP 192.168.56.1.16939 > 192.168.56.101.8443: Flags [S], seq 884398627, win 65535, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length 0
+04:32:37.375639 enp0s8 Out IP 192.168.56.101.8444 > 192.168.56.1.16938: Flags [R.], seq 0, ack 1286378440, win 0, length 0
+04:32:37.375768 enp0s8 Out IP 192.168.56.101.8443 > 192.168.56.1.16939: Flags [R.], seq 0, ack 884398628, win 0, length 0
+
+24 packets captured
+24 packets received by filter
+0 packets dropped by kernel

@@ -1,0 +1,51 @@
+# Diagnosis 'filtered' pada nmap -sT dari Windows. Kyrion v0.3, commit 80b4ea2, VM kyrion-staging 192.168.56.101.
+# Listener sementara di VM: python3 -m http.server 8443 --bind 0.0.0.0 (8443 terbuka; 8444 tanpa listener = tertutup).
+# Waktu UTC: 2026-11-22 05:52
+
+## Test-NetConnection 192.168.56.101 -Port 8443 (port terbuka)
+
+
+ComputerName     : 192.168.56.101
+RemotePort       : 8443
+TcpTestSucceeded : True
+
+
+
+(durasi 5.1 detik)
+
+## Test-NetConnection 192.168.56.101 -Port 8444 (port tertutup)
+
+
+ComputerName     : 192.168.56.101
+RemotePort       : 8444
+TcpTestSucceeded : False
+
+
+
+(durasi 7 detik)
+
+## nmap -sT -p 22,8443,8444 -Pn --reason 192.168.56.101 (opsi bawaan)
+Starting Nmap 7.80 ( https://nmap.org ) at 2026-11-22 12:53 SE Asia Standard Time
+Nmap scan report for 192.168.56.101
+Host is up, received user-set (0.0010s latency).
+
+PORT     STATE    SERVICE     REASON
+22/tcp   open     ssh         syn-ack
+8443/tcp open     https-alt   syn-ack
+8444/tcp filtered pcsync-http no-response
+
+Nmap done: 1 IP address (1 host up) scanned in 1.78 seconds
+(durasi 1.8 detik)
+
+## nmap -sT -p 22,8443,8444 -Pn --reason --min-rtt-timeout 3s --max-retries 1 192.168.56.101 (opsi diperbaiki)
+Starting Nmap 7.80 ( https://nmap.org ) at 2026-11-22 12:53 SE Asia Standard Time
+Nmap scan report for 192.168.56.101
+Host is up, received user-set (0.0010s latency).
+
+PORT     STATE  SERVICE     REASON
+22/tcp   open   ssh         syn-ack
+8443/tcp open   https-alt   syn-ack
+8444/tcp closed pcsync-http conn-refused
+
+Nmap done: 1 IP address (1 host up) scanned in 2.62 seconds
+(durasi 2.6 detik)
