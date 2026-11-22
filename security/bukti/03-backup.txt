@@ -1,0 +1,113 @@
+# Bukti backup, offsite, dan uji pemulihan (Tugas 3, R-12)
+# Tanggal: 2026-11-22 10:08:44 UTC
+# Hash commit: 8460d22
+# Perintah: .\deploy\uji\03-backup.ps1 (ssh -t kyrion-staging sudo bash 03-backup-vm.sh pasang | restore; offsite.ps1)
+# Kode keluar: pasang=0 offsite=0 restore=0
+# Catatan: kunci privat age dikirim sementara ke /dev/shm VM selama fase restore lalu dihapus (rm -f).
+
+
+===== FASE PASANG (VM) =====
+
+[2026-11-22T10:07:57Z] Fase pasang
+age: 1.1.1
+-- sumber daya (untuk staging tmpfs)
+               total        used        free      shared  buff/cache   available
+Mem:            5925         633        4750          20         793        5291
+Swap:           4095           0        4095
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           2.9G     0  2.9G   0% /dev/shm
+/dev/sda2        40G   26G   12G  69% /
+-- timer
+NEXT                        LEFT LAST PASSED UNIT                ACTIVATES
+Mon 2026-11-23 02:00:00 UTC  15h -         - kyrion-backup.timer kyrion-backup.service
+
+1 timers listed.
+Pass --all to see loaded but inactive timers, too.
+TimersCalendar={ OnCalendar=*-*-* 02:00:00 UTC ; next_elapse=Mon 2026-11-23 02:00:00 UTC }
+AccuracyUSec=1s
+Persistent=yes
+[2026-11-22T10:07:57Z] Menjalankan backup lewat unit systemd
+kode keluar unit: 0
+2026-11-22T10:05:01.539437+00:00 kyrion-staging systemd[1]: Starting kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age)...
+2026-11-22T10:05:01.671142+00:00 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:01Z] mulai backup ke /srv/kyrion/backup
+2026-11-22T10:05:01.673569+00:00 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:01Z] 1/4 dump PostgreSQL
+2026-11-22T10:05:02.390104+00:00 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:02Z] 2/4 volume kyrion-storage
+2026-11-22T10:05:02.409129+00:00 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:02Z] 3/4 folder kunci dan kunci induk HMAC
+2026-11-22T10:05:02.438373+00:00 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:02Z] 4/4 enkripsi age dan checksum
+2026-11-22T10:05:02.468530+00:00 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:02Z] selesai: kyrion-backup-20261122T100502Z.tar.age (61640 byte)
+2026-11-22T10:05:02.481336+00:00 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:02Z] jumlah cadangan tersisa: 1
+2026-11-22T10:05:02.484165+00:00 kyrion-staging systemd[1]: kyrion-backup.service: Deactivated successfully.
+2026-11-22T10:05:02.484649+00:00 kyrion-staging systemd[1]: Finished kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age).
+2026-11-22T10:07:57.564349+00:00 kyrion-staging systemd[1]: Starting kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age)...
+2026-11-22T10:07:57.677418+00:00 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:57Z] mulai backup ke /srv/kyrion/backup
+2026-11-22T10:07:57.679554+00:00 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:57Z] 1/4 dump PostgreSQL
+2026-11-22T10:07:58.023664+00:00 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:58Z] 2/4 volume kyrion-storage
+2026-11-22T10:07:58.040040+00:00 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:58Z] 3/4 folder kunci dan kunci induk HMAC
+2026-11-22T10:07:58.063435+00:00 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:58Z] 4/4 enkripsi age dan checksum
+2026-11-22T10:07:58.090453+00:00 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:58Z] selesai: kyrion-backup-20261122T100758Z.tar.age (61640 byte)
+2026-11-22T10:07:58.103969+00:00 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:58Z] jumlah cadangan tersisa: 2
+2026-11-22T10:07:58.107133+00:00 kyrion-staging systemd[1]: kyrion-backup.service: Deactivated successfully.
+2026-11-22T10:07:58.107626+00:00 kyrion-staging systemd[1]: Finished kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age).
+-- isi folder backup
+total 140
+drwxr-x--- 2 root arif  4096 2026-11-22 10:07:57.093393744 +0000 bin
+-rw-r----- 1 root arif 61640 2026-11-22 10:05:02.449892441 +0000 kyrion-backup-20261122T100502Z.tar.age
+-rw-r----- 1 root arif   105 2026-11-22 10:05:02.456892317 +0000 kyrion-backup-20261122T100502Z.tar.age.sha256
+-rw-r----- 1 root arif 61640 2026-11-22 10:07:58.073381070 +0000 kyrion-backup-20261122T100758Z.tar.age
+-rw-r----- 1 root arif   105 2026-11-22 10:07:58.079380993 +0000 kyrion-backup-20261122T100758Z.tar.age.sha256
+root:arif 750 /srv/kyrion/backup
+root:arif 640 /srv/kyrion/backup/kyrion-backup-20261122T100502Z.tar.age
+root:arif 640 /srv/kyrion/backup/kyrion-backup-20261122T100758Z.tar.age
+-- verifikasi checksum cadangan terbaru di VM
+kyrion-backup-20261122T100758Z.tar.age: OK
+-- cek: berkas cadangan tidak berisi teks terang (header age)
+0000000   a   g   e   -   e   n   c   r   y   p   t   i   o   n   .   o
+0000020   r   g   /   v   1  \n
+
+
+===== FASE OFFSITE (laptop) =====
+
+Berkas   : kyrion-backup-20261122T100758Z.tar.age
+Tujuan   : C:\Projects\offsite-kyrion
+SHA-256 (VM)    : 586cc13dd0145c1adb0439bef7acbb5e7f547709e6f1924674ddac024476b3b9
+SHA-256 (laptop): 586cc13dd0145c1adb0439bef7acbb5e7f547709e6f1924674ddac024476b3b9
+LULUS checksum offsite sama dengan checksum di VM
+
+
+===== FASE RESTORE (VM) =====
+
+[2026-11-22T10:08:29Z] Fase restore
+[2026-11-22T10:08:29Z] MULAI uji pemulihan: 2026-11-22T10:08:29Z; berkas kyrion-backup-20261122T100758Z.tar.age
+[2026-11-22T10:08:29Z] 1. checksum berkas terenkripsi
+kyrion-backup-20261122T100758Z.tar.age: OK
+[2026-11-22T10:08:29Z] LULUS  checksum berkas terenkripsi
+[2026-11-22T10:08:29Z] 2. dekripsi dan ekstraksi ke tmpfs
+[2026-11-22T10:08:29Z] LULUS  dekripsi age dan ekstraksi
+[2026-11-22T10:08:29Z] 3. checksum komponen
+db.dump: OK
+storage.tar: OK
+keys.tar: OK
+kyrion_master_key: OK
+[2026-11-22T10:08:29Z] LULUS  checksum komponen (db.dump, storage.tar, keys.tar, kunci induk)
+[2026-11-22T10:08:29Z] 4. checksum PDF di volume storage
+[2026-11-22T10:08:29Z] LULUS  checksum 2 berkas di storage sama dengan saat backup
+[2026-11-22T10:08:29Z] 5. container PostgreSQL sementara (tanpa jaringan, data di tmpfs)
+[2026-11-22T10:08:31Z] 6. pemulihan dump (tanpa pemilik dan hak: hanya isi data yang diuji)
+[2026-11-22T10:08:31Z] LULUS  pg_restore selesai tanpa galat
+[2026-11-22T10:08:31Z] 7. hitungan baris per tabel
+tabel<TAB>jumlah (hasil pemulihan):
+_prisma_migrations	10
+accounts	0
+audit_logs	4
+categories	2
+changes	6
+regulations	4
+sessions	2
+signing_keys	1
+users	2
+verifications	0
+versions	10
+[2026-11-22T10:08:31Z] LULUS  hitungan baris semua tabel sama dengan saat backup
+[2026-11-22T10:08:31Z] SELESAI uji pemulihan: 2026-11-22T10:08:31Z
+[2026-11-22T10:08:31Z] Ringkasan: mulai 2026-11-22T10:08:29Z, selesai 2026-11-22T10:08:31Z, durasi 2 detik, gagal 0
+[2026-11-22T10:08:31Z] pembersihan: container sisa=0, folder kerja ada=tidak

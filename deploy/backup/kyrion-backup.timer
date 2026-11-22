@@ -1,0 +1,12 @@
+[Unit]
+Description=Jadwal backup terenkripsi Kyrion
+
+[Timer]
+# [KEPUTUSAN ARIF] Jadwal harian 02:00 UTC adalah usulan awal; RPO diturunkan dari jadwal ini di Tugas 5, bukan di sini.
+OnCalendar=*-*-* 02:00:00 UTC
+AccuracySec=1s
+Persistent=true
+Unit=kyrion-backup.service
+
+[Install]
+WantedBy=timers.target
