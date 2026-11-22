@@ -46,19 +46,19 @@ services:
       - no-new-privileges:true
     environment:
       NODE_ENV: production
-      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL wajib diisi}
       KYRION_STORAGE_DIR: ${KYRION_STORAGE_DIR:?KYRION_STORAGE_DIR wajib diisi}
       KYRION_MASTER_KEY_FILE: ${KYRION_MASTER_KEY_FILE:?KYRION_MASTER_KEY_FILE wajib diisi}
-      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET wajib diisi}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:?BETTER_AUTH_URL wajib diisi}
       EMAIL_ADAPTER: ${EMAIL_ADAPTER:?EMAIL_ADAPTER wajib diisi}
       EMAIL_FROM: ${EMAIL_FROM:?EMAIL_FROM wajib diisi}
-      MAILTRAP_API_TOKEN: ${MAILTRAP_API_TOKEN:?MAILTRAP_API_TOKEN wajib diisi}
       MAILTRAP_SANDBOX_ID: ${MAILTRAP_SANDBOX_ID:?MAILTRAP_SANDBOX_ID wajib diisi}
       KYRION_SIGNING_KEY_FILE: ${KYRION_SIGNING_KEY_FILE:?KYRION_SIGNING_KEY_FILE wajib diisi}
       KYRION_KEYRING_FILE: ${KYRION_KEYRING_FILE:?KYRION_KEYRING_FILE wajib diisi}
     secrets:
       - kyrion_master_key
+      - kyrion_database_url
+      - kyrion_better_auth_secret
+      - kyrion_mailtrap_api_token
     volumes:
       - kyrion-storage:/app/storage
       # Folder (bukan berkas) agar rename atomik keyring terlihat; app hanya membaca.
@@ -128,6 +128,12 @@ services:
 secrets:
   kyrion_master_key:
     file: /srv/kyrion/secrets/kyrion_master_key
+  kyrion_database_url:
+    file: /srv/kyrion/secrets/kyrion_database_url
+  kyrion_better_auth_secret:
+    file: /srv/kyrion/secrets/kyrion_better_auth_secret
+  kyrion_mailtrap_api_token:
+    file: /srv/kyrion/secrets/kyrion_mailtrap_api_token
 
 volumes:
   kyrion-pgdata:
