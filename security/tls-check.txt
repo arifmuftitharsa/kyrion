@@ -1,0 +1,60 @@
+# Pemeriksaan TLS Kyrion staging (kyrion.test -> 192.168.56.101). Kyrion v0.3 + kontrol sec-0.3 tahap 3, commit cc27253.
+# Waktu UTC: 2026-11-22 06:22. CA lokal: Kyrion Staging Local CA, sha1 66:31:8A:AD:72:8E:C1:8E:14:7F:84:C0:FC:EF:46:48:FC:B7:99:7F (kunci CA hanya di laptop).
+
+## openssl s_client -connect kyrion.test:443 -servername kyrion.test -CAfile ca.crt -verify_return_error -verify_hostname kyrion.test -tls1_3 -brief
+Connecting to 192.168.56.101
+CONNECTION ESTABLISHED
+Protocol version: TLSv1.3
+Ciphersuite: TLS_AES_256_GCM_SHA384
+Peer certificate: CN=kyrion.test, O=Kyrion (data sintetis)
+Hash used: SHA256
+Signature type: ecdsa_secp256r1_sha256
+Verification: OK
+Verified peername: kyrion.test
+Negotiated TLS1.3 group: X25519MLKEM768
+DONE
+
+## openssl s_client ... -tls1_2 -brief
+Connecting to 192.168.56.101
+CONNECTION ESTABLISHED
+Protocol version: TLSv1.2
+Ciphersuite: ECDHE-ECDSA-AES256-GCM-SHA384
+Peer certificate: CN=kyrion.test, O=Kyrion (data sintetis)
+Hash used: SHA256
+Signature type: ecdsa_secp256r1_sha256
+Verification: OK
+Verified peername: kyrion.test
+Supported Elliptic Curve Point Formats: uncompressed:ansiX962_compressed_prime:ansiX962_compressed_char2
+Peer Temp Key: X25519, 253 bits
+DONE
+
+## openssl s_client ... -tls1_1 -cipher DEFAULT:@SECLEVEL=0 -brief (harus ditolak server)
+Connecting to 192.168.56.101
+100000000A000000:error:0A00042E:SSL routines:ssl3_read_bytes:tlsv1 alert protocol version:ssl/record/rec_layer_s3.c:918:SSL alert number 70
+
+## openssl s_client ... -tls1 -cipher DEFAULT:@SECLEVEL=0 -brief (harus ditolak server)
+Connecting to 192.168.56.101
+100000000A000000:error:0A00042E:SSL routines:ssl3_read_bytes:tlsv1 alert protocol version:ssl/record/rec_layer_s3.c:918:SSL alert number 70
+
+## nmap -Pn -p 443 --script ssl-enum-ciphers kyrion.test
+Starting Nmap 7.80 ( https://nmap.org ) at 2026-11-22 13:22 SE Asia Standard Time
+Nmap scan report for kyrion.test (192.168.56.101)
+Host is up (0.00088s latency).
+
+PORT    STATE SERVICE
+443/tcp open  https
+| ssl-enum-ciphers: 
+|   TLSv1.2: 
+|     ciphers: 
+|       TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 (secp256r1) - A
+|       TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 (secp256r1) - A
+|       TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256 (secp256r1) - A
+|     compressors: 
+|       NULL
+|     cipher preference: client
+|_  least strength: A
+MAC Address: 08:00:27:78:5C:0B (Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 1.47 seconds
+
+Catatan: nmap 7.80 tidak dapat menyebutkan TLS 1.3, jadi hanya TLSv1.2 yang terdaftar di keluaran nmap. TLS 1.3 terbukti aktif oleh openssl s_client pada bagian pertama. Tidak ada TLSv1.0 atau TLSv1.1 yang ditawarkan server: dua uji openssl dengan @SECLEVEL=0 ditolak oleh server dengan alert protocol version (70).
