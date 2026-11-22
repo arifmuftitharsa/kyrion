@@ -1,0 +1,36 @@
+# Bukti tambahan sebelum sec-0.3 (tahap 2b), Kyrion v0.3
+# Waktu UTC: 2026-11-22 01:34
+
+$ sudo iptables -S INPUT
+-P INPUT ACCEPT
+
+$ sudo nft list tables
+table ip nat
+table ip filter
+table ip6 nat
+table ip6 filter
+table ip raw
+
+$ sudo iptables -t raw -S
+-P PREROUTING ACCEPT
+-P OUTPUT ACCEPT
+-A PREROUTING -d 172.19.0.2/32 ! -i br-f7ba45321457 -j DROP
+-A PREROUTING -d 127.0.0.1/32 ! -i lo -p tcp -m tcp --dport 3000 -j DROP
+
+$ sudo tcpdump -ni any (port 8080, uji dari laptop)
+tcpdump: data link type LINUX_SLL2
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
+
+0 packets captured
+4 packets received by filter
+0 packets dropped by kernel
+
+$ sudo tcpdump -ni any (port 8080, uji ulang dari laptop)
+tcpdump: data link type LINUX_SLL2
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
+
+0 packets captured
+2 packets received by filter
+0 packets dropped by kernel

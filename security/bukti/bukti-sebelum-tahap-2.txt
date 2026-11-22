@@ -1,0 +1,167 @@
++ echo 'Bukti sebelum sec-0.3 (tahap 2), Kyrion v0.3, host kyrion-staging'
+Bukti sebelum sec-0.3 (tahap 2), Kyrion v0.3, host kyrion-staging
++ date -u '+%Y-%m-%d %H:%M UTC'
+2026-11-21 15:35 UTC
++ timedatectl
+               Local time: Sat 2026-11-21 15:36:00 UTC
+           Universal time: Sat 2026-11-21 15:36:00 UTC
+                 RTC time: Sat 2026-11-21 15:34:33
+                Time zone: Etc/UTC (UTC, +0000)
+System clock synchronized: yes
+              NTP service: active
+          RTC in local TZ: no
++ sudo docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
+NAMES             IMAGE                  STATUS                 PORTS
+kyrion-vm-app-1   kyrion-web:hardened    Up 2 hours (healthy)   127.0.0.1:3000->3000/tcp
+kyrion-vm-db-1    postgres:18.6-trixie   Up 4 hours (healthy)   5432/tcp
++ sudo docker exec kyrion-vm-app-1 printenv NODE_ENV
+production
++ sudo docker exec kyrion-vm-db-1 sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "\du"'
+                             List of roles
+ Role name |                         Attributes                         
+-----------+------------------------------------------------------------
+ kyrion    | Superuser, Create role, Create DB, Replication, Bypass RLS
+
++ sudo docker inspect kyrion-vm-app-1 --format '{{range .Config.Env}}{{println .}}{{end}}'
++ sed 's/=.*/=<DISAMARKAN>/'
+KYRION_KEYRING_FILE=<DISAMARKAN>
+KYRION_SIGNING_KEY_FILE=<DISAMARKAN>
+MAILTRAP_SANDBOX_ID=<DISAMARKAN>
+NODE_ENV=<DISAMARKAN>
+EMAIL_FROM=<DISAMARKAN>
+BETTER_AUTH_SECRET=<DISAMARKAN>
+BETTER_AUTH_URL=<DISAMARKAN>
+MAILTRAP_API_TOKEN=<DISAMARKAN>
+DATABASE_URL=<DISAMARKAN>
+KYRION_MASTER_KEY_FILE=<DISAMARKAN>
+EMAIL_ADAPTER=<DISAMARKAN>
+KYRION_STORAGE_DIR=<DISAMARKAN>
+PATH=<DISAMARKAN>
+NODE_VERSION=<DISAMARKAN>
+YARN_VERSION=<DISAMARKAN>
+NEXT_TELEMETRY_DISABLED=<DISAMARKAN>
+
++ sudo docker inspect kyrion-vm-db-1 --format '{{range .Config.Env}}{{println .}}{{end}}'
++ sed 's/=.*/=<DISAMARKAN>/'
+POSTGRES_USER=<DISAMARKAN>
+POSTGRES_PASSWORD=<DISAMARKAN>
+POSTGRES_DB=<DISAMARKAN>
+PATH=<DISAMARKAN>
+GOSU_VERSION=<DISAMARKAN>
+LANG=<DISAMARKAN>
+PG_MAJOR=<DISAMARKAN>
+PG_VERSION=<DISAMARKAN>
+PGDATA=<DISAMARKAN>
+
++ sudo ufw status verbose
+Status: inactive
++ sudo iptables -S DOCKER-USER
+-N DOCKER-USER
++ sudo ss -tlnp
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                                                
+LISTEN 0      4096       127.0.0.1:3000      0.0.0.0:*    users:(("docker-proxy",pid=27502,fd=8))               
+LISTEN 0      4096         0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=1789,fd=3),("systemd",pid=1,fd=89))
+LISTEN 0      4096      127.0.0.54:53        0.0.0.0:*    users:(("systemd-resolve",pid=611,fd=17))             
+LISTEN 0      4096   127.0.0.53%lo:53        0.0.0.0:*    users:(("systemd-resolve",pid=611,fd=15))             
+LISTEN 0      4096            [::]:22           [::]:*    users:(("sshd",pid=1789,fd=4),("systemd",pid=1,fd=90))
++ trivy --version
+Version: 0.69.3
++ sudo docker inspect kyrion-vm-app-1 --format '{{.Image}} {{.Config.Image}}'
+sha256:4dfad4f15693beb0e41afa34078752790aa0fdfecebe333e433386355fbaabb7 kyrion-web:hardened
++ sudo docker image ls --digests kyrion-web
+REPOSITORY   TAG             DIGEST                                                                    IMAGE ID       CREATED       SIZE
+kyrion-web   hardened        sha256:4dfad4f15693beb0e41afa34078752790aa0fdfecebe333e433386355fbaabb7   4dfad4f15693   3 hours ago   1.25GB
+kyrion-web   tools           sha256:d406c2879e62b394118e8f611b024f14bf45a00d97e0cea99dcde500d3c228fe   d406c2879e62   3 hours ago   1.4GB
+kyrion-web   v0.2-tools      sha256:9d4d41fbfee765beacfff79df6b506b20fdc2cba6edb6b5daaec647659bd4446   9d4d41fbfee7   2 weeks ago   1.91GB
+kyrion-web   v0.2-hardened   sha256:cbb9946bce20c20db24d45fafc9bac2181b4843f002f2d7e713b4e66cfc25d40   cbb9946bce20   2 weeks ago   1.14GB
+kyrion-web   naif            sha256:0c36fc86335fd93e134767355d875eb64cc3349fc4c65609500832ed266b9be8   0c36fc86335f   2 weeks ago   3.39GB
++ sudo docker exec kyrion-vm-app-1 sh -c 'ls /app/node_modules | wc -l'
+150
++ sudo docker exec kyrion-vm-app-1 sh -c 'ls -d /app/node_modules/vitest /app/node_modules/typescript /app/node_modules/prisma /app/node_modules/effect 2>&1'
+/app/node_modules/effect
+/app/node_modules/prisma
+/app/node_modules/typescript
+/app/node_modules/vitest
++ for i in 1 2 3 4 5
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [HTTP %{http_code}]\n'
+{"message":"Invalid OTP","code":"INVALID_OTP"} [HTTP 400]
++ for i in 1 2 3 4 5
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [HTTP %{http_code}]\n'
+{"message":"Invalid OTP","code":"INVALID_OTP"} [HTTP 400]
++ for i in 1 2 3 4 5
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [HTTP %{http_code}]\n'
+{"message":"Invalid OTP","code":"INVALID_OTP"} [HTTP 400]
++ for i in 1 2 3 4 5
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [HTTP %{http_code}]\n'
+{"message":"Too many requests. Please try again later."} [HTTP 429]
++ for i in 1 2 3 4 5
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [HTTP %{http_code}]\n'
+{"message":"Too many requests. Please try again later."} [HTTP 429]
++ date -u '+%Y-%m-%d %H:%M:%S UTC'
+2026-11-21 16:04:28 UTC
++ sleep 70
++ for ip in 203.0.113.1 203.0.113.2 203.0.113.3 203.0.113.4
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -H 'X-Forwarded-For: 203.0.113.1' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [A HTTP %{http_code}]\n'
+{"message":"Invalid OTP","code":"INVALID_OTP"} [A HTTP 400]
++ for ip in 203.0.113.1 203.0.113.2 203.0.113.3 203.0.113.4
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -H 'X-Forwarded-For: 203.0.113.2' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [A HTTP %{http_code}]\n'
+{"message":"Invalid OTP","code":"INVALID_OTP"} [A HTTP 400]
++ for ip in 203.0.113.1 203.0.113.2 203.0.113.3 203.0.113.4
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -H 'X-Forwarded-For: 203.0.113.3' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [A HTTP %{http_code}]\n'
+{"message":"Invalid OTP","code":"INVALID_OTP"} [A HTTP 400]
++ for ip in 203.0.113.1 203.0.113.2 203.0.113.3 203.0.113.4
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -H 'X-Forwarded-For: 203.0.113.4' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [A HTTP %{http_code}]\n'
+{"message":"Invalid OTP","code":"INVALID_OTP"} [A HTTP 400]
++ for ip in "198.51.100.1, 10.0.0.1" "198.51.100.2, 10.0.0.1" "198.51.100.3, 10.0.0.1" "198.51.100.4, 10.0.0.1"
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -H 'X-Forwarded-For: 198.51.100.1, 10.0.0.1' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [B HTTP %{http_code}]\n'
+{"message":"Invalid OTP","code":"INVALID_OTP"} [B HTTP 400]
++ for ip in "198.51.100.1, 10.0.0.1" "198.51.100.2, 10.0.0.1" "198.51.100.3, 10.0.0.1" "198.51.100.4, 10.0.0.1"
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -H 'X-Forwarded-For: 198.51.100.2, 10.0.0.1' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [B HTTP %{http_code}]\n'
+{"message":"Invalid OTP","code":"INVALID_OTP"} [B HTTP 400]
++ for ip in "198.51.100.1, 10.0.0.1" "198.51.100.2, 10.0.0.1" "198.51.100.3, 10.0.0.1" "198.51.100.4, 10.0.0.1"
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -H 'X-Forwarded-For: 198.51.100.3, 10.0.0.1' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [B HTTP %{http_code}]\n'
+{"message":"Invalid OTP","code":"INVALID_OTP"} [B HTTP 400]
++ for ip in "198.51.100.1, 10.0.0.1" "198.51.100.2, 10.0.0.1" "198.51.100.3, 10.0.0.1" "198.51.100.4, 10.0.0.1"
++ curl -s -X POST http://127.0.0.1:3000/api/auth/sign-in/email-otp -H 'Content-Type: application/json' -H 'X-Forwarded-For: 198.51.100.4, 10.0.0.1' -d '{"email":"sintetis.uji@universitaspertamina.ac.id","otp":"000000"}' -w ' [B HTTP %{http_code}]\n'
+{"message":"Too many requests. Please try again later."} [B HTTP 429]
++ date -u '+%Y-%m-%d %H:%M:%S UTC'
+2026-11-21 16:06:14 UTC
++ df -h /
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda2        40G   29G  8.5G  78% /
++ sudo docker system df
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          8         2         9.015GB   7.116GB (78%)
+Containers      2         2         36.86kB   0B (0%)
+Local Volumes   2         2         66.04MB   0B (0%)
+Build Cache     60        0         13.63GB   6.425GB
++ gpg --show-keys --with-fingerprint /etc/apt/keyrings/docker.asc
+pub   rsa4096 2017-02-22 [SCEA]
+      9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88
+uid                      Docker Release (CE deb) <docker@docker.com>
+sub   rsa4096 2017-02-22 [S]
+
++ sudo docker exec kyrion-vm-db-1 sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "select action, count(*) from audit_logs group by 1 order by 1"'
+    action     | count 
+---------------+-------
+ UNGGAH_BERKAS |     2
+ PENGESAHAN    |     2
+(2 rows)
+
++ sudo docker logs --since 30m kyrion-vm-app-1
++ wc -l
+1
++ sudo docker logs kyrion-vm-app-1
++ wc -l
+6
++ sudo docker logs kyrion-vm-app-1
++ grep --color=auto -cE 'Error|Prisma|^\s+at '
+0
++ sudo docker logs kyrion-vm-app-1
++ cut -c1-200
+▲ Next.js 16.4.2
+- Local:         http://localhost:3000
+- Network:       http://0.0.0.0:3000
+✓ Ready in 315ms
+✓ Running next.config.ts took 194ms
+2026-11-21T16:06:14.767Z WARN [Better Auth]: Rate limiting could not determine a client IP and is falling back to a single shared per-path bucket. Ensure your runtime forwards a trusted client IP head
