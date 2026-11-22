@@ -55,7 +55,7 @@ Berkas: deploy/nginx/kyrion.conf; deployment: compose.vm.yaml (image nginx-unpri
 | DOCKER-USER benar-benar memblokir 443 lalu pulih; port 80 tetap hidup sebagai kontrol | security/bukti/uji-docker-user-negatif.txt | Uji negatif |
 | TLS 1.3 dan 1.2 diterima, TLS 1.1 dan 1.0 ditolak | security/tls-check.txt | Uji negatif |
 | Pembatasan laju dua lapis | security/bukti/uji-rate-limit.txt (percobaan 1-3 status 400, 4-6 429 JSON dari aplikasi, 7-10 429 HTML dari Nginx) | Uji negatif |
-| Akses via IP tanpa nama host ditolak | diuji saat deploy Nginx (handshake ditolak) | Uji negatif |
+| Akses via IP tanpa nama host ditolak | security/bukti/uji-akses-via-ip.txt (handshake ditolak, kode 000) | Uji negatif |
 
 Catatan arsip: security/bukti/scan-before-awal-filtered.txt dan diagnosis-filtered.txt menjelaskan mengapa scan awal melaporkan filtered (artefak timing klien Windows), dan mengapa opsi --min-rtt-timeout 3s --max-retries 1 dipakai.
 
