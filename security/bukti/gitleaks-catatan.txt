@@ -1,0 +1,38 @@
+Catatan bukti gitleaks (sec-0.3, R-11 / T-27)
+Tanggal (UTC)      : 2026-11-22 07:52 (scan awal dan scan akhir, selisih kurang dari 2 menit)
+Versi gitleaks     : 8.30.1
+Commit HEAD        : 44c994d (git rev-parse --short HEAD). .gitleaksignore belum di-commit saat scan akhir; gitleaks membacanya dari folder kerja.
+Cakupan            : riwayat penuh, 190 commit, ~4,36 MB (keluaran gitleaks)
+Subcommand         : gitleaks git (bukan detect/protect, yang sudah usang)
+
+PERINTAH (PowerShell, dari C:\Projects\kyrion)
+1. Scan awal, tanpa .gitleaksignore:
+   gitleaks git . --redact --report-format json --report-path "$env:TEMP\gitleaks-awal.json" --exit-code 0
+2. Scan akhir, dengan .gitleaksignore di root repo:
+   gitleaks git . --redact --report-format json --report-path "$env:TEMP\gitleaks-akhir.json" --exit-code 2
+3. Membuang kolom Author, Email, Secret, Match dari laporan akhir (hasil ditulis UTF-8 tanpa BOM ke security/gitleaks.json):
+   function Format-LaporanBersih($p) { $r=@(ConvertFrom-Json (Get-Content $p -Raw) | ForEach-Object { $_ }); if($r.Count -eq 0){'[]'}else{ConvertTo-Json -InputObject @($r | Select-Object * -ExcludeProperty Author,Email,Secret,Match)} }
+   [IO.File]::WriteAllText("$PWD\security\gitleaks.json", (Format-LaporanBersih "$env:TEMP\gitleaks-akhir.json") + "`n", (New-Object Text.UTF8Encoding $false))
+
+HASIL RINGKAS
+Sebelum .gitleaksignore : 3 temuan ("leaks found: 3")
+Sesudah .gitleaksignore : 0 temuan ("no leaks found", exit 0); security/gitleaks.json berisi [].
+Karena laporan akhir kosong, langkah pembuangan kolom tidak mengubah isinya. Filter diuji pada laporan awal (3 temuan): kunci yang tersisa RuleID, Description, StartLine, EndLine, StartColumn, EndColumn, File, SymlinkFile, Commit, Link, Entropy, Date, Message, Tags, Fingerprint; tidak ada Author, Email, Secret, Match.
+--redact dipakai pada kedua scan, jadi nilai rahasia tidak ditulis ke laporan.
+
+TIGA TEMUAN AWAL (semua dinilai false positive; pemeriksaan isi dilakukan Arif secara manual, bukan oleh Claude)
+1. curl-auth-user, security/bukti/bukti-sebelum-tahap-2.txt baris 95, commit 47075f4aff3394a5a4a0207b27f9fb5044063520
+   Fingerprint: 47075f4aff3394a5a4a0207b27f9fb5044063520:security/bukti/bukti-sebelum-tahap-2.txt:curl-auth-user:95
+   Alasan: perintah uji rate limit dengan OTP sengaja salah 000000, email sintetis, IP rentang dokumentasi RFC 5737; bukan kredensial.
+2. curl-auth-user, security/bukti/bukti-sebelum-tahap-2.txt baris 122, commit 47075f4aff3394a5a4a0207b27f9fb5044063520
+   Fingerprint: 47075f4aff3394a5a4a0207b27f9fb5044063520:security/bukti/bukti-sebelum-tahap-2.txt:curl-auth-user:122
+   Alasan: sama dengan butir 1.
+3. private-key, apps/web/lib/crypto/penandatangan.test.ts baris 52-105, commit f186ed16cd4d8d5bb0bb67b7c008c3982d2f4638
+   Fingerprint: f186ed16cd4d8d5bb0bb67b7c008c3982d2f4638:apps/web/lib/crypto/penandatangan.test.ts:private-key:52
+   Alasan: dua blok PEM berisi teks pengganti RAHASIAPEM, bukan kunci.
+
+BATAS KESIMPULAN
+- Bersih hanya terhadap aturan bawaan gitleaks 8.30.1; rahasia berpola tak dikenal tidak terdeteksi.
+- Tiga fingerprint diabaikan berdasarkan pemeriksaan manual isi, bukan verifikasi otomatis.
+- Fingerprint berbasis commit: bila riwayat ditulis ulang, fingerprint berubah.
+- Laporan mentah ada di %TEMP% (di luar repo) dan tidak disimpan. security/gitleaks-before.json (scan lama, 176 commit) tidak diubah.
