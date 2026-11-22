@@ -79,3 +79,29 @@ Bagian sebelumnya tidak diubah. Penilaian T-11 sampai T-27 dan risiko prioritas 
 - T-02 dan T-08: penilaian lama tidak diubah; keduanya ditinjau ulang sec-0.3 (lihat threat-model.md, "Tinjauan ulang ancaman lama").
 - R-08: T-24 ditambahkan sebagai induk tambahan, karena image runtime kini punya threat sendiri; nilai T-24 menunggu pemindaian Trivy.
 - Risiko yang sengaja tidak diangkat: batas sumber daya container (C-9 di PRD) ditunda dengan alasan YAGNI sampai deployment PAW.
+
+## Catatan bukti tahap 2 sec-0.3
+
+Bukti "sebelum" kontrol sec-0.3 diambil pada 2026-11-21 sampai 2026-11-22 (UTC), Kyrion v0.3, VM kyrion-staging. Tidak ada baris di bagian sebelumnya yang diubah. Berkas bukti: security/bukti/bukti-sebelum-tahap-2.txt, security/bukti/bukti-sebelum-tahap-2b.txt, security/bukti/image-scan-v0.3-before.txt, security/bukti/sbom-v0.3.cdx.json, security/gitleaks-before.json, security/scan-before.txt.
+
+### Penilaian T-24 (menggantikan "belum dinilai" di tabel sebelumnya)
+
+| ID Threat | L | Alasan L | I | Alasan I | Skor | Level |
+|-----------|---|----------|---|----------|------|-------|
+| T-24 | 2 | Eksploitasi butuh input tak tepercaya yang sampai ke Schema.TemplateLiteral milik effect; git grep tidak menemukan impor langsung effect di kode aplikasi; tidak diberi 1 karena paketnya ada di image runtime dan jalur tidak langsungnya belum ditelusuri. | 4 | ReDoS menghabiskan CPU sehingga berdampak ke ketersediaan proses. | 8 | High (respons: Mitigate, kontrol diputuskan di tahap 3) |
+
+Induk: R-08 (catatan T-24 sebagai induk tambahan sudah tercantum di bagian sebelumnya).
+
+### Bukti per ancaman
+
+| ID | Bukti yang didapat | Berkas | Batas kesimpulan |
+|----|--------------------|--------|------------------|
+| T-17 / R-11 | Nama variabel lingkungan sensitif (BETTER_AUTH_SECRET, MAILTRAP_API_TOKEN, DATABASE_URL, POSTGRES_PASSWORD) tampak lewat docker inspect (konfigurasi); nilai disamarkan di bukti. Kunci kriptografi hanya berupa jalur berkas. | bukti-sebelum-tahap-2.txt | Menunjukkan eksposur di konfigurasi container, bukan nilai rahasianya. |
+| T-18 / R-13 | \du menampilkan hanya satu peran, kyrion, dengan Superuser, Create role, Create DB, Replication, Bypass RLS (konfigurasi efektif). | bukti-sebelum-tahap-2.txt | Bahwa aplikasi memakai peran itu disimpulkan dari satu-satunya peran yang ada, tidak teramati langsung. |
+| T-23 / R-09 | ufw inactive; iptables DOCKER-USER kosong; ss -tlnp: port 22 di semua alamat (IPv4 dan IPv6), 127.0.0.1:3000, tidak ada 5432; nmap dari laptop (IPv4): hanya 22/tcp open, 65.534 port lain filtered (no-responses). | bukti-sebelum-tahap-2.txt, bukti-sebelum-tahap-2b.txt, scan-before.txt | Penyebab status filtered belum diketahui: INPUT ACCEPT tanpa aturan dan tabel raw hanya berisi dua aturan sempit milik Docker, jadi bukan dari aturan VM; dua uji tcpdump tidak konklusif. Karena itu scan-before.txt tidak dipakai sendirian sebagai bukti T-23. Pindai nmap tidak mencakup IPv6, padahal sshd mendengarkan di IPv6. |
+| T-11, T-12 / R-14 | Uji dari loopback VM dengan email sintetis dan OTP salah: tanpa XFF, 3 respons 400 lalu 429; empat nilai XFF tunggal berbeda semuanya 400 (bypass terbukti); empat nilai XFF berlapis berbeda, 3 respons 400 lalu 429 (bucket bersama), dan log aplikasi mencatat WARN Better Auth "could not determine a client IP". Status: terbukti sebagian. | bukti-sebelum-tahap-2.txt | Membuktikan perilaku aplikasi terhadap header, bukan dampak dari jaringan nyata. Percobaan di bawah batas hanya menghasilkan 400, sehingga deteksi D-1 harus menghitung semua respons non-2xx. |
+| T-13 | Sandbox Mailtrap terbaca 7 / 50 pesan di akun (2026-11-21). | belum disimpan sebagai berkas | Periode batas (bulanan atau tidak) belum dikonfirmasi; tangkapan layar menyusul di security/img/. |
+| T-21 | Query audit_logs per aksi: hanya UNGGAH_BERKAS (2 baris) dan PENGESAHAN (2 baris); 12 permintaan OTP salah tidak meninggalkan baris. | bukti-sebelum-tahap-2.txt | Kondisi tabel pada saat uji. |
+| T-22 | Log stdout aplikasi 6 baris, 0 baris berpola Error, Prisma, atau stack trace. | bukti-sebelum-tahap-2.txt | Jalur galat belum dipicu; T-22 tetap berbasis pembacaan kode. |
+| T-24 / R-08 | Trivy 0.69.3 atas kyrion-web:hardened (ID sha256:4dfad4f15693beb0e41afa34078752790aa0fdfecebe333e433386355fbaabb7): OS Alpine 3.24.3 tanpa baris Total; node-pkg Total 1 HIGH: effect 3.20.0, CVE-2026-121707, perbaikan di 3.22.1. Rantai: web, prisma@7.10.1, @prisma/config@7.10.1, effect. | image-scan-v0.3-before.txt, sbom-v0.3.cdx.json | "OS 0 HIGH/CRITICAL" disimpulkan dari tidak adanya baris Total, belum dikonfirmasi dari tabel ringkasan. |
+| T-27 / R-11 | gitleaks 8.30.1 atas 176 commit: 1 temuan private-key di apps/web/lib/crypto/penandatangan.test.ts baris 52-105 (commit f186ed16cd4d8d5bb0bb67b7c008c3982d2f4638), dinilai positif palsu: kunci uji dibangkitkan saat runtime dan satu-satunya literal PEM adalah string palsu. | gitleaks-before.json | Hanya baris 46-110 yang dibaca; gitleaks hanya mengenali pola yang dikenalnya. Tindak lanjut tahap 3: .gitleaksignore berbasis fingerprint dengan alasan di secrets.md. |
