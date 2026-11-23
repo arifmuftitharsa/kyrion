@@ -1,0 +1,42 @@
+# Bukti sumber daya VM (Tugas 6)
+# Tanggal: 2026-11-23 08:27:36 UTC
+# Hash commit: 490b664
+# Perintah: ssh -t kyrion-staging sudo bash 06-sumber-daya-vm.sh (free -m, df -h, docker system df, docker stats, timedatectl)
+# Kode keluar: 0
+
+[2026-11-23T08:27:25Z] sumber daya VM
+== nproc
+4
+== free -m
+               total        used        free      shared  buff/cache   available
+Mem:            5925         614        4762          16         792        5310
+Swap:           4095           0        4095
+== df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           593M  1.3M  592M   1% /run
+/dev/sda2        40G   26G   12G  69% /
+tmpfs           2.9G     0  2.9G   0% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+overlay          40G   26G   12G  69% /var/lib/docker/rootfs/overlayfs/43e2e869e3ce2c2582f4e5e7fd5bf6e2a076d6b9560790e0e81f882d1b381c7f
+overlay          40G   26G   12G  69% /var/lib/docker/rootfs/overlayfs/abba15033f10fe723870c4161e3dd6f6a55e70ac5f4375b2293a70d7518a6243
+overlay          40G   26G   12G  69% /var/lib/docker/rootfs/overlayfs/d7fe32d0e58e25ff46c06bfbacc53dc99dccc94cc0ccca28d4bc2f001bac8b72
+tmpfs           593M   12K  593M   1% /run/user/1000
+== docker system df
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          10        3         9.144GB   7.155GB (78%)
+Containers      3         3         61.44kB   0B (0%)
+Local Volumes   2         2         66.09MB   0B (0%)
+Build Cache     52        0         9.808GB   1.404GB
+== docker stats --no-stream
+NAME                MEM USAGE / LIMIT     CPU %
+kyrion-vm-app-1     171.3MiB / 5.786GiB   0.00%
+kyrion-vm-nginx-1   12.59MiB / 5.786GiB   0.00%
+kyrion-vm-db-1      57.98MiB / 5.786GiB   0.05%
+== timedatectl
+               Local time: Mon 2026-11-23 08:27:29 UTC
+           Universal time: Mon 2026-11-23 08:27:29 UTC
+                 RTC time: Mon 2026-11-23 08:27:29
+                Time zone: Etc/UTC (UTC, +0000)
+System clock synchronized: yes
+              NTP service: active
+          RTC in local TZ: no
