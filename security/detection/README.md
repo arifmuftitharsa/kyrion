@@ -41,7 +41,7 @@ Sesudahnya periksa di Grafana (Alerting, Alert rules) bahwa tiga rule tampil di 
 
 ## Cara uji
 
-Skrip simulasi untuk memicu tiap rule: **belum ada** (dibuat di tugas berikutnya).
+Skrip simulasi untuk memicu tiap rule: `security/detection/simulasi.ps1` (pembangkit lalu lintas) dan `deploy/uji/10-deteksi-simulasi.ps1` beserta `10-deteksi-simulasi-vm.sh` (menjalankan dan memantau status alert). Bukti: `security/bukti/10-simulasi-*.txt`. **D-3 benign TIDAK dijalankan** (tidak ada berkas `10-simulasi-D-3-benign.txt`).
 
 `deploy/uji/08-deteksi-uji.ps1` hanya menguji query tanpa ambang; skrip itu tidak membuktikan alert Firing.
 

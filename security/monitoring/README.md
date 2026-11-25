@@ -58,13 +58,9 @@ Stabilitas Alloy sesudah restart di run ini (status terakhir yang tercatat: `Up 
 ## Label di Loki
 
 - Nilai label `job` di Loki adalah `loki.source.journal.kontainer`, `loki.source.journal.sshd`, dan `loki.source.journal.kernel`, bukan `container`, `sshd`, dan `kernel` seperti di config.alloy. Ini hasil pengamatan di VM; keluarannya tidak tersimpan di kedua berkas bukti, sehingga belum terbukti dari berkas.
-- Aturan deteksi harus memakai label `container` dan `unit`, bukan `job`. Dari kedua label itu, bukti hanya menunjukkan selector `container` (butir a); `unit` belum terbukti.
+- Selector per sumber: nginx memakai `{container="kyrion-vm-nginx-1"}`; kernel memakai `{job="loki.source.journal.kernel"}` (label `unit`-nya `systemd-journald.service`); sshd memakai `unit=ssh.service`. Nilai `unit` kernel dan sshd tercatat di `../bukti/07-deteksi-periksa.txt`.
 - Penyebab tertimpanya `job` belum terbukti.
-- Selector `{job="kernel"}` di config.alloy baris 48 mungkin tidak pernah cocok, sehingga baris kernel non-UFW tidak dibuang (belum terbukti). Cara memeriksa di Grafana; hasil yang tidak kosong berarti filter tidak bekerja (hasil kosong saja belum membuktikan filter bekerja, mis. bila tidak ada log kernel pada rentang waktu itu):
-
-  ```logql
-  {job="loki.source.journal.kernel"} != "[UFW "
-  ```
+- Filter `stage.match` di config.alloy (sekitar baris 48, `!= "[UFW "`) terbukti tidak menyaring: 438 baris kernel non-UFW dalam 15 menit (`../bukti/08-deteksi-uji.txt`). Karena itu aturan D-3 menyaring sendiri lewat `|= "[UFW BLOCK]"`.
 
 ## Residu pemindaian Trivy (siapkan, 2026-11-23)
 
