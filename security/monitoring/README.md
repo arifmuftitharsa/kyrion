@@ -20,7 +20,7 @@ flowchart LR
 - Loki hanya di jaringan `logs` (internal) tanpa `ports`. Grafana satu-satunya yang punya port, hanya 127.0.0.1:3001; kredensial admin dari secret (bukan bawaan), tanpa pendaftaran dan akses anonim.
 - Container app dan nginx dikirim ke journald lewat overlay `compose.logging-journald.yaml` (tidak mengubah compose.vm.yaml). Overlay membuat ulang app dan nginx.
 - Redaksi: email diganti `<email-disamarkan>` di Alloy sebelum masuk Loki (keputusan Arif). Lihat "Batas kontrol redaksi".
-- Sumber yang dirancang: nginx (akses dan galat) dan stdout app lewat CONTAINER_NAME, sshd (ssh.service), baris `[UFW ` di kernel (lihat catatan filter di "Label di Loki"). audit_logs (tabel DB) tidak dikirim di Tugas ini. Masuknya log sshd dan kernel ke Loki belum terbukti dari berkas bukti.
+- Sumber yang dirancang: nginx (akses dan galat) dan stdout app lewat CONTAINER_NAME, sshd (ssh.service), baris `[UFW ` di kernel (lihat catatan filter di "Label di Loki"). audit_logs (tabel DB) tidak dikirim di Tugas ini. Log sshd dan kernel teramati di Loki (`../bukti/07-deteksi-periksa.txt` butir 5d dan 5e; kernel juga di `../bukti/08-deteksi-uji.txt` butir B3).
 
 ## Cara menjalankan (Arif)
 

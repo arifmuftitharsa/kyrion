@@ -1,6 +1,6 @@
 # Aturan deteksi Kyrion (sec-0.3, Tugas 7)
 
-Status ketiga rule: **test**. Query bentuk [15m] sudah dijawab Loki di VM (`security/bukti/08-deteksi-uji.txt`). Bentuk [5m], berkas alert Grafana, dan status Firing **belum terbukti**.
+Status ketiga rule: **test**. Query bentuk [15m] sudah dijawab Loki di VM (`security/bukti/08-deteksi-uji.txt`). Berkas alert Grafana (query [5m]) termuat di VM (`security/bukti/09-deteksi-pasang.txt`; D-3 belum dievaluasi saat itu). Status Firing ketiga rule teramati pada simulasi serangan (`security/bukti/10-simulasi-*-serangan.txt`).
 
 | Berkas | Isi |
 |---|---|
