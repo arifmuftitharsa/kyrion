@@ -5,7 +5,7 @@
 | Versi, tanggal | 1, 2026-11-25 (sec-0.3) |
 | Pemicu | Alert D-1 dan/atau D-2 berstatus Firing di Grafana, folder "Kyrion Deteksi" |
 | Risiko | R-14, R-03, R-15 |
-| Status | Alur ini belum dilatih utuh. Latihan: `../tabletop-report.md` |
+| Status | Dilatih sekali sebagai tabletop diskusi pada 2026-11-25 (`../tabletop-report.md`); perintah penahanan dan pemulihan tidak dijalankan |
 
 D-1: > 10 respons non-2xx pada `/api/auth/sign-in/email-otp` per `ip` dalam 5 menit. D-2: > 10 respons 401/403/404 pada `/admin` atau `/api/v1/` per `ip` dalam 5 menit (307 tidak dihitung). Query: `../detection/D-1-tebak-otp.yml`, `D-2-rute-sensitif.yml`.
 
@@ -61,8 +61,10 @@ Eskalasi pihak luar: dosen atau pengelola. Data kontak tidak tercatat di repo.
 |---|---|---|
 | P-1 | Pembatas otomatis yang sudah aktif: Nginx `limit_req` OTP (10r/m, burst 5) dan pembatas aplikasi, jawaban 429. Pastikan 429 muncul. Ini tidak memblokir IP. | diuji (`../bukti/uji-rate-limit.txt`; D-1 serangan 400=3, 429=27) |
 | P-2 | Blok sementara satu IP di port 443 (perintah di bawah). | diuji hanya untuk 192.168.56.1: blokir dan pulih (`../bukti/uji-docker-user-negatif.txt`); saat persis penghapusan oleh timer tidak teramati. IP lain dan IPv6: belum diuji |
-| P-3 | Rotasi `kyrion_better_auth_secret`: nilai baru ke berkas rahasia (0400, UID 10001), lalu ganti-pasang container app. Semua sesi menjadi tidak valid (`../secrets.md` 3). | belum diuji (akan diuji di tabletop, sebatas dibahas); perintah rinci tidak ada di dokumen |
-| P-4 | Hentikan app dan nginx (`../backup-restore.md` 5 langkah 6). | belum diuji (akan diuji di tabletop); perintah stop tidak ada di dokumen |
+| P-3 | Rotasi `kyrion_better_auth_secret`: nilai baru ke berkas rahasia (0400, UID 10001), lalu ganti-pasang container app. Semua sesi menjadi tidak valid (`../secrets.md` 3). | belum diuji (dibahas di tabletop 2026-11-25, tidak dijalankan); perintah rinci tidak ada di dokumen |
+| P-4 | Hentikan app dan nginx (`../backup-restore.md` 5 langkah 6). | belum diuji (dibahas di tabletop 2026-11-25, tidak dijalankan); perintah stop tidak ada di dokumen |
+
+**Pengingat:** P-2 = blokir IP (hanya 443, sementara); P-3 = rotasi secret better-auth (mematikan SEMUA sesi). Jangan tertukar.
 
 P-2, dijalankan di VM. Ganti `<IP>` di kedua tempat:
 
@@ -77,7 +79,7 @@ sudo iptables -I DOCKER-USER 1 -i enp0s8 -s <IP> -p tcp -m conntrack --ctorigdst
 ## 4. Pemberantasan
 
 1. Daftar akun, sesi, dan versi regulasi yang terdampak dari `audit_logs` dan `sessions`.
-2. Untuk pengesahan tidak sah, Incident Commander memutuskan pembatalan lewat aplikasi (PEMBATALAN, `../tabletop-report.md` T+10). Belum diuji dalam skenario insiden.
+2. Untuk pengesahan tidak sah, Incident Commander memutuskan pembatalan lewat aplikasi (PEMBATALAN, `../tabletop-report.md` bagian 4 butir d). Belum diuji dalam skenario insiden.
 3. JIKA rahasia diduga bocor, rotasi menurut `../secrets.md` 3 (belum diuji). Kunci induk HMAC dan Ed25519 mengikuti prosedur khusus di bagian itu.
 4. JIKA akun email korban atau inbox Mailtrap diduga bocor, rotasi token Mailtrap dan amankan akses inbox (T-14).
 5. Catat akar masalah. Bila belum diketahui, tulis "belum diketahui".
@@ -86,6 +88,7 @@ sudo iptables -I DOCKER-USER 1 -i enp0s8 -s <IP> -p tcp -m conntrack --ctorigdst
 
 Pulihkan dari cadangan hanya bila data rusak atau berubah dan tidak dapat dibetulkan lewat aplikasi. Pemulihan membuang perubahan sesudah waktu cadangan.
 
+0. Periksa umur cadangan terbaru (tanggal-waktu berkas); bila lebih dari 24 jam, catat selisih RPO aktual dan lanjutkan hanya atas keputusan Incident Commander.
 1. Pilih cadangan **sebelum** awal insiden. Ikuti `../backup-restore.md` 5 langkah 1-4 (checksum, dekripsi, periksa komponen): teruji.
 2. Langkah 5, uji ke container sementara dengan `sudo bash restore-test.sh <kunci> [berkas]`: teruji pada data 61 KB.
 3. Langkah 6-9 (produksi: database baru, `roles.sql`, storage, kunci, jalankan app dan nginx): **belum diuji**. Jangan menimpa database lama; simpan sebagai bukti.

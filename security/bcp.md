@@ -1,6 +1,6 @@
 # Rencana kelangsungan layanan (BCP) Kyrion staging
 
-Versi 1, 2026-11-25 (sec-0.3). Sumber: `backup-restore.md`, `risk-register.md`, `monitoring/README.md`, `playbooks/PB-01-tebakan-otp-dan-rute-sensitif.md`, `../compose.vm.yaml`. Rencana ini belum dilatih.
+Versi 1, 2026-11-25 (sec-0.3). Sumber: `backup-restore.md`, `risk-register.md`, `monitoring/README.md`, `playbooks/PB-01-tebakan-otp-dan-rute-sensitif.md`, `../compose.vm.yaml`. Rencana ini dilatih sekali sebagai tabletop diskusi 2026-11-25 (tanpa pengukuran waktu).
 
 ## 1. Layanan kritis dan urutan pemulihan
 
@@ -18,7 +18,7 @@ Layanan: `db`, `app`, `nginx` (project `kyrion-vm`); Alloy, Loki, Grafana (proje
 
 | Layanan | RPO | RTO | Dasar | Status bukti |
 |---|---|---|---|---|
-| Data (db, PDF, kunci Ed25519 dan keyring, kunci induk HMAC) | Target 24 jam, **hanya bila VM selamat** | Target 2 jam (**usulan Arif, asumsi awal**) | RPO: timer harian 02:00 UTC, turunan ≤ 24 jam + sekitar 1 detik (`backup-restore.md` 7) | **Belum ada cadangan yang dibuat oleh timer.** RTO belum terukur; angka terukur dicatat dari latihan tabletop |
+| Data (db, PDF, kunci Ed25519 dan keyring, kunci induk HMAC) | Target 24 jam, **hanya bila VM selamat** | Target 2 jam (**usulan Arif, asumsi awal**) | RPO: timer harian 02:00 UTC, turunan ≤ 24 jam + sekitar 1 detik (`backup-restore.md` 7) | **Timer memicu pada 2026-11-23 dan 2026-11-25 tetapi gagal (`bukti/11-timer-backup-gagal.txt`); cadangan terbaru 2026-11-22T10:07:58Z.** RTO belum terukur; tabletop tidak mengukur waktu; pengukuran adalah perbaikan no. 4 di `tabletop-report.md` |
 | `app`, `nginx` | Tidak ada RPO tersendiri di dokumen | Masuk target 2 jam di atas (usulan Arif, asumsi awal) | Data yang dipakai `app` ada di baris data | Belum terukur |
 | Bila VM atau laptop hilang | **Tidak dapat diturunkan** | Target 2 jam tidak didukung bukti untuk kejadian ini | Salinan ke laptop manual, tanpa jadwal | Tidak terukur |
 | Monitoring dan log (Loki, Grafana) | Tidak ada di dokumen. **Usulan:** tanpa jaminan; log boleh hilang seluruhnya | Tidak ada di dokumen. **Usulan:** 4 jam | Log tidak masuk cadangan (`backup-restore.md` 2); retensi 30 hari bukan RPO (`monitoring/README.md`) | Belum terukur; retensi juga belum diukur |
