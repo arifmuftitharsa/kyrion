@@ -1,0 +1,59 @@
+title: D-2 Penolakan berulang pada rute admin dan API
+id: eb0af171-7ea7-4a5c-9c7f-6eb5d9f00360
+status: test
+description: Banyak respons 401, 403, atau 404 pada path berawalan /admin atau /api/v1/ dari satu IP. 307 dikecualikan.
+
+logsource:
+  product: loki
+  datasource_uid: kyrion-loki
+  container: kyrion-vm-nginx-1
+  labels:
+    container: kyrion-vm-nginx-1
+  bentuk_baris: '<ip> - - [..] "METHOD PATH HTTP/2.0" STATUS bytes "-" "UA" "-" (diawali IP klien)'
+
+query: |-
+  sum by (ip) (count_over_time({container="kyrion-vm-nginx-1"} | regexp `^(?P<ip>\S+) \S+ \S+ \[[^\]]*\] "(?P<method>\S+) (?P<path>[^ ?"]+)[^"]*" (?P<status>\d{3}) ` | path=~"(/admin|/api/v1/).*" | status=~"401|403|404" [5m]))
+
+window: 5m
+
+threshold:
+  operator: gt
+  value: 10
+  alasan: >-
+    Nilai adalah keputusan Arif. Belum ada pengukuran lalu lintas normal atau lalu lintas serangan pada rute ini yang
+    mendukung angka 10 (belum terbukti).
+
+level: medium
+tags:
+  - attack.t1190  # USUL, harus diverifikasi Arif di attack.mitre.org
+related_risk:
+  - R-03
+  - R-15
+
+bukti:
+  - berkas: security/bukti/08-deteksi-uji.txt
+    isi: >-
+      Baris 61: query ini dengan jendela [15m] dijawab Loki. Baris 62-63: masing-masing 1 untuk ip 172.19.0.1 dan
+      192.168.56.1. Baris 8-9: dari laptop, GET /admin tanpa cookie berstatus 307 dan POST approval tanpa cookie
+      berstatus 401.
+  - berkas: security/bukti/07-deteksi-periksa.txt
+    isi: >-
+      Baris 46-47 dan 54-55: GET /admin 307 dan POST approval 401 lewat Nginx.
+  - belum_terbukti: >-
+      Query dengan jendela [5m], alert yang benar-benar Firing pada nilai di atas 10, serta status 403 dan 404 lewat
+      Nginx.
+
+false_positive:
+  - 404 untuk data yang memang tidak ada (tautan lama, salah ketik), termasuk yang dibuka Admin.
+  - Klien API dengan sesi kedaluwarsa yang mengulang permintaan dan terus mendapat 401. Belum terbukti.
+  - Uji akses oleh operator sendiri.
+
+batas:
+  - 404 untuk data yang memang tidak ada ikut terhitung.
+  - Access log tidak memuat peran, sehingga rule tidak dapat membedakan anonim, Sivitas, dan Admin.
+  - Server Action belum teruji; status HTTP penolakannya belum terbukti dan bisa berada di path halaman.
+  - 307 dikecualikan, sehingga percobaan anonim ke halaman /admin yang dialihkan ke /masuk tidak terhitung.
+  - 10 penolakan atau kurang dalam 5 menit tidak memicu alert, dan percobaan yang dibagi ke banyak IP lolos.
+  - Filter path memakai awalan "/admin", sehingga path lain berawalan sama (mis. /administrator) ikut terhitung.
+  - Rute sensitif di luar /admin dan /api/v1/ (mis. /api/auth/) tidak tercakup.
+  - Varian path yang di-encode atau memakai garis miring ganda mungkin lolos (belum terbukti).
