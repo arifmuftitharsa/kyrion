@@ -38,6 +38,8 @@ Menurut [deploy/backup/backup.sh](deploy/backup/backup.sh), satu arsip (kyrion-b
 
 kyrion-backup.timer: `OnCalendar=*-*-* 02:00:00 UTC`, `AccuracySec=1s`, `Persistent=yes` (keluaran `systemctl show` di 03-backup.txt; berikutnya Mon 2026-11-23 02:00:00 UTC). Unit service dijalankan sekali lewat systemd pada pengujian (kode keluar 0). Dua cadangan di VM pada 22 Nov dibuat manual lewat unit (10:05:02Z dan 10:07:58Z); **belum ada cadangan yang dibuat oleh timer**. Pemicu timer dan `Persistent` belum teruji.
 
+> **Catatan 2026-11-25** (`bukti/11-timer-backup-gagal.txt`): servis berjalan lagi 2026-11-23T08:22:54Z dan 2026-11-25T06:10:42Z dan gagal (`pg_dump`: the database system is starting up). Timer memicu tetapi belum menghasilkan cadangan; cadangan terbaru tetap 2026-11-22T10:07:58Z.
+
 ## 3a. Enkripsi dan pengelolaan kunci age
 
 - age 1.1.1 di VM (03-backup.txt). Enkripsi ke penerima publik di deploy/backup/age-recipient.txt (di repo; berisi kunci publik saja, pemeriksaan di backup.sh menolak berkas yang memuat AGE-SECRET-KEY).
@@ -95,6 +97,8 @@ Durasi 2 detik berasal dari data uji kecil (61 KB) dan **bukan RTO**.
 - `Persistent=yes` menjalankan backup yang terlewat saat VM menyala kembali; bila VM mati melewati 02:00, selang dapat lebih dari 24 jam sebesar lama mati. Pemicu itu belum diuji.
 - Hitungan ini hanya berlaku bila kegagalan tidak memusnahkan VM beserta isinya.
 
+> **Catatan 2026-11-25** (`bukti/11-timer-backup-gagal.txt`): RPO di atas adalah turunan dari jadwal dengan anggapan tiap run berhasil. Anggapan itu tidak terpenuhi: servis gagal pada 23 dan 25 Nov. Pada 2026-11-25T08:54:11Z umur cadangan terbaru 70 jam 46 menit 13 detik, sehingga RPO 24 jam tidak terpenuhi.
+
 **RPO (kehilangan VM atau laptop).** Tidak dapat diturunkan: offsite.ps1 dijalankan manual dan tidak ada jadwal. Saat ini salinan offsite terakhir adalah 22 Nov 10:07:58Z; selisih sampai kejadian tidak dibatasi oleh apa pun di sistem.
 
 **RTO.** Tidak dapat diturunkan sekarang. Yang terukur hanya komponen data: 2 detik untuk memulihkan 61 KB ke container sementara. Tidak terukur: waktu deteksi dan keputusan, mengambil berkas dari offsite, memulihkan ke produksi (langkah 6 sampai 9), rebuild image atau VM, dan verifikasi. Nilai target ditetapkan di Tugas 10 dari ukuran terukur, setelah uji pemulihan produksi dan data lebih besar.
@@ -113,6 +117,8 @@ Durasi 2 detik berasal dari data uji kecil (61 KB) dan **bukan RTO**.
 | 8 | Uji hanya dengan data 61 KB; waktu pada data besar tidak diketahui. |
 | 9 | Salinan offsite tidak dipangkas otomatis dan dibersihkan manual; retensi 14 hari hanya di VM. Salinan berisi data kelas Rahasia (sintetis dan kecil) dan bisa tertinggal lebih lama dari 14 hari. |
 
+> **Catatan 2026-11-25** atas butir 5: jadwal timer kini terbukti gagal menghasilkan cadangan (`bukti/11-timer-backup-gagal.txt`); rotasi 14 hari dan pemulihan produksi tetap belum teruji.
+
 ## 9. Tabel bukti per klaim
 
 | Klaim | Bukti | Kekuatan |
@@ -127,3 +133,5 @@ Durasi 2 detik berasal dari data uji kecil (61 KB) dan **bukan RTO**.
 | Rotasi retensi 14 hari | - | **Belum terbukti** |
 | Pemulihan ke produksi | - | **Belum terbukti** |
 | RTO | - | **Belum terukur** |
+
+> **Catatan 2026-11-25** atas baris "Cadangan dibuat oleh timer": dua percobaan sesudah 22 Nov gagal (`bukti/11-timer-backup-gagal.txt`).

@@ -31,7 +31,7 @@ Layanan: `db`, `app`, `nginx` (project `kyrion-vm`); Alloy, Loki, Grafana (proje
 - **R-12:** salinan "offsite" dan kunci privat age ada di laptop yang sama dengan host VM. Kehilangan laptop dapat menghilangkan data, cadangan, dan kunci sekaligus. Tidak ada salinan kunci.
 - **R-12:** pulih produksi (`backup-restore.md` 5 langkah 6-9) **belum teruji**; uji pulih memakai `--no-owner --no-privileges`, sehingga pemulihan peran juga belum terbukti.
 - **R-12:** tidak dicadangkan: `/srv/kyrion/env`, rahasia selain kunci induk HMAC, TLS, konfigurasi compose di VM, image Docker, log, kunci age.
-- **R-12:** pemicu timer dan rotasi 14 hari belum teruji. Perintah stop dan start `kyrion-vm` untuk pemulihan tidak ada di dokumen.
+- **R-12:** timer memicu tetapi servis gagal (`bukti/11-timer-backup-gagal.txt`); rotasi 14 hari belum teruji. Perintah stop dan start `kyrion-vm` untuk pemulihan tidak ada di dokumen.
 - **R-15:** deteksi bergantung pada Alloy, Loki, dan Grafana; tidak ada notifikasi eksternal.
 
 ## 4. Aktivasi

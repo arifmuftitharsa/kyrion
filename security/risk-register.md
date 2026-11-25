@@ -105,3 +105,12 @@ Induk: R-08 (catatan T-24 sebagai induk tambahan sudah tercantum di bagian sebel
 | T-22 | Log stdout aplikasi 6 baris, 0 baris berpola Error, Prisma, atau stack trace. | bukti-sebelum-tahap-2.txt | Jalur galat belum dipicu; T-22 tetap berbasis pembacaan kode. |
 | T-24 / R-08 | Trivy 0.69.3 atas kyrion-web:hardened (ID sha256:4dfad4f15693beb0e41afa34078752790aa0fdfecebe333e433386355fbaabb7): OS Alpine 3.24.3 tanpa baris Total; node-pkg Total 1 HIGH: effect 3.20.0, CVE-2026-121707, perbaikan di 3.22.1. Rantai: web, prisma@7.10.1, @prisma/config@7.10.1, effect. | image-scan-v0.3-before.txt, sbom-v0.3.cdx.json | "OS 0 HIGH/CRITICAL" disimpulkan dari tidak adanya baris Total, belum dikonfirmasi dari tabel ringkasan. |
 | T-27 / R-11 | gitleaks 8.30.1 atas 176 commit: 1 temuan private-key di apps/web/lib/crypto/penandatangan.test.ts baris 52-105 (commit f186ed16cd4d8d5bb0bb67b7c008c3982d2f4638), dinilai positif palsu: kunci uji dibangkitkan saat runtime dan satu-satunya literal PEM adalah string palsu. | gitleaks-before.json | Hanya baris 46-110 yang dibaca; gitleaks hanya mengenali pola yang dikenalnya. Tindak lanjut tahap 3: .gitleaksignore berbasis fingerprint dengan alasan di secrets.md. |
+
+## Catatan sec-0.3 (2026-11-25)
+
+Teks dan skor di bagian sebelumnya tidak diubah.
+
+1. **R-09 / T-23:** register menyebut D-3 sebagai deteksi percobaan SSH, sedangkan D-3 yang dibuat mendeteksi pemindaian port (security/detection/D-3-pemindaian-port.yml). Deteksi percobaan SSH tidak ada.
+2. **R-12 / T-20:** servis cadangan gagal dua kali sesudah 22 Nov (23 dan 25 Nov); cadangan terbaru 2026-11-22T10:07:58Z, sehingga RPO 24 jam tidak terpenuhi (security/bukti/11-timer-backup-gagal.txt, security/tabletop-report.md bagian 3).
+3. **R-14:** D-1 tidak mencakup endpoint kirim OTP (security/detection/D-1-tebak-otp.yml, security/alerts-analysis.md).
+4. **R-15:** deteksi tanpa notifikasi eksternal, dan ambang D-1 dan D-2 tanpa baseline (security/alerts-analysis.md; notifikasi: security/detection/README.md).
