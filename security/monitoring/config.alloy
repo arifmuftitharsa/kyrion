@@ -1,0 +1,67 @@
+// Alloy: baca journal host (container app dan nginx lewat driver journald, sshd, pesan UFW di kernel),
+// samarkan email (keputusan Arif: email tidak boleh polos di Loki), kirim ke Loki. Tanpa docker.sock.
+// Waktu: journal dan Loki memakai UTC.
+
+loki.relabel "journal" {
+  forward_to = []
+  rule {
+    source_labels = ["__journal_container_name"]
+    target_label  = "container"
+  }
+  rule {
+    source_labels = ["__journal__systemd_unit"]
+    target_label  = "unit"
+  }
+  rule {
+    source_labels = ["__journal_priority_keyword"]
+    target_label  = "level"
+  }
+}
+
+loki.source.journal "kontainer" {
+  matches       = "CONTAINER_NAME=kyrion-vm-app-1 CONTAINER_NAME=kyrion-vm-nginx-1"
+  max_age       = "12h"
+  relabel_rules = loki.relabel.journal.rules
+  labels        = { job = "container" }
+  forward_to    = [loki.process.redaksi.receiver]
+}
+
+loki.source.journal "sshd" {
+  matches       = "_SYSTEMD_UNIT=ssh.service"
+  max_age       = "12h"
+  relabel_rules = loki.relabel.journal.rules
+  labels        = { job = "sshd" }
+  forward_to    = [loki.process.redaksi.receiver]
+}
+
+loki.source.journal "kernel" {
+  matches       = "_TRANSPORT=kernel"
+  max_age       = "12h"
+  relabel_rules = loki.relabel.journal.rules
+  labels        = { job = "kernel" }
+  forward_to    = [loki.process.ufw.receiver]
+}
+
+// Kernel: hanya baris UFW yang dipertahankan; baris tanpa "[UFW " dibuang.
+loki.process "ufw" {
+  stage.match {
+    selector = "{job=\"kernel\"} != \"[UFW \""
+    action   = "drop"
+  }
+  forward_to = [loki.process.redaksi.receiver]
+}
+
+// Redaksi email pada semua sumber sebelum dikirim.
+loki.process "redaksi" {
+  stage.replace {
+    expression = "([A-Za-z0-9._%+-]+(?:@|%40)[A-Za-z0-9.-]+\\.[A-Za-z]{2,})"
+    replace    = "<email-disamarkan>"
+  }
+  forward_to = [loki.write.lokal.receiver]
+}
+
+loki.write "lokal" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

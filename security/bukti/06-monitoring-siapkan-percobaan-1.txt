@@ -1,0 +1,145 @@
+# Bukti monitoring, fase siapkan (Tugas 6, R-15)
+# Tanggal: 2026-11-23 08:46:10 UTC
+# Hash commit: 111ee53
+# Perintah: .\deploy\uji\06-monitoring.ps1 -Fase siapkan (ssh -t kyrion-staging sudo bash 06-monitoring-vm.sh siapkan)
+# Kode keluar: 0
+
+[2026-11-23T08:38:58Z] Fase siapkan
+-- bukti sinkronisasi waktu (UTC)
+Mon Nov 23 08:38:58 AM UTC 2026
+Timezone=Etc/UTC
+NTP=yes
+NTPSynchronized=yes
+       Server: 91.189.91.157 (ntp.ubuntu.com)
+Poll interval: 8min 32s (min: 32s; max 34min 8s)
+         Leap: normal
+      Version: 4
+      Stratum: 2
+    Reference: 84A36001
+    Precision: 1us (-24)
+Root distance: 21.812ms (max: 5s)
+       Offset: +14.540ms
+        Delay: 530.277ms
+       Jitter: 55.898ms
+ Packet count: 8
+-- journal host (sumber log)
+drwxr-sr-x+ 2 root systemd-journal   40 Nov 23 08:22 /run/log/journal
+drwxr-sr-x+ 3 root systemd-journal 4096 Nov  1 12:29 /var/log/journal
+Archived and active journals take up 188.1M in the file system.
+-- tarik image dan catat digest
+ALLOY: grafana/alloy:v1.19.0 -> grafana/alloy@sha256:c958aef7294bc40c67caadb2bcecc93b95ab7961ff8afae3abee170d77426193
+LOKI: grafana/loki:3.7.10 -> grafana/loki@sha256:b43c257ccfc925d4a50b8717cac61a3b51df8c48d01847936057e5c4075a24a7
+GRAFANA: grafana/grafana:13.3.1 -> grafana/grafana@sha256:0615ec4fbd4072004b7d86b46ded63013a74b7d6eb1119273dd89e8fa25c13cf
+-- Trivy (HIGH,CRITICAL) per image
+## ALLOY_IMAGE grafana/alloy@sha256:c958aef7294bc40c67caadb2bcecc93b95ab7961ff8afae3abee170d77426193
+│                               │                 │          │          │                      │                                                           │ https://avd.aquasec.com/nvd/cve-2026-42306                   │
+├───────────────────────────────┼─────────────────┤          ├──────────┼──────────────────────┼───────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ github.com/go-jose/go-jose/v4 │ CVE-2026-116587 │          │ fixed    │ v4.1.4               │ 4.1.6                                                     │ github.com/go-jose/go-jose: go-jose: Denial of Service via   │
+│                               │                 │          │          │                      │                                                           │ crafted RSA parameters in JWKs                               │
+│                               │                 │          │          │                      │                                                           │ https://avd.aquasec.com/nvd/cve-2026-116587                  │
+├───────────────────────────────┼─────────────────┤          │          ├──────────────────────┼───────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ golang.org/x/net              │ CVE-2026-78661  │          │          │ v0.58.0              │ 0.62.0                                                    │ golang.org/x/net/html: golang.org/x/net/html: Denial of      │
+│                               │                 │          │          │                      │                                                           │ Service via crafted HTML input                               │
+│                               │                 │          │          │                      │                                                           │ https://avd.aquasec.com/nvd/cve-2026-78661                   │
+│                               ├─────────────────┤          │          │                      ├───────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│                               │ CVE-2026-78669  │          │          │                      │ 0.60.0                                                    │ net/http: net/http/internal/http2: golang.org/x/net/http2:   │
+│                               │                 │          │          │                      │                                                           │ net/http: Denial of Service via excessive HTTP/2 SETTINGS    │
+│                               │                 │          │          │                      │                                                           │ frames...                                                    │
+│                               │                 │          │          │                      │                                                           │ https://avd.aquasec.com/nvd/cve-2026-78669                   │
+├───────────────────────────────┼─────────────────┤          │          ├──────────────────────┼───────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ google.golang.org/grpc        │ CVE-2026-84304  │          │          │ v1.83.0              │ 1.83.1                                                    │ google.golang.org/grpc: gRPC-Go: Denial of Service via       │
+│                               │                 │          │          │                      │                                                           │ HTTP/2 DATA Frame Fragmentation                              │
+│                               │                 │          │          │                      │                                                           │ https://avd.aquasec.com/nvd/cve-2026-84304                   │
+│                               ├─────────────────┤          │          │                      ├───────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│                               │ CVE-2026-84445  │          │          │                      │ 1.82.2, 1.83.2, 1.84.0-dev.0.20260825144003-d5a41119e0e3, │ google.golang.org/grpc: gRPC-Go: Denial of Service via       │
+│                               │                 │          │          │                      │ 1.85.0-dev.0.20260825072537-93e31b48545e                  │ malformed RPC requests                                       │
+│                               │                 │          │          │                      │                                                           │ https://avd.aquasec.com/nvd/cve-2026-84445                   │
+├───────────────────────────────┼─────────────────┤          │          ├──────────────────────┼───────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ stdlib                        │ CVE-2026-111943 │          │          │ v1.26.7              │ 1.26.10, 1.27.3                                           │ crypto/x509: golang: crypto/x509: Man-in-the-middle attacks  │
+│                               │                 │          │          │                      │                                                           │ via untrusted intermediate certificates                      │
+│                               │                 │          │          │                      │                                                           │ https://avd.aquasec.com/nvd/cve-2026-111943                  │
+│                               ├─────────────────┤          │          │                      ├───────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│                               │ CVE-2026-78667  │          │          │                      │ 1.26.9, 1.27.2                                            │ net/http: golang: golang: Denial of Service via crafted HTTP │
+│                               │                 │          │          │                      │                                                           │ Range headers                                                │
+│                               │                 │          │          │                      │                                                           │ https://avd.aquasec.com/nvd/cve-2026-78667                   │
+│                               ├─────────────────┤          │          │                      │                                                           ├──────────────────────────────────────────────────────────────┤
+│                               │ CVE-2026-78669  │          │          │                      │                                                           │ net/http: net/http/internal/http2: golang.org/x/net/http2:   │
+│                               │                 │          │          │                      │                                                           │ net/http: Denial of Service via excessive HTTP/2 SETTINGS    │
+│                               │                 │          │          │                      │                                                           │ frames...                                                    │
+│                               │                 │          │          │                      │                                                           │ https://avd.aquasec.com/nvd/cve-2026-78669                   │
+│                               ├─────────────────┤          │          │                      │                                                           ├──────────────────────────────────────────────────────────────┤
+│                               │ CVE-2026-97031  │          │          │                      │                                                           │ crypto/tls: golang: crypto/tls: Denial of Service via        │
+│                               │                 │          │          │                      │                                                           │ multiple ECH outer extension references...                   │
+│                               │                 │          │          │                      │                                                           │ https://avd.aquasec.com/nvd/cve-2026-97031                   │
+└───────────────────────────────┴─────────────────┴──────────┴──────────┴──────────────────────┴───────────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────────┘
+## LOKI_IMAGE grafana/loki@sha256:b43c257ccfc925d4a50b8717cac61a3b51df8c48d01847936057e5c4075a24a7
+
+Report Summary
+
+┌──────────────────────────────────────────────────────────────────────────────────┬──────────┬─────────────────┐
+│                                      Target                                      │   Type   │ Vulnerabilities │
+├──────────────────────────────────────────────────────────────────────────────────┼──────────┼─────────────────┤
+│ grafana/loki@sha256:b43c257ccfc925d4a50b8717cac61a3b51df8c48d01847936057e5c4075- │  debian  │        0        │
+│ a24a7 (debian 13.7)                                                              │          │                 │
+├──────────────────────────────────────────────────────────────────────────────────┼──────────┼─────────────────┤
+│ usr/bin/loki                                                                     │ gobinary │        0        │
+└──────────────────────────────────────────────────────────────────────────────────┴──────────┴─────────────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+## GRAFANA_IMAGE grafana/grafana@sha256:0615ec4fbd4072004b7d86b46ded63013a74b7d6eb1119273dd89e8fa25c13cf
+Total: 1 (HIGH: 1, CRITICAL: 0)
+
+┌──────────────────┬────────────────┬──────────┬────────┬───────────────────┬───────────────┬─────────────────────────────────────────────────────────┐
+│     Library      │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                          Title                          │
+├──────────────────┼────────────────┼──────────┼────────┼───────────────────┼───────────────┼─────────────────────────────────────────────────────────┤
+│ golang.org/x/net │ CVE-2026-78661 │ HIGH     │ fixed  │ v0.60.0           │ 0.62.0        │ golang.org/x/net/html: golang.org/x/net/html: Denial of │
+│                  │                │          │        │                   │               │ Service via crafted HTML input                          │
+│                  │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-78661              │
+└──────────────────┴────────────────┴──────────┴────────┴───────────────────┴───────────────┴─────────────────────────────────────────────────────────┘
+
+usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64 (gobinary)
+================================================================================================
+Total: 3 (HIGH: 3, CRITICAL: 0)
+
+┌──────────────────────────┬────────────────┬──────────┬────────┬──────────────────────────────────────┬──────────────────────┬────────────────────────────────────────────────────────────┐
+│         Library          │ Vulnerability  │ Severity │ Status │          Installed Version           │    Fixed Version     │                           Title                            │
+├──────────────────────────┼────────────────┼──────────┼────────┼──────────────────────────────────────┼──────────────────────┼────────────────────────────────────────────────────────────┤
+│ github.com/grafana/tempo │ CVE-2026-21728 │ HIGH     │ fixed  │ v1.5.1-0.20260910130453-bcfe9f230c1d │ 2.8.4, 2.9.2, 2.10.2 │ grafana/tempo: Tempo: Denial of Service via large queries  │
+│                          │                │          │        │                                      │                      │ https://avd.aquasec.com/nvd/cve-2026-21728                 │
+│                          ├────────────────┤          │        │                                      ├──────────────────────┼────────────────────────────────────────────────────────────┤
+│                          │ CVE-2026-28377 │          │        │                                      │ 2.10.3               │ Grafana Tempo: Grafana Tempo: Information disclosure of S3 │
+│                          │                │          │        │                                      │                      │ encryption key via status...                               │
+│                          │                │          │        │                                      │                      │ https://avd.aquasec.com/nvd/cve-2026-28377                 │
+├──────────────────────────┼────────────────┤          │        ├──────────────────────────────────────┼──────────────────────┼────────────────────────────────────────────────────────────┤
+│ golang.org/x/net         │ CVE-2026-78661 │          │        │ v0.61.0                              │ 0.62.0               │ golang.org/x/net/html: golang.org/x/net/html: Denial of    │
+│                          │                │          │        │                                      │                      │ Service via crafted HTML input                             │
+│                          │                │          │        │                                      │                      │ https://avd.aquasec.com/nvd/cve-2026-78661                 │
+└──────────────────────────┴────────────────┴──────────┴────────┴──────────────────────────────────────┴──────────────────────┴────────────────────────────────────────────────────────────┘
+
+usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64 (gobinary)
+==================================================================================================
+Total: 1 (HIGH: 1, CRITICAL: 0)
+
+┌──────────────────┬────────────────┬──────────┬────────┬───────────────────┬───────────────┬─────────────────────────────────────────────────────────┐
+│     Library      │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                          Title                          │
+├──────────────────┼────────────────┼──────────┼────────┼───────────────────┼───────────────┼─────────────────────────────────────────────────────────┤
+│ golang.org/x/net │ CVE-2026-78661 │ HIGH     │ fixed  │ v0.61.0           │ 0.62.0        │ golang.org/x/net/html: golang.org/x/net/html: Denial of │
+│                  │                │          │        │                   │               │ Service via crafted HTML input                          │
+│                  │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-78661              │
+└──────────────────┴────────────────┴──────────┴────────┴───────────────────┴───────────────┴─────────────────────────────────────────────────────────┘
+-- validasi konfigurasi
+alloy fmt: OK
+failed parsing config: open /l.yaml: permission denied. Use `-config.expand-env=true` flag if you want to expand environment variables in your config file
+-- rahasia admin Grafana (nilai tidak dicetak)
+dibuat
+-r-------- 1 472 472 49 Nov 23 08:45 /srv/kyrion/secrets/grafana_admin_password
+-- sumber daya sesudah penarikan image
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda2        40G   29G  8.9G  77% /
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          13        3         12.27GB   10.28GB (83%)
+Containers      3         3         61.44kB   0B (0%)
+Local Volumes   2         2         66.09MB   0B (0%)
+Build Cache     52        0         9.808GB   1.404GB

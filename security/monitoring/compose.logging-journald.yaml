@@ -1,0 +1,18 @@
+# Overlay untuk compose.vm.yaml: kirim stdout app dan nginx ke journald agar Alloy dapat membaca log container
+# tanpa docker.sock dan tanpa memasang /var/lib/docker. Nama container tersedia sebagai field CONTAINER_NAME.
+# Dipakai bersama compose.vm.yaml (tidak mengubahnya):
+#   sudo docker compose -p kyrion-vm --env-file /srv/kyrion/env/kyrion.env -f compose.vm.yaml \
+#     -f security/monitoring/compose.logging-journald.yaml up -d --no-deps app nginx
+# --no-deps wajib: db berjalan dari compose.vm.yaml lama di ~/kyrion-vm; jangan membuatnya ulang.
+# Efek: container app dan nginx dibuat ulang. `docker logs` tetap dapat dipakai (driver journald mendukung membaca).
+services:
+  app:
+    logging:
+      driver: journald
+      options:
+        tag: kyrion-app
+  nginx:
+    logging:
+      driver: journald
+      options:
+        tag: kyrion-nginx
