@@ -74,6 +74,8 @@ Rotasi di atas adalah rencana, **belum diuji**.
 
 Batas: bersih hanya terhadap aturan bawaan 8.30.1; fingerprint berbasis commit sehingga berubah bila riwayat ditulis ulang; .gitleaksignore belum di-commit saat scan akhir (dibaca dari folder kerja) dan kini sudah di-commit.
 
+- Pengulangan 2026-11-26 sekitar 14:40 WIB pada HEAD e986258, dijalankan Arif dari root repository: `gitleaks git --redact --report-format json --report-path <folder sementara>`. Keluaran: "223 commits scanned", "no leaks found", exit 0; laporan JSON berisi `[]`. `.gitleaksignore` tidak diubah sejak 2026-11-22. Versi gitleaks tidak tampil di keluaran ini. [security/gitleaks.json](gitleaks.json) berisi hasil 2026-11-22 (tidak diganti); laporan 2026-11-26 ditulis di folder sementara dan tidak disimpan di repository.
+
 ## 5. Residual yang jujur
 
 | # | Residual | Status menurut bukti |

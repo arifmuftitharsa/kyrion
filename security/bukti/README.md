@@ -50,6 +50,7 @@ Disusun 2026-11-25. Jalur relatif terhadap `security/`. Isi tabel hanya dari ber
 | `server-action-guard.txt` | tidak tercatat di berkas | sec-0.2 (dari `access-tests.md`) | pencarian statis; perintah tidak tercatat di berkas (dari `access-tests.md`) |
 | `akses-v0.3-anonim.txt`, `-sivitas`, `-admin`, `-503`, `-pemilik` | tidak tercatat di berkas (`access-tests-v0.3.md`: waktu run tidak dapat dipastikan) | v0.3 (dari dokumen itu) | `uji-akses-v0.3.ps1` (dari dokumen itu) |
 | `vitest-akses-v0.3.txt` | tidak tercatat di berkas | v0.3 (dari `access-tests-v0.3.md`) | Vitest 5.0.4 (dari dokumen itu); perintah tidak tercatat di berkas |
+| `vitest-penuh-2026-11-26.txt` | 2026-11-26 (keterangan Arif; berkas hanya mencatat mulai 14:39:14) | tidak tercatat di berkas | `npm test` dari `apps/web` (keterangan Arif; di berkas: `vitest run`) |
 | `npm-audit-v0.3.txt`, `grep-injeksi-v0.3.txt` | tidak tercatat di berkas | tidak tercatat di berkas | tidak tercatat di berkas (tidak ada dokumen `.md` perujuk yang ditemukan) |
 
 ## Berkas lain di `security/`

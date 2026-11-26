@@ -1,0 +1,80 @@
+
+> web@0.1.0 test
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.4 [39m[90mC:/Projects/kyrion/apps/web[39m
+
+ [32m✓[39m lib/akses/cakupan-guard.test.ts [2m([22m[2m40 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m lib/api/masalah.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m lib/domain/versi.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts [2m([22m[2m27 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m lib/domain/banding.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts [2m([22m[2m20 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m[32m 65[2mms[22m[39m
+ [32m✓[39m app/api/[[...jalur]]/route.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 45[2mms[22m[39m
+ [32m✓[39m lib/sesi.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m app/api/v1/sessions/route.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m lib/akses/jaga-route.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m app/admin/verifikasi/actions.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 45[2mms[22m[39m
+ [32m✓[39m components/VersionTimeline.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m lib/data/regulations.test.ts [2m([22m[2m32 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m lib/status-boolean.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+ [32m✓[39m lib/auth/izin.test.ts [2m([22m[2m44 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m lib/crypto/tanda-tangan.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m lib/email/mailtrap.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m lib/api/origin.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 45[2mms[22m[39m
+ [32m✓[39m lib/email/konfigurasi.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 49[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts [2m([22m[2m25 tests[22m[2m)[22m[32m 118[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m app/api/v1/sessions/[id]/route.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 51[2mms[22m[39m
+ [32m✓[39m app/api/v1/regulations/route.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 54[2mms[22m[39m
+ [32m✓[39m lib/auth/konfigurasi.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts [2m([22m[2m39 tests[22m[2m)[22m[32m 46[2mms[22m[39m
+ [32m✓[39m app/admin/regulasi/[slug]/versi/[versionId]/berkas/route.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m app/api/v1/regulations/[slug]/versions/[versionId]/approval/route.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 64[2mms[22m[39m
+ [32m✓[39m lib/data/versi-tulis.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m app/api/v1/regulations/[slug]/current-version/route.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 57[2mms[22m[39m
+ [32m✓[39m app/api/v1/regulations/[slug]/route.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 58[2mms[22m[39m
+ [32m✓[39m lib/domain/versi-admin.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m lib/data/audit.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m lib/domain/akun-kampus.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m lib/domain/berkas-pdf.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m lib/email/konsol.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m lib/api/bocor.test.ts [2m([22m[2m35 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m lib/api/sesi.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m lib/crypto/penandatangan.test.ts [2m([22m[2m10 tests[22m[2m | [22m[33m1 skipped[39m[2m)[22m[32m 284[2mms[22m[39m
+ [32m✓[39m lib/domain/tanggal.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m lib/masuk/pesan.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m lib/auth/otp.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts [2m([22m[2m21 tests[22m[2m)[22m[33m 332[2mms[22m[39m
+ [32m✓[39m lib/data/verifikasi-berkas.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m lib/email/memori.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m lib/domain/kategori.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m lib/data/versions.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m app/admin/aksi-admin.test.ts [2m([22m[2m76 tests[22m[2m)[22m[32m 60[2mms[22m[39m
+ [32m✓[39m lib/data/users.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m lib/akses/keputusan.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m lib/menu.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m lib/domain/perubahan.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m lib/auth/jeda.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m lib/domain/slug.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m lib/data/sesi.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m lib/domain/regulasi.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m lib/format.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m app/akun/sesi/actions.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m proxy.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m lib/data/penandatangan-env.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m64 passed[39m[22m[90m (64)[39m
+[2m      Tests [22m [1m[32m893 passed[39m[22m[2m | [22m[33m3 skipped[39m[90m (896)[39m
+[2m   Start at [22m 14:39:14
+[2m   Duration [22m 1.30s[2m (import 57%, transform 27%, tests 13%, worker 3%)[22m
+
+[2m    Isolate [22m [33m64 workers spawned[39m[2m · ~275ms startup each (spawn + environment, per file)[22m
+[2m            [22m [2mat least ~293ms faster with [22m[33misolate: false[39m[2m — reuses workers across files instead of one per file[22m
+
