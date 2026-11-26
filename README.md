@@ -624,9 +624,17 @@ npx vitest run lib/crypto lib/data app/admin/verifikasi
 npm test
 ```
 
-Hasil, hanya dari berkas bukti yang dijalankan Arif pada 15 November 2026:
+Perintah `npx vitest run lib/crypto lib/data app/admin/verifikasi` di atas ikut menjalankan uji akses PAW (`regulations` dan `users`), sehingga angkanya berbeda dari berkas bukti.
 
-- [krip-0.3-vitest.txt](docs/kriptografi/bukti/krip-0.3-vitest.txt): 19 berkas, 270 lulus, 3 dilewati (273).
+Perintah yang menghasilkan `krip-0.3-vitest.txt`:
+
+```bash
+npx vitest run lib/crypto app/admin/verifikasi lib/data/audit.test.ts lib/data/penandatangan-env.test.ts lib/data/pengesahan.test.ts lib/data/sesi.test.ts lib/data/versi-tulis.test.ts lib/data/versions.test.ts lib/data/verifikasi-berkas.test.ts --reporter=verbose
+```
+
+Hasil, hanya dari berkas bukti yang dijalankan Arif (`krip-0.3-vitest.txt` pada 26 November 2026; `krip-0.3-pemeriksaan.txt` pada 15 November 2026):
+
+- [krip-0.3-vitest.txt](docs/kriptografi/bukti/krip-0.3-vitest.txt): 20 berkas, 271 lulus, 3 dilewati (274).
 - [krip-0.3-pemeriksaan.txt](docs/kriptografi/bukti/krip-0.3-pemeriksaan.txt): `tsc` dan lint keluar 0; `npm test` 56 berkas, 679 lulus, 3 dilewati (682).
 
 Tiga uji yang dilewati: dua di `kunci.test.ts` dan satu di `penandatangan.test.ts`. Ketiganya uji izin POSIX yang tidak berjalan di Windows.

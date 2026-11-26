@@ -1,19 +1,25 @@
 # Tabel skenario uji krip-0.3 (F-32 tanda tangan pengesahan, F-33 verifikasi berkas)
 
 Hasil uji otomatis di bawah diambil dari [bukti/krip-0.3-vitest.txt](bukti/krip-0.3-vitest.txt)
-saja (Vitest v5.0.4, mulai 17:58:20). Bukti manual hanya merujuk berkas di `docs/kriptografi/bukti/`.
+saja (Vitest v5.0.4, dijalankan Arif pada 26 November 2026, mulai 13:04:31). Bukti manual hanya merujuk berkas di `docs/kriptografi/bukti/`.
 Tidak ada hasil yang ditambahkan dari sumber lain.
+
+Perintah yang menghasilkannya, dari `apps/web` (baris perintah tidak tercatat di dalam berkas bukti):
+
+```bash
+npx vitest run lib/crypto app/admin/verifikasi lib/data/audit.test.ts lib/data/penandatangan-env.test.ts lib/data/pengesahan.test.ts lib/data/sesi.test.ts lib/data/versi-tulis.test.ts lib/data/versions.test.ts lib/data/verifikasi-berkas.test.ts --reporter=verbose
+```
 
 Ringkasan dari `krip-0.3-vitest.txt` apa adanya:
 
 ```
- Test Files  19 passed (19)
-      Tests  270 passed | 3 skipped (273)
+ Test Files  20 passed (20)
+      Tests  271 passed | 3 skipped (274)
 ```
 
-Tabel memuat 159 dari 273 uji: semua uji dari `verifikasi-pengesahan.test.ts`, `actions.test.ts`
+Tabel memuat 160 dari 274 uji: semua uji dari `verifikasi-pengesahan.test.ts`, `actions.test.ts`
 (verifikasi), `tanda-tangan.test.ts`, `payload-pengesahan.test.ts`, `keyring.test.ts`,
-`penandatangan.test.ts`, `penandatangan-env.test.ts`, `operasi-kunci.test.ts`, `versions.test.ts`,
+`penandatangan.test.ts`, `penandatangan-env.test.ts`, `operasi-kunci.test.ts`, `versions.test.ts`, `verifikasi-berkas.test.ts`,
 blok `isiTransaksiSahkan` di `pengesahan.test.ts`, ditambah tiga uji F-31 dan F-30 yang namanya
 cocok dengan skenario A-04 dan A-05 (`fingerprint.test.ts` satu uji, `verifikasi.test.ts` dua uji).
 Sisa 114 uji tidak dimasukkan karena bukan bagian F-32 dan F-33: `kanonis` 20, `fingerprint` 10,
@@ -35,7 +41,8 @@ di `penandatangan.test.ts` (baris T-07).
   perilaku skenario itu. Uji yang sama bisa muncul di dua skenario (ditulis di kolom Nama uji).
 - **Tingkat bukti.** Semua uji otomatis di sini berjalan pada fungsi murni, tiruan transaksi Prisma
   (`isiTransaksiSahkan` memakai `buatTx` dengan `vi.fn`), atau Server Action dengan layanan tiruan
-  (`actions.test.ts` meniru `wajibAdmin` dan `verifikasiBerkasDenganDb`). Tidak ada uji otomatis
+  (`actions.test.ts` meniru `wajibAdmin` dan `verifikasiBerkasDenganDb`), serta fungsi layanan data
+  dengan klien Prisma tiruan (`verifikasi-berkas.test.ts`, B-03). Tidak ada uji otomatis
   yang menjalankan basis data nyata, `storage/`, atau browser. Bukti manual hanya yang tercantum di
   bagian 2.
 - Satu uji ber-awalan "A-06" di nama ujinya ("A-06 hanya DRAF/DIBATALKAN yang cocok...") dipetakan
@@ -57,7 +64,7 @@ di `penandatangan.test.ts` (baris T-07).
 | A-10 | Berkas kunci privat tidak ada atau kunci tidak siap saat sahkan: pengesahan ditolak, tidak ada perubahan | negatif | ya | Awalan: `lib/data/versions.test.ts > sahkanVersiDenganAudit`<br>`penandatangan tidak siap: ditolak sebelum transaksi dibuka`<br>Awalan: `lib/data/pengesahan.test.ts > isiTransaksiSahkan`<br>`kunci DB tidak ada atau bukan AKTIF ditolak tanpa updateMany dan audit`<br>`kegagalan menandatangani (kunci privat rusak) tanpa updateMany dan audit`<br>Awalan: `lib/data/penandatangan-env.test.ts > siapkanPenandatanganDariEnv`<br>`PenandatanganTidakValid dibungkus PenandatanganBelumSiapError dengan pesan tetap tanpa jalur berkas`<br>`KeyringTidakValid dibungkus PenandatanganBelumSiapError dengan pesan tetap tanpa jalur berkas`<br>Awalan: `lib/crypto/penandatangan.test.ts`<br>`muatKunciPrivat > menolak lokasi belum diatur dan berkas tidak ada`<br>`siapkanPenandatangan > galat bila kunci tidak ada di keyring`<br>`siapkanPenandatangan > galat bila kunci ada tetapi dirotasi atau dicabut`<br>`siapkanPenandatangan > galat bila keyring tidak ada atau lokasinya belum diatur`<br>`siapkanPenandatangan > PEM bukan Ed25519 atau rusak = galat` | - | lulus (10 dari 10) |
 | B-01 | Unggah PDF identik versi berlaku: "Asli dan sah" | positif | tidak | `lib/crypto/verifikasi-pengesahan.test.ts > positif > asli-sah: versi berlaku hari ini` | [krip-0.3-k6-asli-dan-tanpa-ttd.png](bukti/krip-0.3-k6-asli-dan-tanpa-ttd.png): UJI-D2 "Asli dan sah", Pedoman Akademik, 2026-10-06 | lulus |
 | B-02 | Unggah PDF versi yang Digantikan: "Asli tetapi digantikan" | positif | tidak | `lib/crypto/verifikasi-pengesahan.test.ts > positif > asli-digantikan: ada versi lebih baru yang sudah berlaku` (uji yang sama dengan A-03) | - | lulus |
-| B-03 | PDF diubah satu byte: "Tidak cocok" | negatif | ya | - (tidak ada uji otomatis yang namanya menyebut satu byte pada pemeriksaan F-33) | [krip-0.3-k6-satu-byte.png](bukti/krip-0.3-k6-satu-byte.png): "Tidak cocok: berkas tidak dikenal" | tidak ada uji otomatis |
+| B-03 | PDF diubah satu byte: "Tidak cocok" | negatif | ya | `lib/data/verifikasi-berkas.test.ts > verifikasiBerkasDenganDb > B-03 PDF diubah satu byte: asli lolos, salinan menjadi tidak cocok (berkas tidak dikenal)` | [krip-0.3-k6-satu-byte.png](bukti/krip-0.3-k6-satu-byte.png): "Tidak cocok: berkas tidak dikenal" | lulus (1 dari 1) |
 | B-04 | PDF identik versi Draf atau Dibatalkan: "Tidak cocok" (sama dengan berkas tidak dikenal) | negatif | tidak | `lib/crypto/verifikasi-pengesahan.test.ts > negatif: berkas dan status > A-06 hanya DRAF/DIBATALKAN yang cocok: hasil SAMA dengan tidak dikenal` (bernama "A-06" di berkas uji, tetapi isinya sama dengan B-04) | - | lulus |
 | B-05 | Rotasi kunci: versi lama tetap lolos, pengesahan baru memakai kunci baru | positif | tidak | `lib/crypto/verifikasi-pengesahan.test.ts > positif > B-05 kunci DIROTASI tetap sah untuk approvedAt <= dirotasiPada`<br>`lib/crypto/keyring.test.ts > kunciBolehMemverifikasi > dirotasi: tepat di dirotasiPada boleh, 1 ms sesudahnya tidak`<br>`lib/crypto/operasi-kunci.test.ts > putarKunciOperator > lama ke DIROTASI dulu, baru baru AKTIF; keyring konsisten` | Pendukung status kunci: M-02 ([krip-0.3-k4-keyring.json](bukti/krip-0.3-k4-keyring.json)), bukan bukti verifikasinya | lulus (3 dari 3) hanya untuk: versi yang disahkan sampai `dirotasiPada` tetap lolos, dan status `DIROTASI` tercatat di keyring dan tabel (tabel tiruan). "Pengesahan baru memakai kunci baru": belum diuji (bagian 4) |
 | B-06 | Kunci dicabut: "Tidak cocok: kunci dicabut" | negatif | ya | `lib/crypto/verifikasi-pengesahan.test.ts > negatif: kunci > B-06 kunci dicabut`<br>`lib/crypto/keyring.test.ts > kunciBolehMemverifikasi > dicabut selalu ditolak` | Pendukung status kunci: M-02 ([krip-0.3-k4-keyring.json](bukti/krip-0.3-k4-keyring.json)), bukan bukti verifikasinya | lulus (2 dari 2) |
@@ -75,6 +82,13 @@ Dipetakan ke skenario:
 |---|---|---|
 | B-01 | [krip-0.3-k6-asli-dan-tanpa-ttd.png](bukti/krip-0.3-k6-asli-dan-tanpa-ttd.png) | Halaman `/admin/verifikasi`: "Hasil: Asli dan sah", regulasi Pedoman Akademik, versi UJI-D2, tanggal berlaku 2026-10-06, status Sah |
 | B-03 | [krip-0.3-k6-satu-byte.png](bukti/krip-0.3-k6-satu-byte.png) | Halaman `/admin/verifikasi`: "Hasil: Tidak cocok", "Berkas tidak dikenal: tidak cocok dengan versi regulasi yang pernah disahkan." |
+
+Langkah mengulang B-03 secara manual (yang ditulis adalah hasil yang diharapkan, bukan catatan hasil):
+
+1. Masuk sebagai Admin dan buka `/admin/verifikasi`.
+2. Unggah PDF asli versi yang berlaku, bertanda tangan, dan kuncinya belum dicabut; catat hasilnya. Diharapkan: "Asli dan sah".
+3. Buat salinan PDF itu, lalu dengan penyunting heksadesimal ubah tepat satu byte sesudah awalan `%PDF-` tanpa mengubah ukuran berkas.
+4. Unggah salinan; catat hasilnya. Diharapkan: "Tidak cocok" dengan "Berkas tidak dikenal: tidak cocok dengan versi regulasi yang pernah disahkan."
 
 Uji manual tambahan (tidak dipetakan ke A atau B, kecuali pendukung yang disebut):
 
@@ -116,8 +130,9 @@ atau B-01 sampai B-09 yang kosong: **belum ada bukti: tidak ada.**
 Batasan yang perlu dibaca bersama bagian 1 (bukan skenario kosong, tetapi tingkat buktinya lebih
 rendah dari bunyi definisinya):
 
-- B-03 hanya punya bukti manual; tidak ada uji otomatis yang namanya menyebut satu byte pada
-  pemeriksaan F-33.
+- B-03: uji otomatisnya berjalan pada `verifikasiBerkasDenganDb` dengan klien Prisma, keyring, dan
+  kunci induk tiruan; kueri basis data nyata tidak teruji. Uji itu dijalankan Arif pada 26 November
+  2026 dan tercatat di `krip-0.3-vitest.txt`.
 - A-04 dipetakan ke uji pada fungsi murni di memori (`verifyFingerprint`, `periksaIntegritasVersi`),
   bukan ke berkas yang diubah di `storage/`. Uji `verifikasi.test.ts` memakai PDF pengganti, bukan
   perubahan satu byte.

@@ -9,7 +9,8 @@ kode atau dokumen tanpa uji atau pernyataan tertulis yang mendukungnya ditandai
 **Inferensi, belum diuji**.
 
 Tingkat bukti: uji otomatis yang dirujuk berjalan pada fungsi murni, tiruan transaksi Prisma, atau
-Server Action dengan layanan tiruan. Tidak ada uji otomatis yang menjalankan basis data nyata,
+Server Action dengan layanan tiruan, serta fungsi layanan data dengan klien Prisma tiruan
+(`verifikasi-berkas.test.ts`, B-03). Tidak ada uji otomatis yang menjalankan basis data nyata,
 `storage/`, atau browser (tabel skenario, "Cara membaca").
 
 ## 1. Masalah yang diselesaikan
@@ -49,7 +50,7 @@ T-15).
 
 | Ancaman | Bagaimana terjadi | Kontrol | ID uji |
 |---|---|---|---|
-| Isi PDF diubah | Berkas di penyimpanan atau salinan yang diperiksa diganti | Sidik SHA-256 dan tag HMAC | A-04 (fungsi murni); B-03 (hanya bukti manual) |
+| Isi PDF diubah | Berkas di penyimpanan atau salinan yang diperiksa diganti | Sidik SHA-256 dan tag HMAC | A-04 (fungsi murni); B-03 (uji otomatis di layanan data dengan klien Prisma tiruan, dan bukti manual) |
 | Metadata versi diubah | Penulisan langsung ke basis data | Tag HMAC dan payload tertanda | A-05, T-11, T-13 |
 | `DRAF` diubah menjadi `SAH` | Penulisan langsung ke basis data tanpa tanda tangan | Hasil asli mensyaratkan tanda tangan | A-06 |
 | Tanda tangan dipindahkan | `signature` dan `signing_key_id` disalin dari versi lain | Identitas dan field versi masuk payload (K-7) | A-07 |
