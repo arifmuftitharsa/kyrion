@@ -344,7 +344,7 @@ Aturan lain:
   - Fungsi murni: `crypto/keyring.test.ts` > `kunciBolehMemverifikasi` > `dirotasi: tepat di dirotasiPada boleh, 1 ms sesudahnya tidak` (:147), `dicabut selalu ditolak` (:155), `1 ms sebelum dibuatPada ditolak (aktif dan dirotasi); tepat di dibuatPada boleh` (:161). B-05, B-06, T-08.
   - Fungsi murni: `crypto/verifikasi-pengesahan.test.ts` > `positif` > `B-05 kunci DIROTASI tetap sah untuk approvedAt <= dirotasiPada` (:142); > `negatif: kunci` > `B-06 kunci dicabut` (:213), `approvedAt setelah kunci dirotasi` (:219), `approvedAt sebelum kunci dibuat` (:228). B-05, B-06, T-12.
   - Tanda tangan baru ditolak: `crypto/penandatangan.test.ts` > `siapkanPenandatangan` > `galat bila kunci ada tetapi dirotasi atau dicabut` (:83), berkas sementara; `data/pengesahan.test.ts` > `isiTransaksiSahkan` > `kunci DB tidak ada atau bukan AKTIF ditolak tanpa updateMany dan audit` (:113), transaksi tiruan. A-10.
-  - Satu AKTIF di keyring: `crypto/keyring.test.ts` > `parseKeyring` > `menolak: %s`, kasus `dua aktif` (:57); > `siklus kunci` > `menolak: cabut dua kali, cabut id tak dikenal, putar tanpa aktif, tambah saat sudah ada aktif` (:106). T-08.
+  - Satu AKTIF di keyring: `crypto/keyring.test.ts` > `parseKeyring` > `menolak: %s`, kasus `dua aktif` (:59); > `siklus kunci` > `menolak: cabut dua kali, cabut id tak dikenal, putar tanpa aktif, tambah saat sudah ada aktif` (:106). T-08.
   - Indeks unik parsial di basis data: tidak ada uji otomatis; hanya probe manual P07 (M-01).
   - Tidak ada uji ujung ke ujung dengan basis data nyata. "Pengesahan baru memakai kunci baru" belum diuji (tabel skenario bagian 4).
 
