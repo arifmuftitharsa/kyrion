@@ -397,3 +397,19 @@ Aturan lain:
 - Satu PDF yang sama bisa melekat pada beberapa versi; pemeriksa memberi satu hasil per versi kandidat tanpa agregasi.
 - Versi Sah dengan tanggal berlaku di masa depan tetap dilabeli "asli dan sah".
 - Tidak ada pemulihan otomatis setelah kegagalan sesudah keyring ditulis.
+
+### 10.7 Pemetaan ke rubrik R3 (Tugas 3)
+
+Bagian A = F-32 (tanda tangan pengesahan). Bagian B = F-33 (verifikasi berkas) dan pengelolaan kunci. Nomor skenario (A-xx, B-xx) ada di tabel-skenario-krip-0.3.md.
+
+| Kriteria | Dijawab di |
+|---|---|
+| A1 Integrasi kunci publik ke alur utama | `docs/kriptografi/alur-tanda-tangan.md` bagian 1 dan 1.2 (pengesahan versi F-32, isi payload); bagian 10.1 dan 10.4 dokumen ini |
+| A2 Peran kunci dan alur data | `docs/kriptografi/peran-kunci.md` (tabel peran kunci, pemisahan kunci per tujuan); `docs/kriptografi/alur-tanda-tangan.md` (alur data pengesahan dan verifikasi) |
+| A3 Skenario uji alur utama | `docs/kriptografi/tabel-skenario-krip-0.3.md` bagian 1, skenario A-01 sampai A-10; `docs/kriptografi/bukti/krip-0.3-vitest.txt` |
+| B1 Rancangan fitur berbasis kebutuhan | `docs/kriptografi/rancangan-fitur-f33.md` bagian 1 sampai 4 (masalah, pengguna, ancaman, cara kerja) |
+| B2 Keputusan desain dan alternatif | Bagian 10.1 sampai 10.4 dokumen ini (alternatif, keputusan, pemicu peninjauan ulang, bukti); keterbatasan di 10.6 |
+| B3 Implementasi fitur dan pengelolaan kunci | `docs/kriptografi/rancangan-fitur-f33.md` bagian 5 dan 6 (akar kepercayaan, kompromi kunci); `docs/kriptografi/alur-tanda-tangan.md` bagian 2 (F-33); operasi operator di bagian 10.4 dokumen ini |
+| B4 Uji fitur | `docs/kriptografi/tabel-skenario-krip-0.3.md` bagian 1 (B-01 sampai B-09), bagian 2 (uji manual), bagian 4 (batas tingkat bukti); berkas di `docs/kriptografi/bukti/` |
+
+Batas bukti: tidak ada uji ujung ke ujung 'cabut lalu verifikasi' dan 'pengesahan baru memakai kunci baru' (tabel-skenario-krip-0.3.md bagian 4; rancangan-fitur-f33.md bagian 6.4).
