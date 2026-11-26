@@ -1,0 +1,6 @@
+# Perintah uji rate limit dengan OTP sengaja salah 000000, email sintetis, IP rentang dokumentasi RFC 5737; bukan kredensial.
+47075f4aff3394a5a4a0207b27f9fb5044063520:security/bukti/bukti-sebelum-tahap-2.txt:curl-auth-user:95
+# Perintah uji rate limit dengan OTP sengaja salah 000000, email sintetis, IP rentang dokumentasi RFC 5737; bukan kredensial.
+47075f4aff3394a5a4a0207b27f9fb5044063520:security/bukti/bukti-sebelum-tahap-2.txt:curl-auth-user:122
+# Dua blok PEM berisi teks pengganti RAHASIAPEM, bukan kunci.
+f186ed16cd4d8d5bb0bb67b7c008c3982d2f4638:apps/web/lib/crypto/penandatangan.test.ts:private-key:52

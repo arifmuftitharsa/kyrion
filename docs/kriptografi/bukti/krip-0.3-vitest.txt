@@ -1,282 +1,283 @@
-﻿
- RUN  v5.0.4 C:/Projects/kyrion/apps/web
 
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menghasilkan byte persis sesuai acuan eksternal 3ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > diawali label yang diberi awalan panjang 4 byte big-endian 1ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > deterministik untuk data yang sama 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menyamakan 'é' tunggal (NFC) dengan 'e' + aksen terpisah (NFD) 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > membedakan data bila nilai dua field bertukar tempat (urutan field bagian dari format) 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > membedakan data bila batas antarbagian bergeser (awalan panjang) 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak id bukan UUID dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak id UUID huruf besar dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak regulationId bukan UUID dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak tanggal tidak mustahil tapi format salah (tanpa nol) dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak tanggal mustahil (30 Februari) dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak fileSha256 huruf besar dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak fileSha256 63 karakter dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak fileSha256 bukan hex dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak fileSize negatif dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak fileSize pecahan dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak fileSize NaN dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak versionNumber dengan surrogate yatim dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > menolak fileName dengan surrogate yatim dengan RangeError 0ms
- ✓ lib/crypto/kanonis.test.ts > kanonisasiVersi > pesan galat hanya menyebut nama field, bukan nilainya 1ms
- ✓ lib/crypto/fingerprint.test.ts > fingerprint > menghasilkan SHA-256 sesuai vektor uji resmi FIPS 180-2 untuk "abc" 1ms
- ✓ lib/crypto/fingerprint.test.ts > fingerprint > menghasilkan SHA-256 yang benar untuk input kosong 0ms
- ✓ lib/crypto/fingerprint.test.ts > fingerprint > menerima input tepat sebesar MAX_INPUT_BYTES 9ms
- ✓ lib/crypto/fingerprint.test.ts > fingerprint > melempar InputTooLargeError untuk input sebesar MAX_INPUT_BYTES + 1 0ms
- ✓ lib/crypto/fingerprint.test.ts > verifyFingerprint > mengembalikan true untuk data asli dan false bila satu byte diubah 0ms
- ✓ lib/crypto/fingerprint.test.ts > verifyFingerprint > mengembalikan false untuk expectedHex berformat salah: string bukan hex (64 karakter z) 0ms
- ✓ lib/crypto/fingerprint.test.ts > verifyFingerprint > mengembalikan false untuk expectedHex berformat salah: hex 63 karakter 0ms
- ✓ lib/crypto/fingerprint.test.ts > verifyFingerprint > mengembalikan false untuk expectedHex berformat salah: hex 65 karakter 0ms
- ✓ lib/crypto/fingerprint.test.ts > verifyFingerprint > mengembalikan false untuk expectedHex berformat salah: hex huruf besar dari hash yang benar 0ms
- ✓ lib/crypto/fingerprint.test.ts > verifyFingerprint > mengembalikan false untuk expectedHex berformat salah: string kosong 0ms
- ✓ lib/crypto/fingerprint.test.ts > verifyFingerprint > melempar InputTooLargeError (bukan mengembalikan false) untuk data di atas MAX_INPUT_BYTES 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > deterministik 3ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > mengubah id mengubah payload 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > mengubah regulationId mengubah payload 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > mengubah versionNumber mengubah payload 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > mengubah effectiveDate mengubah payload 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > mengubah fileSha256 mengubah payload 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > mengubah fileName mengubah payload 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > mengubah fileSize mengubah payload 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > mengubah approvedById mengubah payload 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > mengubah approvedAt mengubah payload 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > mengubah signingKeyId mengubah payload 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > approvedAt beda 1 ms: berbeda 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > berbeda dari kanonisasiVersi dengan tujuh field sama (pemisah domain) 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > menolak Date tidak valid 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > menolak approvedById bukan UUID, pesan tanpa nilai 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > menerima approvedById UUIDv4 dan UUIDv7 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > menolak signingKeyId bukan 32 hex huruf kecil: abc 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > menolak signingKeyId bukan 32 hex huruf kecil: BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > menolak signingKeyId bukan 32 hex huruf kecil: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > menolak signingKeyId bukan 32 hex huruf kecil: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 0ms
- ✓ lib/crypto/payload-pengesahan.test.ts > bangunPayloadPengesahan > menolak signingKeyId bukan 32 hex huruf kecil: gggggggggggggggggggggggggggggggg 0ms
- ✓ lib/crypto/mac.test.ts > hmacSha256 > sesuai RFC 4231 Test Case 1 2ms
- ✓ lib/crypto/mac.test.ts > hmacSha256 > sesuai RFC 4231 Test Case 2 0ms
- ✓ lib/crypto/mac.test.ts > turunkanKunciMac > sama dengan acuan HKDF-SHA256 hitungan Python (salt kosong) 1ms
- ✓ lib/crypto/mac.test.ts > turunkanKunciMac > menghasilkan kunci berbeda dari kunci induk lain 0ms
- ✓ lib/crypto/mac.test.ts > turunkanKunciMac > menolak kunci induk yang bukan 32 byte 0ms
- ✓ lib/crypto/mac.test.ts > buatTagVersi > sama dengan tag acuan hitungan Python 1ms
- ✓ lib/crypto/mac.test.ts > buatTagVersi > berformat v1$ + 64 hex huruf kecil 0ms
- ✓ lib/crypto/mac.test.ts > buatTagVersi > berubah bila satu field berubah 1ms
- ✓ lib/crypto/mac.test.ts > buatTagVersi > berubah bila kunci induk berbeda 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > meloloskan data, berkas, dan tag asli 2ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila field id diubah 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila field regulationId diubah 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila field versionNumber diubah 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila field effectiveDate diubah 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila field fileSha256 diubah 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila field fileName diubah 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila field fileSize diubah 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila satu bit tag diubah 1ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila kunci valid tetapi berbeda 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak tag dan data asli yang disalin ke baris dengan id lain 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak tag null dengan IntegritasGagal, tanpa crash 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak tag kosong dengan IntegritasGagal, tanpa crash 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak tag tanpa awalan dengan IntegritasGagal, tanpa crash 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak tag awalan versi lain dengan IntegritasGagal, tanpa crash 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak tag hex huruf besar dengan IntegritasGagal, tanpa crash 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak tag terlalu pendek dengan IntegritasGagal, tanpa crash 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak tag terlalu panjang dengan IntegritasGagal, tanpa crash 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak tag bukan hex dengan IntegritasGagal, tanpa crash 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak tag spasi di ujung dengan IntegritasGagal, tanpa crash 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak tag teks acak dengan IntegritasGagal, tanpa crash 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > membungkus galat internal: kunci induk salah panjang 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > membungkus galat internal: field tidak sah (RangeError dari kanonisasi) 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > membungkus galat internal: berkas melebihi batas (InputTooLargeError) 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > pesan galat tetap dan tidak memuat tag, kunci, atau data 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila hanya byte PDF yang diganti (langkah verifyFingerprint) 0ms
- ✓ lib/crypto/verifikasi.test.ts > periksaIntegritasVersi > menolak bila PDF dan fileSha256 diganti bersamaan dengan tag lama 0ms
- ✓ lib/crypto/kunci.test.ts > parseKunciInduk > mengurai 64 karakter hex menjadi 32 byte 4ms
- ✓ lib/crypto/kunci.test.ts > parseKunciInduk > memangkas spasi dan newline di ujung 1ms
- ✓ lib/crypto/kunci.test.ts > parseKunciInduk > menolak teks kosong dengan KunciTidakValid 1ms
- ✓ lib/crypto/kunci.test.ts > parseKunciInduk > menolak teks hanya spasi dengan KunciTidakValid 1ms
- ✓ lib/crypto/kunci.test.ts > parseKunciInduk > menolak teks terlalu pendek (62 karakter) dengan KunciTidakValid 1ms
- ✓ lib/crypto/kunci.test.ts > parseKunciInduk > menolak teks terlalu panjang (66 karakter) dengan KunciTidakValid 1ms
- ✓ lib/crypto/kunci.test.ts > parseKunciInduk > menolak teks bukan hex dengan KunciTidakValid 1ms
- ✓ lib/crypto/kunci.test.ts > parseKunciInduk > menolak teks berawalan 0x dengan KunciTidakValid 1ms
- ✓ lib/crypto/kunci.test.ts > parseKunciInduk > menolak teks spasi di tengah dengan KunciTidakValid 1ms
- ✓ lib/crypto/kunci.test.ts > parseKunciInduk > menolak teks dua baris dengan KunciTidakValid 1ms
- ✓ lib/crypto/kunci.test.ts > parseKunciInduk > pesan galat tidak memuat isi teks 1ms
- ✓ lib/crypto/kunci.test.ts > bacaKunciInduk > menolak lokasi yang belum diatur 2ms
- ✓ lib/crypto/kunci.test.ts > bacaKunciInduk > menolak berkas yang tidak ada 1ms
- ✓ lib/crypto/kunci.test.ts > bacaKunciInduk > menolak berkas berisi kunci pendek atau bukan hex 7ms
- ✓ lib/crypto/kunci.test.ts > bacaKunciInduk > membaca berkas berisi hex yang sah 4ms
- ↓ lib/crypto/kunci.test.ts > bacaKunciInduk > menolak berkas yang bisa dibaca grup atau pengguna lain
- ✓ lib/crypto/kunci.test.ts > buatBerkasKunci > membuat berkas berisi kunci 32 byte yang bisa dibaca kembali 5ms
- ✓ lib/crypto/kunci.test.ts > buatBerkasKunci > menghasilkan kunci berbeda tiap kali dibuat 5ms
- ✓ lib/crypto/kunci.test.ts > buatBerkasKunci > menolak menimpa berkas yang sudah ada dan tidak mengubah isinya 5ms
- ↓ lib/crypto/kunci.test.ts > buatBerkasKunci > membuat berkas dengan mode 0o600
- ✓ app/admin/verifikasi/actions.test.ts > periksaBerkas > B-09 Sivitas: wajibAdmin melempar notFound, layanan tidak dipanggil 18ms
- ✓ app/admin/verifikasi/actions.test.ts > periksaBerkas > B-08 bukan PDF ditolak 1ms
- ✓ app/admin/verifikasi/actions.test.ts > periksaBerkas > B-08 di atas 10 MB ditolak 5ms
- ✓ app/admin/verifikasi/actions.test.ts > periksaBerkas > tanpa berkas dan berkas kosong ditolak 0ms
- ✓ app/admin/verifikasi/actions.test.ts > periksaBerkas > PDF valid: hasil dari layanan; berkas tidak ditulis ke penyimpanan 1ms
- ✓ app/admin/verifikasi/actions.test.ts > periksaBerkas > galat operasional (keyring, kunci induk, DB): galat umum, bukan hasil verifikasi, tanpa detail 1ms
- ✓ lib/crypto/tanda-tangan.test.ts > RFC 8032 TEST 1 > tandatangani menghasilkan tanda tangan RFC 1ms
- ✓ lib/crypto/tanda-tangan.test.ts > RFC 8032 TEST 1 > verifikasi tanda tangan RFC lolos 1ms
- ✓ lib/crypto/tanda-tangan.test.ts > pasangan kunci dan tanda tangan > tanda tangan 64 byte dan lolos verifikasi 0ms
- ✓ lib/crypto/tanda-tangan.test.ts > pasangan kunci dan tanda tangan > pesan diubah 1 byte: false 0ms
- ✓ lib/crypto/tanda-tangan.test.ts > pasangan kunci dan tanda tangan > tanda tangan diubah 1 byte: false 0ms
- ✓ lib/crypto/tanda-tangan.test.ts > pasangan kunci dan tanda tangan > kunci publik lain: false 1ms
- ✓ lib/crypto/tanda-tangan.test.ts > pasangan kunci dan tanda tangan > panjang tanda tangan 63 dan 65 byte: false 0ms
- ✓ lib/crypto/tanda-tangan.test.ts > pasangan kunci dan tanda tangan > masukan sampah: false dan tidak melempar 0ms
- ✓ lib/crypto/tanda-tangan.test.ts > pasangan kunci dan tanda tangan > dua kali tandatangani pesan sama: identik 0ms
- ✓ lib/crypto/tanda-tangan.test.ts > idKunci > 32 hex huruf kecil, deterministik, beda antarkunci 1ms
- ✓ lib/data/versi-tulis.test.ts > isiTransaksiBuat > dengan berkas: create dan audit UNGGAH_BERKAS di tx yang sama 3ms
- ✓ lib/data/versi-tulis.test.ts > isiTransaksiBuat > tanpa berkas: tidak ada audit 1ms
- ✓ lib/data/versi-tulis.test.ts > isiTransaksiBuat > galat audit merambat 2ms
- ✓ lib/data/versi-tulis.test.ts > catatUnggahBerkas > menulis UNGGAH_BERKAS; galat merambat 0ms
- ✓ lib/data/versi-tulis.test.ts > isiTransaksiHapus > count 1: deleteMany bersyarat lalu audit PENGHAPUSAN 0ms
- ✓ lib/data/versi-tulis.test.ts > isiTransaksiHapus > count 0: NotEditable tanpa audit 0ms
- ✓ lib/data/versi-tulis.test.ts > isiTransaksiHapus > galat audit merambat 0ms
- ✓ lib/crypto/data-terlindung.test.ts > dataTerlindungDariBaris > memetakan baris lengkap menjadi data terlindung 2ms
- ✓ lib/crypto/data-terlindung.test.ts > dataTerlindungDariBaris > mengembalikan null bila fileSha256 kosong 0ms
- ✓ lib/crypto/data-terlindung.test.ts > dataTerlindungDariBaris > mengembalikan null bila fileName kosong 0ms
- ✓ lib/crypto/data-terlindung.test.ts > dataTerlindungDariBaris > mengembalikan null bila fileSize kosong 0ms
- ✓ lib/crypto/data-terlindung.test.ts > dataTerlindungDariBaris > mengembalikan null bila ketiga field berkas kosong (versi tanpa berkas) 0ms
- ✓ lib/crypto/data-terlindung.test.ts > dataTerlindungDariBaris > menganggap fileSize 0 sebagai nilai sah, bukan kosong 0ms
- ✓ lib/crypto/data-terlindung.test.ts > dataTerlindungDariBaris > menghasilkan hasil sama untuk Date dan string tanggal 0ms
- ✓ lib/crypto/data-terlindung.test.ts > dataTerlindungDariBaris > tidak menggeser tanggal akhir bulan 0ms
- ✓ lib/crypto/data-terlindung.test.ts > dataTerlindungDariBaris > tidak menggeser tanggal akhir Februari tahun kabisat 0ms
- ✓ lib/crypto/data-terlindung.test.ts > dataTerlindungDariBaris > tidak menggeser tanggal akhir tahun 0ms
- ✓ lib/crypto/data-terlindung.test.ts > dataTerlindungDariBaris > tidak menggeser tanggal awal tahun 0ms
- ✓ lib/crypto/data-terlindung.test.ts > dataTerlindungDariBaris > memakai basis UTC: 23.59 UTC tetap pada tanggal yang sama 0ms
- ✓ lib/data/audit.test.ts > catatAudit > mengirim data sesuai entri ke auditLog.create tepat sekali 2ms
- ✓ lib/data/audit.test.ts > catatAudit > keterangan boleh kosong dan disimpan sebagai null 0ms
- ✓ lib/data/audit.test.ts > catatAudit > tidak meneruskan properti lain dari objek pemanggil 0ms
- ✓ lib/data/audit.test.ts > catatAudit > galat dari create merambat ke pemanggil 1ms
- ✓ lib/data/audit.test.ts > catatAudit > objectType di luar nilai yang dikenal ditolak kompilator 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > menulis status, pengesah, waktu, tanda tangan dengan penanda updatedAt, lalu audit di tx yang sama 4ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > tanda tangan > 64 byte dan terverifikasi dengan node:crypto atas payload pengesahan 1ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > tanda tangan > ubah approvedById membuat verifikasi gagal 1ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > tanda tangan > ubah approvedAt membuat verifikasi gagal 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > tanda tangan > ubah signingKeyId membuat verifikasi gagal 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > tanda tangan > ubah versionNumber membuat verifikasi gagal 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > tanda tangan > ubah effectiveDate membuat verifikasi gagal 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > tanda tangan > ubah fileSha256 membuat verifikasi gagal 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > tanda tangan > ubah fileName membuat verifikasi gagal 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > tanda tangan > ubah fileSize membuat verifikasi gagal 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > kunci DB tidak ada atau bukan AKTIF ditolak tanpa updateMany dan audit 1ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > kegagalan menandatangani (kunci privat rusak) tanpa updateMany dan audit 1ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > versi tidak ada sebagai DRAF melempar NotEditable tanpa tanda tangan dan audit 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > tanpa berkas lengkap ditolak sebelum penandatanganan 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > tanggal kembar ditolak sebelum penandatanganan 1ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > count 0 melempar NotEditable dan audit tidak dipanggil 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiSahkan > galat catatAudit merambat 1ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiBatalkan > mengisi DIBATALKAN tanpa approved* dan mencatat audit 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiBatalkan > count 0 melempar NotEditable tanpa audit 0ms
- ✓ lib/data/pengesahan.test.ts > isiTransaksiBatalkan > galat catatAudit merambat 0ms
- ✓ lib/data/sesi.test.ts > cabutSesi > where memuat id DAN userId 2ms
- ✓ lib/data/sesi.test.ts > cabutSesi > A mencabut sesi B: tidak ada baris cocok -> false 0ms
- ✓ lib/data/sesi.test.ts > daftarSesiAktif > hanya milik userId, belum kedaluwarsa, terbaru dulu, tanpa token/ip/UA 0ms
- ✓ lib/data/versions.test.ts > sahkanVersiDenganAudit > membentuk keterangan dan waktu, lalu memanggil isiTransaksiSahkan di transaksi 2ms
- ✓ lib/data/versions.test.ts > sahkanVersiDenganAudit > penandatangan tidak siap: ditolak sebelum transaksi dibuka 1ms
- ✓ lib/data/versions.test.ts > sahkanVersiDenganAudit > galat dari transaksi diteruskan apa adanya 0ms
- ✓ lib/data/penandatangan-env.test.ts > siapkanPenandatanganDariEnv > meneruskan lokasi dari env dan mengembalikan penandatangan 2ms
- ✓ lib/data/penandatangan-env.test.ts > siapkanPenandatanganDariEnv > PenandatanganTidakValid dibungkus PenandatanganBelumSiapError dengan pesan tetap tanpa jalur berkas 1ms
- ✓ lib/data/penandatangan-env.test.ts > siapkanPenandatanganDariEnv > KeyringTidakValid dibungkus PenandatanganBelumSiapError dengan pesan tetap tanpa jalur berkas 0ms
- ✓ lib/data/penandatangan-env.test.ts > siapkanPenandatanganDariEnv > galat lain tidak dibungkus 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > positif > asli-sah: versi berlaku hari ini 4ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > positif > asli-digantikan: ada versi lebih baru yang sudah berlaku 1ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > positif > versi berlaku di masa depan tetap asli-sah 1ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > positif > B-05 kunci DIROTASI tetap sah untuk approvedAt <= dirotasiPada 1ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > positif > duplikat sha256: satu hasil per kandidat, kandidat gagal tidak tersembunyi 1ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: berkas dan status > berkas tidak dikenal (tanpa kandidat): tanpa metadata versi 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: berkas dan status > A-06 hanya DRAF/DIBATALKAN yang cocok: hasil SAMA dengan tidak dikenal 1ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: berkas dan status > A-06 status DRAF diubah ke SAH tanpa tanda tangan 1ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: berkas dan status > tag HMAC tidak valid 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: berkas dan status > tag kosong 1ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: berkas dan status > versi SAH seed tanpa signature 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: berkas dan status > signature null: tanpa tanda tangan 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: berkas dan status > signingKeyId null: tanpa tanda tangan 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: berkas dan status > approvedById null: tanpa tanda tangan 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: berkas dan status > approvedAt null: tanpa tanda tangan 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: berkas dan status > hasil tidak-cocok dari kandidat memuat identitas versi tanpa status 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: kunci > B-06 kunci dicabut 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: kunci > approvedAt setelah kunci dirotasi 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: kunci > approvedAt sebelum kunci dibuat 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: kunci > B-07 kunci ada di tabel tetapi tidak di keyring 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: kunci > kunci ada di keyring tetapi tidak di tabel 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: kunci > kunci publik tabel berbeda dari keyring 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: kunci > status tabel berbeda dari keyring 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: kunci > status tabel tidak dikenal 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: kunci > rotatedAt tabel berbeda dari dirotasiPada keyring (1 ms) 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: kunci > revokedAt tabel berbeda dari dicabutPada keyring (1 ms) 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: kunci > createdAt tabel berbeda dari dibuatPada keyring -> kunci-tidak-sinkron 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: tanda tangan dan payload > tanda tangan diubah satu byte 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: tanda tangan dan payload > tanda tangan panjang bukan 64 byte 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: tanda tangan dan payload > A-05 effectiveDate diubah 1ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: tanda tangan dan payload > A-05 versionNumber diubah 1ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: tanda tangan dan payload > A-05 fileName diubah 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: tanda tangan dan payload > A-05 fileSize diubah 1ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: tanda tangan dan payload > A-08 approvedById diubah 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: tanda tangan dan payload > A-08 approvedAt diubah (masih dalam masa kunci) 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: tanda tangan dan payload > A-09 signingKeyId diubah ke kunci lain yang terdaftar 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: tanda tangan dan payload > A-07 signature + signingKeyId disalin dari versi lain 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > negatif: tanda tangan dan payload > galat payload (approvedById bukan UUID) = tidak-cocok, bukan lemparan 0ms
- ✓ lib/crypto/verifikasi-pengesahan.test.ts > kerahasiaan hasil > tidak memuat tanda tangan, kunci, atau tag 1ms
- ✓ lib/crypto/penandatangan.test.ts > muatKunciPrivat > menolak lokasi belum diatur dan berkas tidak ada 4ms
- ✓ lib/crypto/penandatangan.test.ts > muatKunciPrivat > memuat PEM Ed25519 yang bisa menandatangani 6ms
- ✓ lib/crypto/penandatangan.test.ts > muatKunciPrivat > menolak PEM RSA 27ms
- ✓ lib/crypto/penandatangan.test.ts > muatKunciPrivat > PEM rusak ditolak dan pesan galat tidak memuat PEM 3ms
- ↓ lib/crypto/penandatangan.test.ts > muatKunciPrivat > menolak berkas yang bisa dibaca grup atau pengguna lain
- ✓ lib/crypto/penandatangan.test.ts > siapkanPenandatangan > lolos bila kunci privat cocok dengan entri aktif 8ms
- ✓ lib/crypto/penandatangan.test.ts > siapkanPenandatangan > galat bila kunci tidak ada di keyring 5ms
- ✓ lib/crypto/penandatangan.test.ts > siapkanPenandatangan > galat bila kunci ada tetapi dirotasi atau dicabut 9ms
- ✓ lib/crypto/penandatangan.test.ts > siapkanPenandatangan > galat bila keyring tidak ada atau lokasinya belum diatur 3ms
- ✓ lib/crypto/penandatangan.test.ts > siapkanPenandatangan > PEM bukan Ed25519 atau rusak = galat 17ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menerima keyring valid 5ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak: id tidak cocok dengan kunci 0ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak: dua aktif 0ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak: id ganda 0ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak: status tidak dikenal 1ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak: aktif dengan dirotasiPada 0ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak: aktif dengan dicabutPada 0ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak: dirotasi tanpa dirotasiPada 0ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak: dicabut tanpa dicabutPada 0ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak: field tak dikenal di entri 0ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak: field tak dikenal di akar 0ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak: versi salah 0ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak kunci publik yang bukan SPKI Ed25519 (RSA, sampah, base64 longgar) 57ms
- ✓ lib/crypto/keyring.test.ts > parseKeyring > menolak JSON rusak tanpa membocorkan isinya 1ms
- ✓ lib/crypto/keyring.test.ts > siklus kunci > tambah, putar, lalu cabut dari aktif dan dari dirotasi 1ms
- ✓ lib/crypto/keyring.test.ts > siklus kunci > menolak: cabut dua kali, cabut id tak dikenal, putar tanpa aktif, tambah saat sudah ada aktif 1ms
- ✓ lib/crypto/keyring.test.ts > siklus kunci > menolak kunci yang sudah ada dan kunci bukan Ed25519 0ms
- ✓ lib/crypto/keyring.test.ts > siklus kunci > tidak mengubah masukan 1ms
- ✓ lib/crypto/keyring.test.ts > kunciBolehMemverifikasi > dirotasi: tepat di dirotasiPada boleh, 1 ms sesudahnya tidak 0ms
- ✓ lib/crypto/keyring.test.ts > kunciBolehMemverifikasi > dicabut selalu ditolak 0ms
- ✓ lib/crypto/keyring.test.ts > kunciBolehMemverifikasi > 1 ms sebelum dibuatPada ditolak (aktif dan dirotasi); tepat di dibuatPada boleh 0ms
- ✓ lib/crypto/keyring.test.ts > berkas keyring > berkas tidak ada adalah galat, bukan keyring kosong 2ms
- ✓ lib/crypto/keyring.test.ts > berkas keyring > berkas rusak adalah galat 3ms
- ✓ lib/crypto/keyring.test.ts > berkas keyring > tulis lalu baca kembali sama, dan tidak meninggalkan berkas sementara 4ms
- ✓ lib/crypto/keyring.test.ts > berkas keyring > menolak menulis keyring tidak valid dan tidak mengubah berkas lama 4ms
- ✓ lib/crypto/operasi-kunci.test.ts > pemetaan status > dua arah, nilai tak dikenal ditolak 4ms
- ✓ lib/crypto/operasi-kunci.test.ts > didalamRepository > membedakan dalam, luar, dan folder bernama mirip 2ms
- ✓ lib/crypto/operasi-kunci.test.ts > buatKunci > membuat berkas privat, entri keyring publik-saja, dan baris DB AKTIF 13ms
- ✓ lib/crypto/operasi-kunci.test.ts > buatKunci > kata kunci: id hasil buat == idKunci(kunci publik di berkas keyring) 5ms
- ✓ lib/crypto/operasi-kunci.test.ts > buatKunci > menolak berkas --out yang sudah ada tanpa menimpanya 6ms
- ✓ lib/crypto/operasi-kunci.test.ts > buatKunci > menolak --out dan keyring di dalam repo, menerima folder bernama mirip di luar 7ms
- ✓ lib/crypto/operasi-kunci.test.ts > buatKunci > menolak --out sama dengan berkas keyring 2ms
- ✓ lib/crypto/operasi-kunci.test.ts > buatKunci > menolak bila keyring sudah punya kunci aktif; tidak ada berkas privat dibuat 6ms
- ✓ lib/crypto/operasi-kunci.test.ts > buatKunci > menolak keyring hilang tetapi tabel berisi; berkas privat dihapus, DB rollback 3ms
- ✓ lib/crypto/operasi-kunci.test.ts > buatKunci > keyring ada tetapi rusak ditolak (bukan dianggap kosong) 5ms
- ✓ lib/crypto/operasi-kunci.test.ts > putarKunciOperator > lama ke DIROTASI dulu, baru baru AKTIF; keyring konsisten 10ms
- ✓ lib/crypto/operasi-kunci.test.ts > putarKunciOperator > menolak tanpa kunci aktif 8ms
- ✓ lib/crypto/operasi-kunci.test.ts > putarKunciOperator > menolak keyring belum ada 4ms
- ✓ lib/crypto/operasi-kunci.test.ts > putarKunciOperator > DB tidak cocok (updateMany count 0): rollback, privat baru dihapus, keyring utuh 7ms
- ✓ lib/crypto/operasi-kunci.test.ts > cabutKunciOperator > mencabut kunci AKTIF: status dan revoked_at benar, peringatan tak ada aktif 7ms
- ✓ lib/crypto/operasi-kunci.test.ts > cabutKunciOperator > mencabut kunci DIROTASI: kunci aktif tetap ada 7ms
- ✓ lib/crypto/operasi-kunci.test.ts > cabutKunciOperator > menolak id tak dikenal, id berformat salah, dan kunci sudah dicabut 6ms
- ✓ lib/crypto/operasi-kunci.test.ts > cabutKunciOperator > menolak keyring di dalam repo 1ms
- ✓ lib/crypto/operasi-kunci.test.ts > kegagalan di tengah > tulisKeyring gagal di dalam tx: DB rollback, privat baru dihapus, keyring lama utuh 6ms
- ✓ lib/crypto/operasi-kunci.test.ts > kegagalan di tengah > rm pembersihan gagal: galat asli tetap yang diteruskan 3ms
- ✓ lib/crypto/operasi-kunci.test.ts > kegagalan di tengah > commit gagal setelah keyring ditulis: keyring tidak diubah, privat tidak dihapus, galat tidak pasti 4ms
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.4 [39m[90mC:/Projects/kyrion/apps/web[39m
 
- Test Files  19 passed (19)
-      Tests  270 passed | 3 skipped (273)
-   Start at  17:58:20
-   Duration  406ms (import 53%, tests 27%, transform 14%, worker 6%)
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mdeterministik[32m 3[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah id mengubah payload[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah regulationId mengubah payload[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah versionNumber mengubah payload[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah effectiveDate mengubah payload[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah fileSha256 mengubah payload[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah fileName mengubah payload[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah fileSize mengubah payload[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah approvedById mengubah payload[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah approvedAt mengubah payload[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmengubah signingKeyId mengubah payload[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mapprovedAt beda 1 ms: berbeda[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mberbeda dari kanonisasiVersi dengan tujuh field sama (pemisah domain)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak Date tidak valid[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak approvedById bukan UUID, pesan tanpa nilai[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenerima approvedById UUIDv4 dan UUIDv7[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak signingKeyId bukan 32 hex huruf kecil: abc[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak signingKeyId bukan 32 hex huruf kecil: BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak signingKeyId bukan 32 hex huruf kecil: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak signingKeyId bukan 32 hex huruf kecil: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/payload-pengesahan.test.ts[2m > [22mbangunPayloadPengesahan[2m > [22mmenolak signingKeyId bukan 32 hex huruf kecil: gggggggggggggggggggggggggggggggg[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mfingerprint[2m > [22mmenghasilkan SHA-256 sesuai vektor uji resmi FIPS 180-2 untuk "abc"[32m 3[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mfingerprint[2m > [22mmenghasilkan SHA-256 yang benar untuk input kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mfingerprint[2m > [22mmenerima input tepat sebesar MAX_INPUT_BYTES[32m 12[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mfingerprint[2m > [22mmelempar InputTooLargeError untuk input sebesar MAX_INPUT_BYTES + 1[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan true untuk data asli dan false bila satu byte diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: string bukan hex (64 karakter z)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: hex 63 karakter[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: hex 65 karakter[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: hex huruf besar dari hash yang benar[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmengembalikan false untuk expectedHex berformat salah: string kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/fingerprint.test.ts[2m > [22mverifyFingerprint[2m > [22mmelempar InputTooLargeError (bukan mengembalikan false) untuk data di atas MAX_INPUT_BYTES[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mhmacSha256[2m > [22msesuai RFC 4231 Test Case 1[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mhmacSha256[2m > [22msesuai RFC 4231 Test Case 2[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mturunkanKunciMac[2m > [22msama dengan acuan HKDF-SHA256 hitungan Python (salt kosong)[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mturunkanKunciMac[2m > [22mmenghasilkan kunci berbeda dari kunci induk lain[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mturunkanKunciMac[2m > [22mmenolak kunci induk yang bukan 32 byte[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mbuatTagVersi[2m > [22msama dengan tag acuan hitungan Python[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mbuatTagVersi[2m > [22mberformat v1$ + 64 hex huruf kecil[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mbuatTagVersi[2m > [22mberubah bila satu field berubah[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/mac.test.ts[2m > [22mbuatTagVersi[2m > [22mberubah bila kunci induk berbeda[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmeloloskan data, berkas, dan tag asli[32m 3[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field id diubah[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field regulationId diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field versionNumber diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field effectiveDate diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field fileSha256 diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field fileName diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila field fileSize diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila satu bit tag diubah[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila kunci valid tetapi berbeda[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag dan data asli yang disalin ke baris dengan id lain[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag null dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag kosong dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag tanpa awalan dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag awalan versi lain dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag hex huruf besar dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag terlalu pendek dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag terlalu panjang dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag bukan hex dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag spasi di ujung dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak tag teks acak dengan IntegritasGagal, tanpa crash[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmembungkus galat internal: kunci induk salah panjang[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmembungkus galat internal: field tidak sah (RangeError dari kanonisasi)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmembungkus galat internal: berkas melebihi batas (InputTooLargeError)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mpesan galat tetap dan tidak memuat tag, kunci, atau data[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila hanya byte PDF yang diganti (langkah verifyFingerprint)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi.test.ts[2m > [22mperiksaIntegritasVersi[2m > [22mmenolak bila PDF dan fileSha256 diganti bersamaan dengan tag lama[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/tanda-tangan.test.ts[2m > [22mRFC 8032 TEST 1[2m > [22mtandatangani menghasilkan tanda tangan RFC[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/tanda-tangan.test.ts[2m > [22mRFC 8032 TEST 1[2m > [22mverifikasi tanda tangan RFC lolos[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mtanda tangan 64 byte dan lolos verifikasi[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mpesan diubah 1 byte: false[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mtanda tangan diubah 1 byte: false[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mkunci publik lain: false[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mpanjang tanda tangan 63 dan 65 byte: false[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mmasukan sampah: false dan tidak melempar[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/tanda-tangan.test.ts[2m > [22mpasangan kunci dan tanda tangan[2m > [22mdua kali tandatangani pesan sama: identik[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/tanda-tangan.test.ts[2m > [22midKunci[2m > [22m32 hex huruf kecil, deterministik, beda antarkunci[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmengurai 64 karakter hex menjadi 32 byte[32m 5[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmemangkas spasi dan newline di ujung[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks kosong dengan KunciTidakValid[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks hanya spasi dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks terlalu pendek (62 karakter) dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks terlalu panjang (66 karakter) dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks bukan hex dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks berawalan 0x dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks spasi di tengah dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mmenolak teks dua baris dengan KunciTidakValid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mparseKunciInduk[2m > [22mpesan galat tidak memuat isi teks[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmenolak lokasi yang belum diatur[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmenolak berkas yang tidak ada[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmenolak berkas berisi kunci pendek atau bukan hex[32m 10[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmembaca berkas berisi hex yang sah[32m 5[2mms[22m[39m
+ [2m[90m↓[39m[22m lib/crypto/kunci.test.ts[2m > [22mbacaKunciInduk[2m > [22mmenolak berkas yang bisa dibaca grup atau pengguna lain
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbuatBerkasKunci[2m > [22mmembuat berkas berisi kunci 32 byte yang bisa dibaca kembali[32m 7[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbuatBerkasKunci[2m > [22mmenghasilkan kunci berbeda tiap kali dibuat[32m 7[2mms[22m[39m
+ [32m✓[39m lib/crypto/kunci.test.ts[2m > [22mbuatBerkasKunci[2m > [22mmenolak menimpa berkas yang sudah ada dan tidak mengubah isinya[32m 7[2mms[22m[39m
+ [2m[90m↓[39m[22m lib/crypto/kunci.test.ts[2m > [22mbuatBerkasKunci[2m > [22mmembuat berkas dengan mode 0o600
+ [32m✓[39m app/admin/verifikasi/actions.test.ts[2m > [22mperiksaBerkas[2m > [22mB-09 Sivitas: wajibAdmin melempar notFound, layanan tidak dipanggil[32m 27[2mms[22m[39m
+ [32m✓[39m app/admin/verifikasi/actions.test.ts[2m > [22mperiksaBerkas[2m > [22mB-08 bukan PDF ditolak[32m 2[2mms[22m[39m
+ [32m✓[39m app/admin/verifikasi/actions.test.ts[2m > [22mperiksaBerkas[2m > [22mB-08 di atas 10 MB ditolak[32m 8[2mms[22m[39m
+ [32m✓[39m app/admin/verifikasi/actions.test.ts[2m > [22mperiksaBerkas[2m > [22mtanpa berkas dan berkas kosong ditolak[32m 1[2mms[22m[39m
+ [32m✓[39m app/admin/verifikasi/actions.test.ts[2m > [22mperiksaBerkas[2m > [22mPDF valid: hasil dari layanan; berkas tidak ditulis ke penyimpanan[32m 1[2mms[22m[39m
+ [32m✓[39m app/admin/verifikasi/actions.test.ts[2m > [22mperiksaBerkas[2m > [22mgalat operasional (keyring, kunci induk, DB): galat umum, bukan hasil verifikasi, tanpa detail[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/audit.test.ts[2m > [22mcatatAudit[2m > [22mmengirim data sesuai entri ke auditLog.create tepat sekali[32m 3[2mms[22m[39m
+ [32m✓[39m lib/data/audit.test.ts[2m > [22mcatatAudit[2m > [22mketerangan boleh kosong dan disimpan sebagai null[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/audit.test.ts[2m > [22mcatatAudit[2m > [22mtidak meneruskan properti lain dari objek pemanggil[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/audit.test.ts[2m > [22mcatatAudit[2m > [22mgalat dari create merambat ke pemanggil[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/audit.test.ts[2m > [22mcatatAudit[2m > [22mobjectType di luar nilai yang dikenal ditolak kompilator[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenghasilkan byte persis sesuai acuan eksternal[32m 3[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mdiawali label yang diberi awalan panjang 4 byte big-endian[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mdeterministik untuk data yang sama[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenyamakan 'é' tunggal (NFC) dengan 'e' + aksen terpisah (NFD)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmembedakan data bila nilai dua field bertukar tempat (urutan field bagian dari format)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmembedakan data bila batas antarbagian bergeser (awalan panjang)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak id bukan UUID dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak id UUID huruf besar dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak regulationId bukan UUID dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak tanggal tidak mustahil tapi format salah (tanpa nol) dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak tanggal mustahil (30 Februari) dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSha256 huruf besar dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSha256 63 karakter dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSha256 bukan hex dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSize negatif dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSize pecahan dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileSize NaN dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak versionNumber dengan surrogate yatim dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mmenolak fileName dengan surrogate yatim dengan RangeError[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/kanonis.test.ts[2m > [22mkanonisasiVersi[2m > [22mpesan galat hanya menyebut nama field, bukan nilainya[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/versi-tulis.test.ts[2m > [22misiTransaksiBuat[2m > [22mdengan berkas: create dan audit UNGGAH_BERKAS di tx yang sama[32m 3[2mms[22m[39m
+ [32m✓[39m lib/data/versi-tulis.test.ts[2m > [22misiTransaksiBuat[2m > [22mtanpa berkas: tidak ada audit[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/versi-tulis.test.ts[2m > [22misiTransaksiBuat[2m > [22mgalat audit merambat[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/versi-tulis.test.ts[2m > [22mcatatUnggahBerkas[2m > [22mmenulis UNGGAH_BERKAS; galat merambat[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/versi-tulis.test.ts[2m > [22misiTransaksiHapus[2m > [22mcount 1: deleteMany bersyarat lalu audit PENGHAPUSAN[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/versi-tulis.test.ts[2m > [22misiTransaksiHapus[2m > [22mcount 0: NotEditable tanpa audit[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/versi-tulis.test.ts[2m > [22misiTransaksiHapus[2m > [22mgalat audit merambat[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mmenulis status, pengesah, waktu, tanda tangan dengan penanda updatedAt, lalu audit di tx yang sama[32m 5[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22m64 byte dan terverifikasi dengan node:crypto atas payload pengesahan[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah approvedById membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah approvedAt membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah signingKeyId membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah versionNumber membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah effectiveDate membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah fileSha256 membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah fileName membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanda tangan[2m > [22mubah fileSize membuat verifikasi gagal[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mkunci DB tidak ada atau bukan AKTIF ditolak tanpa updateMany dan audit[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mkegagalan menandatangani (kunci privat rusak) tanpa updateMany dan audit[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mversi tidak ada sebagai DRAF melempar NotEditable tanpa tanda tangan dan audit[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanpa berkas lengkap ditolak sebelum penandatanganan[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mtanggal kembar ditolak sebelum penandatanganan[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mcount 0 melempar NotEditable dan audit tidak dipanggil[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiSahkan[2m > [22mgalat catatAudit merambat[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiBatalkan[2m > [22mmengisi DIBATALKAN tanpa approved* dan mencatat audit[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiBatalkan[2m > [22mcount 0 melempar NotEditable tanpa audit[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/pengesahan.test.ts[2m > [22misiTransaksiBatalkan[2m > [22mgalat catatAudit merambat[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmemetakan baris lengkap menjadi data terlindung[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmengembalikan null bila fileSha256 kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmengembalikan null bila fileName kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmengembalikan null bila fileSize kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmengembalikan null bila ketiga field berkas kosong (versi tanpa berkas)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmenganggap fileSize 0 sebagai nilai sah, bukan kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmenghasilkan hasil sama untuk Date dan string tanggal[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mtidak menggeser tanggal akhir bulan[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mtidak menggeser tanggal akhir Februari tahun kabisat[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mtidak menggeser tanggal akhir tahun[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mtidak menggeser tanggal awal tahun[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/data-terlindung.test.ts[2m > [22mdataTerlindungDariBaris[2m > [22mmemakai basis UTC: 23.59 UTC tetap pada tanggal yang sama[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/sesi.test.ts[2m > [22mcabutSesi[2m > [22mwhere memuat id DAN userId[32m 2[2mms[22m[39m
+ [32m✓[39m lib/data/sesi.test.ts[2m > [22mcabutSesi[2m > [22mA mencabut sesi B: tidak ada baris cocok -> false[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/sesi.test.ts[2m > [22mdaftarSesiAktif[2m > [22mhanya milik userId, belum kedaluwarsa, terbaru dulu, tanpa token/ip/UA[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/versions.test.ts[2m > [22msahkanVersiDenganAudit[2m > [22mmembentuk keterangan dan waktu, lalu memanggil isiTransaksiSahkan di transaksi[32m 3[2mms[22m[39m
+ [32m✓[39m lib/data/versions.test.ts[2m > [22msahkanVersiDenganAudit[2m > [22mpenandatangan tidak siap: ditolak sebelum transaksi dibuka[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/versions.test.ts[2m > [22msahkanVersiDenganAudit[2m > [22mgalat dari transaksi diteruskan apa adanya[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenerima keyring valid[32m 6[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: id tidak cocok dengan kunci[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: dua aktif[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: id ganda[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: status tidak dikenal[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: aktif dengan dirotasiPada[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: aktif dengan dicabutPada[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: dirotasi tanpa dirotasiPada[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: dicabut tanpa dicabutPada[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: field tak dikenal di entri[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: field tak dikenal di akar[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak: versi salah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak kunci publik yang bukan SPKI Ed25519 (RSA, sampah, base64 longgar)[32m 17[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mparseKeyring[2m > [22mmenolak JSON rusak tanpa membocorkan isinya[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22msiklus kunci[2m > [22mtambah, putar, lalu cabut dari aktif dan dari dirotasi[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22msiklus kunci[2m > [22mmenolak: cabut dua kali, cabut id tak dikenal, putar tanpa aktif, tambah saat sudah ada aktif[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22msiklus kunci[2m > [22mmenolak kunci yang sudah ada dan kunci bukan Ed25519[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22msiklus kunci[2m > [22mtidak mengubah masukan[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mkunciBolehMemverifikasi[2m > [22mdirotasi: tepat di dirotasiPada boleh, 1 ms sesudahnya tidak[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mkunciBolehMemverifikasi[2m > [22mdicabut selalu ditolak[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mkunciBolehMemverifikasi[2m > [22m1 ms sebelum dibuatPada ditolak (aktif dan dirotasi); tepat di dibuatPada boleh[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mberkas keyring[2m > [22mberkas tidak ada adalah galat, bukan keyring kosong[32m 3[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mberkas keyring[2m > [22mberkas rusak adalah galat[32m 4[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mberkas keyring[2m > [22mtulis lalu baca kembali sama, dan tidak meninggalkan berkas sementara[32m 7[2mms[22m[39m
+ [32m✓[39m lib/crypto/keyring.test.ts[2m > [22mberkas keyring[2m > [22mmenolak menulis keyring tidak valid dan tidak mengubah berkas lama[32m 6[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mpositif[2m > [22masli-sah: versi berlaku hari ini[32m 5[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mpositif[2m > [22masli-digantikan: ada versi lebih baru yang sudah berlaku[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mpositif[2m > [22mversi berlaku di masa depan tetap asli-sah[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mpositif[2m > [22mB-05 kunci DIROTASI tetap sah untuk approvedAt <= dirotasiPada[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mpositif[2m > [22mduplikat sha256: satu hasil per kandidat, kandidat gagal tidak tersembunyi[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mberkas tidak dikenal (tanpa kandidat): tanpa metadata versi[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mA-06 hanya DRAF/DIBATALKAN yang cocok: hasil SAMA dengan tidak dikenal[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mA-06 status DRAF diubah ke SAH tanpa tanda tangan[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mtag HMAC tidak valid[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mtag kosong[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mversi SAH seed tanpa signature[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22msignature null: tanpa tanda tangan[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22msigningKeyId null: tanpa tanda tangan[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mapprovedById null: tanpa tanda tangan[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mapprovedAt null: tanpa tanda tangan[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: berkas dan status[2m > [22mhasil tidak-cocok dari kandidat memuat identitas versi tanpa status[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mB-06 kunci dicabut[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mapprovedAt setelah kunci dirotasi[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mapprovedAt sebelum kunci dibuat[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mB-07 kunci ada di tabel tetapi tidak di keyring[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mkunci ada di keyring tetapi tidak di tabel[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mkunci publik tabel berbeda dari keyring[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mstatus tabel berbeda dari keyring[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mstatus tabel tidak dikenal[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mrotatedAt tabel berbeda dari dirotasiPada keyring (1 ms)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mrevokedAt tabel berbeda dari dicabutPada keyring (1 ms)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: kunci[2m > [22mcreatedAt tabel berbeda dari dibuatPada keyring -> kunci-tidak-sinkron[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mtanda tangan diubah satu byte[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mtanda tangan panjang bukan 64 byte[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-05 effectiveDate diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-05 versionNumber diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-05 fileName diubah[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-05 fileSize diubah[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-08 approvedById diubah[32m 1[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-08 approvedAt diubah (masih dalam masa kunci)[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-09 signingKeyId diubah ke kunci lain yang terdaftar[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mA-07 signature + signingKeyId disalin dari versi lain[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mnegatif: tanda tangan dan payload[2m > [22mgalat payload (approvedById bukan UUID) = tidak-cocok, bukan lemparan[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/verifikasi-pengesahan.test.ts[2m > [22mkerahasiaan hasil[2m > [22mtidak memuat tanda tangan, kunci, atau tag[32m 1[2mms[22m[39m
+ [32m✓[39m lib/data/verifikasi-berkas.test.ts[2m > [22mverifikasiBerkasDenganDb[2m > [22mB-03 PDF diubah satu byte: asli lolos, salinan menjadi tidak cocok (berkas tidak dikenal)[32m 9[2mms[22m[39m
+ [32m✓[39m lib/data/penandatangan-env.test.ts[2m > [22msiapkanPenandatanganDariEnv[2m > [22mmeneruskan lokasi dari env dan mengembalikan penandatangan[32m 2[2mms[22m[39m
+ [32m✓[39m lib/data/penandatangan-env.test.ts[2m > [22msiapkanPenandatanganDariEnv[2m > [22mPenandatanganTidakValid dibungkus PenandatanganBelumSiapError dengan pesan tetap tanpa jalur berkas[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/penandatangan-env.test.ts[2m > [22msiapkanPenandatanganDariEnv[2m > [22mKeyringTidakValid dibungkus PenandatanganBelumSiapError dengan pesan tetap tanpa jalur berkas[32m 0[2mms[22m[39m
+ [32m✓[39m lib/data/penandatangan-env.test.ts[2m > [22msiapkanPenandatanganDariEnv[2m > [22mgalat lain tidak dibungkus[32m 0[2mms[22m[39m
+ [32m✓[39m lib/crypto/penandatangan.test.ts[2m > [22mmuatKunciPrivat[2m > [22mmenolak lokasi belum diatur dan berkas tidak ada[32m 4[2mms[22m[39m
+ [32m✓[39m lib/crypto/penandatangan.test.ts[2m > [22mmuatKunciPrivat[2m > [22mmemuat PEM Ed25519 yang bisa menandatangani[32m 7[2mms[22m[39m
+ [32m✓[39m lib/crypto/penandatangan.test.ts[2m > [22mmuatKunciPrivat[2m > [22mmenolak PEM RSA[32m 11[2mms[22m[39m
+ [32m✓[39m lib/crypto/penandatangan.test.ts[2m > [22mmuatKunciPrivat[2m > [22mPEM rusak ditolak dan pesan galat tidak memuat PEM[32m 4[2mms[22m[39m
+ [2m[90m↓[39m[22m lib/crypto/penandatangan.test.ts[2m > [22mmuatKunciPrivat[2m > [22mmenolak berkas yang bisa dibaca grup atau pengguna lain
+ [32m✓[39m lib/crypto/penandatangan.test.ts[2m > [22msiapkanPenandatangan[2m > [22mlolos bila kunci privat cocok dengan entri aktif[32m 10[2mms[22m[39m
+ [32m✓[39m lib/crypto/penandatangan.test.ts[2m > [22msiapkanPenandatangan[2m > [22mgalat bila kunci tidak ada di keyring[32m 7[2mms[22m[39m
+ [32m✓[39m lib/crypto/penandatangan.test.ts[2m > [22msiapkanPenandatangan[2m > [22mgalat bila kunci ada tetapi dirotasi atau dicabut[32m 12[2mms[22m[39m
+ [32m✓[39m lib/crypto/penandatangan.test.ts[2m > [22msiapkanPenandatangan[2m > [22mgalat bila keyring tidak ada atau lokasinya belum diatur[32m 4[2mms[22m[39m
+ [32m✓[39m lib/crypto/penandatangan.test.ts[2m > [22msiapkanPenandatangan[2m > [22mPEM bukan Ed25519 atau rusak = galat[32m 39[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mpemetaan status[2m > [22mdua arah, nilai tak dikenal ditolak[32m 5[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mdidalamRepository[2m > [22mmembedakan dalam, luar, dan folder bernama mirip[32m 3[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mmembuat berkas privat, entri keyring publik-saja, dan baris DB AKTIF[32m 18[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mkata kunci: id hasil buat == idKunci(kunci publik di berkas keyring)[32m 8[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mmenolak berkas --out yang sudah ada tanpa menimpanya[32m 7[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mmenolak --out dan keyring di dalam repo, menerima folder bernama mirip di luar[32m 11[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mmenolak --out sama dengan berkas keyring[32m 3[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mmenolak bila keyring sudah punya kunci aktif; tidak ada berkas privat dibuat[32m 9[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mmenolak keyring hilang tetapi tabel berisi; berkas privat dihapus, DB rollback[32m 4[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mbuatKunci[2m > [22mkeyring ada tetapi rusak ditolak (bukan dianggap kosong)[32m 6[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mputarKunciOperator[2m > [22mlama ke DIROTASI dulu, baru baru AKTIF; keyring konsisten[32m 12[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mputarKunciOperator[2m > [22mmenolak tanpa kunci aktif[32m 11[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mputarKunciOperator[2m > [22mmenolak keyring belum ada[32m 5[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mputarKunciOperator[2m > [22mDB tidak cocok (updateMany count 0): rollback, privat baru dihapus, keyring utuh[32m 10[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mcabutKunciOperator[2m > [22mmencabut kunci AKTIF: status dan revoked_at benar, peringatan tak ada aktif[32m 6[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mcabutKunciOperator[2m > [22mmencabut kunci DIROTASI: kunci aktif tetap ada[32m 8[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mcabutKunciOperator[2m > [22mmenolak id tak dikenal, id berformat salah, dan kunci sudah dicabut[32m 7[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mcabutKunciOperator[2m > [22mmenolak keyring di dalam repo[32m 2[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mkegagalan di tengah[2m > [22mtulisKeyring gagal di dalam tx: DB rollback, privat baru dihapus, keyring lama utuh[32m 6[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mkegagalan di tengah[2m > [22mrm pembersihan gagal: galat asli tetap yang diteruskan[32m 4[2mms[22m[39m
+ [32m✓[39m lib/crypto/operasi-kunci.test.ts[2m > [22mkegagalan di tengah[2m > [22mcommit gagal setelah keyring ditulis: keyring tidak diubah, privat tidak dihapus, galat tidak pasti[32m 4[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m20 passed[39m[22m[90m (20)[39m
+[2m      Tests [22m [1m[32m271 passed[39m[22m[2m | [22m[33m3 skipped[39m[90m (274)[39m
+[2m   Start at [22m 13:04:31
+[2m   Duration [22m 511ms[2m (import 57%, tests 24%, transform 13%, worker 6%)[22m
 

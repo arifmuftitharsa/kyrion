@@ -1,0 +1,63 @@
+# Bukti simulasi deteksi D-3 serangan (Tugas 7)
+# Tanggal: 2026-11-25 08:16:57 UTC
+# Hash commit: caa36eb
+# Perintah: .\deploy\uji\10-deteksi-simulasi.ps1 -Skenario D-3 -Mode serangan
+# Kode keluar skrip VM: awal=0, pantau=0
+# Catatan menjalankan:
+# - Jalankan satu skenario per waktu; jarak antar run minimal 6 menit.
+# - D-3 juga butuh bucket log UFW penuh: jeda minimal 4 menit sejak lalu lintas UFW terakhir.
+# - Lalu lintas D-1 membuat IP laptop terkena pembatas nginx pada endpoint OTP sekitar satu menit.
+== A. keadaan awal (VM)
+[2026-11-25T08:15:06Z] Keadaan awal
+  rule D-1 Tebakan kode OTP pada sign-in | state=inactive health=ok | lastEvaluation=2026-11-25T08:14:30Z
+  instance D-1 Tebakan kode OTP pada sign-in {alertname=D-1 Tebakan kode OTP pada sign-in,grafana_folder=Kyrion Deteksi,ip=192.168.56.1,risk=R-14,rule=D-1,severity=high} | state=Normal (NoData) | activeAt=2026-11-25T07:47:30Z BELUM TERBUKTI: nilai tidak ada di API
+  rule D-2 Penolakan berulang pada rute admin dan API | state=inactive health=ok | lastEvaluation=2026-11-25T08:14:30Z
+  instance D-2 Penolakan berulang pada rute admin dan API {alertname=D-2 Penolakan berulang pada rute admin dan API,grafana_folder=Kyrion Deteksi,ip=192.168.56.1,risk=R-03,R-15,rule=D-2,severity=medium} | state=Normal (NoData) | activeAt=2026-11-25T08:00:30Z BELUM TERBUKTI: nilai tidak ada di API
+  rule D-3 Pemindaian port yang diblokir UFW | state=inactive health=ok | lastEvaluation=2026-11-25T08:14:30Z
+  instance D-3 Pemindaian port yang diblokir UFW {alertname=D-3 Pemindaian port yang diblokir UFW,grafana_folder=Kyrion Deteksi,risk=R-09,R-15,rule=D-3,severity=medium,src=192.168.56.1} | state=Normal (NoData) | activeAt=2026-11-25T08:08:30Z BELUM TERBUKTI: nilai tidak ada di API
+jumlah rule: 3; jumlah alert instance: 3
+semua rule yang terbaca berstate inactive
+
+== jejak rahasia
+kata sandi tidak ditemukan di keluaran
+
+== B. lalu lintas dari laptop
+2026-11-25T08:15:09Z awal lalu lintas: D-3 serangan ke kyrion.test (192.168.56.101)
+2026-11-25T08:15:09Z koneksi ke 30 port (9001,9002,9003,9004,9005,9006,9007,9008,9009,9010,9011,9012,9013,9014,9015,9016,9017,9018,9019,9020,9021,9022,9023,9024,9025,9026,9027,9028,9029,9030) di 192.168.56.101, alat: nmap -sT -Pn -n --max-retries 0
+Starting Nmap 7.80 ( https://nmap.org ) at 2026-11-25 15:15 SE Asia Standard Time
+Warning: 192.168.56.101 giving up on port because retransmission cap hit (0).
+Nmap scan report for 192.168.56.101
+Host is up.
+All 30 scanned ports on 192.168.56.101 are filtered
+
+Nmap done: 1 IP address (1 host up) scanned in 6.16 seconds
+2026-11-25T08:15:15Z koneksi port selesai, durasi 6.2 detik
+2026-11-25T08:15:15Z akhir lalu lintas: D-3 serangan
+
+== C. pantauan (VM)
+[2026-11-25T08:15:27Z] Pantau D-3 serangan: tiap 15 detik, detak tiap 60 detik, batas 480 detik
+2026-11-25T08:15:27Z keadaan dasar pantauan:
+  rule D-1 Tebakan kode OTP pada sign-in | state=inactive health=ok | lastEvaluation=2026-11-25T08:14:30Z
+  instance D-1 Tebakan kode OTP pada sign-in {alertname=D-1 Tebakan kode OTP pada sign-in,grafana_folder=Kyrion Deteksi,ip=192.168.56.1,risk=R-14,rule=D-1,severity=high} | state=Normal (NoData) | activeAt=2026-11-25T07:47:30Z BELUM TERBUKTI: nilai tidak ada di API
+  rule D-2 Penolakan berulang pada rute admin dan API | state=inactive health=ok | lastEvaluation=2026-11-25T08:14:30Z
+  instance D-2 Penolakan berulang pada rute admin dan API {alertname=D-2 Penolakan berulang pada rute admin dan API,grafana_folder=Kyrion Deteksi,ip=192.168.56.1,risk=R-03,R-15,rule=D-2,severity=medium} | state=Normal (NoData) | activeAt=2026-11-25T08:00:30Z BELUM TERBUKTI: nilai tidak ada di API
+  rule D-3 Pemindaian port yang diblokir UFW | state=inactive health=ok | lastEvaluation=2026-11-25T08:14:30Z
+  instance D-3 Pemindaian port yang diblokir UFW {alertname=D-3 Pemindaian port yang diblokir UFW,grafana_folder=Kyrion Deteksi,risk=R-09,R-15,rule=D-3,severity=medium,src=192.168.56.1} | state=Normal (NoData) | activeAt=2026-11-25T08:08:30Z BELUM TERBUKTI: nilai tidak ada di API
+2026-11-25T08:15:42Z BERUBAH rule D-3 Pemindaian port yang diblokir UFW | state=inactive health=ok -> state=pending health=ok | lastEvaluation=2026-11-25T08:15:30Z
+2026-11-25T08:15:42Z BERUBAH instance D-3 Pemindaian port yang diblokir UFW {alertname=D-3 Pemindaian port yang diblokir UFW,grafana_folder=Kyrion Deteksi,risk=R-09,R-15,rule=D-3,severity=medium,src=192.168.56.1} | state=Normal (NoData) -> state=Pending | activeAt=2026-11-25T08:15:30Z value=1e+00
+2026-11-25T08:16:27Z detak: polling berhasil 5, gagal 0
+  rule D-1 Tebakan kode OTP pada sign-in | state=inactive health=ok | lastEvaluation=2026-11-25T08:15:30Z
+  instance D-1 Tebakan kode OTP pada sign-in {alertname=D-1 Tebakan kode OTP pada sign-in,grafana_folder=Kyrion Deteksi,ip=192.168.56.1,risk=R-14,rule=D-1,severity=high} | state=Normal (NoData) | activeAt=2026-11-25T07:47:30Z BELUM TERBUKTI: nilai tidak ada di API
+  rule D-2 Penolakan berulang pada rute admin dan API | state=inactive health=ok | lastEvaluation=2026-11-25T08:15:30Z
+  instance D-2 Penolakan berulang pada rute admin dan API {alertname=D-2 Penolakan berulang pada rute admin dan API,grafana_folder=Kyrion Deteksi,ip=192.168.56.1,risk=R-03,R-15,rule=D-2,severity=medium} | state=Normal (NoData) | activeAt=2026-11-25T08:00:30Z BELUM TERBUKTI: nilai tidak ada di API
+  rule D-3 Pemindaian port yang diblokir UFW | state=pending health=ok | lastEvaluation=2026-11-25T08:15:30Z
+  instance D-3 Pemindaian port yang diblokir UFW {alertname=D-3 Pemindaian port yang diblokir UFW,grafana_folder=Kyrion Deteksi,risk=R-09,R-15,rule=D-3,severity=medium,src=192.168.56.1} | state=Pending | activeAt=2026-11-25T08:15:30Z value=1e+00
+2026-11-25T08:16:42Z BERUBAH rule D-3 Pemindaian port yang diblokir UFW | state=pending health=ok -> state=firing health=ok | lastEvaluation=2026-11-25T08:16:30Z
+2026-11-25T08:16:42Z BERUBAH instance D-3 Pemindaian port yang diblokir UFW {alertname=D-3 Pemindaian port yang diblokir UFW,grafana_folder=Kyrion Deteksi,risk=R-09,R-15,rule=D-3,severity=medium,src=192.168.56.1} | state=Pending -> state=Alerting | activeAt=2026-11-25T08:16:30Z value=1e+00
+[2026-11-25T08:16:43Z] pantauan berhenti sesudah 76 detik
+polling berhasil: 6; gagal: 0; transisi sesudah keadaan dasar: 4
+D-3 pertama teramati pending: 2026-11-25T08:15:42Z
+D-3 pertama teramati firing: 2026-11-25T08:16:42Z
+
+== jejak rahasia
+kata sandi tidak ditemukan di keluaran

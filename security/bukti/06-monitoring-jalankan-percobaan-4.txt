@@ -1,0 +1,96 @@
+# Bukti monitoring, fase jalankan (Tugas 6, R-15)
+# Tanggal: 2026-11-23 09:10:06 UTC
+# Hash commit: 111ee53
+# Perintah: .\deploy\uji\06-monitoring.ps1 -Fase jalankan (ssh -t kyrion-staging sudo bash 06-monitoring-vm.sh jalankan)
+# Kode keluar: 0
+
+[2026-11-23T09:05:55Z] Fase jalankan
+-- mode berkas konfigurasi sebelum chmod
+root:root 644 compose.monitoring.yaml
+root:root 644 loki-config.yaml
+root:root 644 config.alloy
+root:root 644 compose.logging-journald.yaml
+root:root 755 /srv/kyrion/monitoring/grafana
+root:root 755 /srv/kyrion/monitoring/grafana/provisioning
+root:root 755 /srv/kyrion/monitoring/grafana/provisioning/datasources
+root:root 644 /srv/kyrion/monitoring/grafana/provisioning/datasources/loki.yaml
+-- mode berkas konfigurasi sesudah chmod
+root:root 644 compose.monitoring.yaml
+root:root 644 loki-config.yaml
+root:root 644 config.alloy
+root:root 644 compose.logging-journald.yaml
+root:root 755 /srv/kyrion/monitoring/grafana
+root:root 755 /srv/kyrion/monitoring/grafana/provisioning
+root:root 755 /srv/kyrion/monitoring/grafana/provisioning/datasources
+root:root 644 /srv/kyrion/monitoring/grafana/provisioning/datasources/loki.yaml
+-- compose.monitoring.yaml di /srv/kyrion/monitoring sesudah penyalinan (ukuran byte, mode, pemilik, waktu ubah)
+4076 byte, mode 644, root:root, diubah 2026-11-23 09:05:55.099892686 +0000, /srv/kyrion/monitoring/compose.monitoring.yaml
+ukuran kiriman: 4076 byte
+sama dengan kiriman: compose.monitoring.yaml
+sama dengan kiriman: loki-config.yaml
+sama dengan kiriman: config.alloy
+sama dengan kiriman: compose.logging-journald.yaml
+sama dengan kiriman: grafana/provisioning
+-- pemilik dan mode volume Alloy lama (bukti penyebab crash: root tanpa CAP_DAC_OVERRIDE tidak boleh mkdir di sana)
+473:473 mode 770 /var/lib/docker/volumes/kyrion-mon_alloy-data/_data
+-- mode berkas yang di-mount ke container non-root (Loki UID 10001, Grafana UID 472)
+root:root 644 loki-config.yaml
+root:root 644 config.alloy
+root:root 755 grafana
+root:root 755 grafana/provisioning
+root:root 755 grafana/provisioning/datasources
+root:root 644 grafana/provisioning/datasources/loki.yaml
+-- keadaan stack sebelum up (aman diulang; volume tidak dihapus)
+NAME                   IMAGE                                                                                     COMMAND                  SERVICE   CREATED          STATUS                         PORTS
+kyrion-mon-alloy-1     grafana/alloy@sha256:c958aef7294bc40c67caadb2bcecc93b95ab7961ff8afae3abee170d77426193     "/bin/alloy run /etc…"   alloy     13 minutes ago   Restarting (1) 6 seconds ago   
+kyrion-mon-grafana-1   grafana/grafana@sha256:0615ec4fbd4072004b7d86b46ded63013a74b7d6eb1119273dd89e8fa25c13cf   "/run.sh"                grafana   13 minutes ago   Up 3 minutes                   127.0.0.1:3001->3000/tcp
+kyrion-mon-loki-1      grafana/loki@sha256:b43c257ccfc925d4a50b8717cac61a3b51df8c48d01847936057e5c4075a24a7      "/usr/bin/loki -conf…"   loki      4 minutes ago    Up 3 minutes                   3100/tcp
+ Container kyrion-mon-grafana-1 Running 
+ Container kyrion-mon-loki-1 Running 
+ Volume kyrion-mon_alloy-state Creating 
+ Volume kyrion-mon_alloy-state Creating 
+ Volume kyrion-mon_alloy-state Created 
+ Volume kyrion-mon_alloy-state Created 
+ Container kyrion-mon-alloy-1 Recreate 
+ Container kyrion-mon-alloy-1 Recreated 
+ Container kyrion-mon-alloy-1 Starting 
+ Container kyrion-mon-alloy-1 Started 
+NAME                   IMAGE                                                                                     COMMAND                  SERVICE   CREATED          STATUS                  PORTS
+kyrion-mon-alloy-1     grafana/alloy@sha256:c958aef7294bc40c67caadb2bcecc93b95ab7961ff8afae3abee170d77426193     "/bin/alloy run /etc…"   alloy     1 second ago     Up Less than a second   
+kyrion-mon-grafana-1   grafana/grafana@sha256:0615ec4fbd4072004b7d86b46ded63013a74b7d6eb1119273dd89e8fa25c13cf   "/run.sh"                grafana   13 minutes ago   Up 4 minutes            127.0.0.1:3001->3000/tcp
+kyrion-mon-loki-1      grafana/loki@sha256:b43c257ccfc925d4a50b8717cac61a3b51df8c48d01847936057e5c4075a24a7      "/usr/bin/loki -conf…"   loki      4 minutes ago    Up 4 minutes            3100/tcp
+-- Loki siap (container sementara di jaringan kyrion-mon_logs, polling sampai 90 detik)
+loki /ready: OK
+-- Grafana sehat (loopback VM, polling sampai 60 detik)
+{
+  "database": "ok",
+  "version": "13.3.1",
+  "commit": "da3aa3ff574e7dbbf808c66b6daa744defed0441"
+}
+NAME                   IMAGE                                                                                     COMMAND                  SERVICE   CREATED          STATUS         PORTS
+kyrion-mon-alloy-1     grafana/alloy@sha256:c958aef7294bc40c67caadb2bcecc93b95ab7961ff8afae3abee170d77426193     "/bin/alloy run /etc…"   alloy     2 seconds ago    Up 1 second    
+kyrion-mon-grafana-1   grafana/grafana@sha256:0615ec4fbd4072004b7d86b46ded63013a74b7d6eb1119273dd89e8fa25c13cf   "/run.sh"                grafana   13 minutes ago   Up 4 minutes   127.0.0.1:3001->3000/tcp
+kyrion-mon-loki-1      grafana/loki@sha256:b43c257ccfc925d4a50b8717cac61a3b51df8c48d01847936057e5c4075a24a7      "/usr/bin/loki -conf…"   loki      4 minutes ago    Up 4 minutes   3100/tcp
+-- port terbuka milik monitoring (harus hanya 127.0.0.1:3001)
+LISTEN 0      4096       127.0.0.1:3001      0.0.0.0:*    users:(("docker-proxy",pid=16181,fd=8))               
+-- jaringan logs internal
+true
+-- uji redaksi email: permintaan ke nginx dengan email sintetis di query
+{"status":"success","data":{"resultType":"streams","result":[],"stats":{"summary":{"bytesProcessedPerSecond":0,"linesProcessedPerSecond":0,"totalBytesProcessed":0,"totalLinesProcessed":0,"execTime":0.05723,"queueTime":0.002415,"subqueries":0,"totalEntriesReturned":0,"splits":2,"shards":2,"totalPostFilterLines":0,"totalStructuredMetadataBytesProcessed":0},"querier":{"store":{"totalChunksRef":0,"totalChunksDownloaded":0,"chunksDownloadTime":0,"queryReferencedStructuredMetadata":false,"queryUsedV2Engine":false,"chunk":{"headChunkBytes":0,"headChunkLines":0,"decompressedBytes":0,"decompressedLines":0,"compressedBytes":0,"totalDuplicates":0,"postFilterLines":0,"headChunkStructuredMetadataBytes":0,"decompressedStructuredMetadataBytes":0},"chunkRefsFetchTime":0,"congestionControlLatency":0,"pipelineWrapperFilteredLines":0,"dataobj":{"prePredicateDecompressedRows":0,"prePredicateDecompressedBytes":0,"prePredicateDecompressedStructuredMetadataBytes":0,"postPredicateRows":0,"postPredicateDecompressedBytes":0,"postPredicateStructuredMetadataBytes":0,"postFilterRows":0,"pagesScanned":0,"pagesDownloaded":0,"pagesDownloadedBytes":0,"pageBatches":0,"totalRowsAvailable":0,"totalPageDownloadTime":0}},"querierExecTime":0.061018},"ingester":{"totalReached":2,"totalChunksMatched":0,"totalBatches":2,"totalLinesSent":0,"store":{"totalChunksRef":0,"totalChunksDownloaded":0,"chunksDownloadTime":0,"queryReferencedStructuredMetadata":false,"queryUsedV2Engine":false,"chunk":{"headChunkBytes":0,"headChunkLines":0,"decompressedBytes":0,"decompressedLines":0,"compressedBytes":0,"totalDuplicates":0,"postFilterLines":0,"headChunkStructuredMetadataBytes":0,"decompressedStructuredMetadataBytes":0},"chunkRefsFetchTime":2850991,"congestionControlLatency":0,"pipelineWrapperFilteredLines":0,"dataobj":{"prePredicateDecompressedRows":0,"prePredicateDecompressedBytes":0,"prePredicateDecompressedStructuredMetadataBytes":0,"postPredicateRows":0,"postPredicateDecompressedBytes":0,"postPredicateStructuredMetadataBytes":0,"postFilterRows":0,"pagesScanned":0,"pagesDownloaded":0,"pagesDownloadedBytes":0,"pageBatches":0,"totalRowsAvailable":0,"totalPageDownloadTime":0}},"recvWaitTime":0.015274},"cache":{"chunk":{"entriesFound":0,"entriesRequested":0,"entriesStored":0,"bytesReceived":0,"bytesSent":0,"requests":0,"downloadTime":0,"queryLengthServed":0},"index":{"entriesFound":0,"entriesRequested":0,"entriesStored":0,"bytesReceived":0,"bytesSent":0,"requests":0,"downloadTime":0,"queryLengthServed":0},"result":{"entriesFound":0,"entriesRequested":0,"entriesStored":0,"bytesReceived":0,"bytesSent":0,"requests":0,"downloadTime":0,"queryLengthServed":0},"statsResult":{"entriesFound":0,"entriesRequested":0,"entriesStored":0,"bytesReceived":0,"bytesSent":0,"requests":0,"downloadTime":0,"queryLengthServed":0},"volumeResult":{"entriesFound":0,"entriesRequested":0,"entriesStored":0,"bytesReceived":0,"bytesSent":0,"requests":0,"downloadTime":0,"queryLengthServed":0},"seriesResult":{"entriesFound":0,"entriesRequested":0,"entriesStored":0,"bytesReceived":0,"bytesSent":0,"requests":0,"downloadTime":0,"queryLengthServed":0},"labelResult":{"entriesFound":0,"entriesRequested":0,"entriesStored":0,"bytesReceived":0,"bytesSent":0,"requests":0,"downloadTime":0,"queryLengthServed":0},"instantMetricResult":{"entriesFound":0,"entriesRequested":0,"entriesStored":0,"bytesReceived":0,"bytesSent":0,"requests":0,"downloadTime":0,"queryLengthServed":0}},"index":{"totalChunks":0,"postFilterChunks":0,"shardsDuration":0,"usedBloomFilters":false,"totalStreams":0,"chunkRefsLookupTime":0,"bloomFilterTime":0}}}}
+
+(harap: ada baris berisi uji=<email-disamarkan> dan tidak ada 'uji-redaksi@contoh.invalid'; overlay journald harus sudah dipasang ke app dan nginx)
+-- penggunaan disk
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda2        40G   29G  8.6G  77% /
+Local Volumes space usage:
+
+VOLUME NAME                LINKS     SIZE
+kyrion-mon_alloy-data      0         0B
+kyrion-mon_loki-data       1         213.2kB
+kyrion-mon_alloy-state     1         704B
+kyrion-vm_kyrion-pgdata    1         66.09MB
+kyrion-vm_kyrion-storage   1         1.26kB
+kyrion-mon_grafana-data    1         350.1MB
+
+Build cache usage: 9.808GB
+

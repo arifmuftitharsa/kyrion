@@ -1,0 +1,85 @@
+# Bukti simulasi deteksi D-1 serangan (Tugas 7)
+# Tanggal: 2026-11-25 07:44:52 UTC
+# Hash commit: caa36eb
+# Perintah: .\deploy\uji\10-deteksi-simulasi.ps1 -Skenario D-1 -Mode serangan
+# Kode keluar skrip VM: awal=0, pantau=0
+# Catatan menjalankan:
+# - Jalankan satu skenario per waktu; jarak antar run minimal 6 menit.
+# - D-3 juga butuh bucket log UFW penuh: jeda minimal 4 menit sejak lalu lintas UFW terakhir.
+# - Lalu lintas D-1 membuat IP laptop terkena pembatas nginx pada endpoint OTP sekitar satu menit.
+== A. keadaan awal (VM)
+[2026-11-25T07:41:52Z] Keadaan awal
+  rule D-1 Tebakan kode OTP pada sign-in | state=inactive health=ok | lastEvaluation=2026-11-25T07:41:30Z
+  instance D-1 Tebakan kode OTP pada sign-in {alertname=D-1 Tebakan kode OTP pada sign-in,grafana_folder=Kyrion Deteksi,ip=192.168.56.1,risk=R-14,rule=D-1,severity=high} | state=Normal (NoData) | activeAt=2026-11-25T07:30:30Z BELUM TERBUKTI: nilai tidak ada di API
+  rule D-2 Penolakan berulang pada rute admin dan API | state=inactive health=ok | lastEvaluation=2026-11-25T07:41:30Z
+  instance D-2 Penolakan berulang pada rute admin dan API {alertname=D-2 Penolakan berulang pada rute admin dan API,datasource_uid=kyrion-loki,grafana_folder=Kyrion Deteksi,ref_id=A,risk=R-03,R-15,rule=D-2,severity=medium} | state=Normal (NoData) | activeAt=2026-11-25T07:18:30Z BELUM TERBUKTI: nilai tidak ada di API
+  rule D-3 Pemindaian port yang diblokir UFW | state=inactive health=ok | lastEvaluation=2026-11-25T07:41:30Z
+  instance D-3 Pemindaian port yang diblokir UFW {alertname=D-3 Pemindaian port yang diblokir UFW,datasource_uid=kyrion-loki,grafana_folder=Kyrion Deteksi,ref_id=A,risk=R-09,R-15,rule=D-3,severity=medium} | state=Normal (NoData) | activeAt=2026-11-25T07:18:30Z BELUM TERBUKTI: nilai tidak ada di API
+jumlah rule: 3; jumlah alert instance: 3
+semua rule yang terbaca berstate inactive
+
+== jejak rahasia
+kata sandi tidak ditemukan di keluaran
+
+== B. lalu lintas dari laptop
+2026-11-25T07:41:55Z awal lalu lintas: D-1 serangan ke kyrion.test (192.168.56.101)
+2026-11-25T07:41:55Z [1/30] POST /api/auth/sign-in/email-otp -> HTTP 400
+2026-11-25T07:41:55Z [2/30] POST /api/auth/sign-in/email-otp -> HTTP 400
+2026-11-25T07:41:55Z [3/30] POST /api/auth/sign-in/email-otp -> HTTP 400
+2026-11-25T07:41:55Z [4/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [5/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [6/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [7/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [8/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [9/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [10/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [11/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [12/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [13/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [14/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [15/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [16/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [17/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [18/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [19/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [20/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:55Z [21/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:56Z [22/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:56Z [23/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:56Z [24/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:56Z [25/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:56Z [26/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:56Z [27/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:56Z [28/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:56Z [29/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+2026-11-25T07:41:56Z [30/30] POST /api/auth/sign-in/email-otp -> HTTP 429
+hitungan: 30 request; per status: 400=3, 429=27
+2026-11-25T07:41:56Z akhir lalu lintas: D-1 serangan
+
+== C. pantauan (VM)
+[2026-11-25T07:42:03Z] Pantau D-1 serangan: tiap 15 detik, detak tiap 60 detik, batas 480 detik
+2026-11-25T07:42:03Z keadaan dasar pantauan:
+  rule D-1 Tebakan kode OTP pada sign-in | state=inactive health=ok | lastEvaluation=2026-11-25T07:41:30Z
+  instance D-1 Tebakan kode OTP pada sign-in {alertname=D-1 Tebakan kode OTP pada sign-in,grafana_folder=Kyrion Deteksi,ip=192.168.56.1,risk=R-14,rule=D-1,severity=high} | state=Normal (NoData) | activeAt=2026-11-25T07:30:30Z BELUM TERBUKTI: nilai tidak ada di API
+  rule D-2 Penolakan berulang pada rute admin dan API | state=inactive health=ok | lastEvaluation=2026-11-25T07:41:30Z
+  instance D-2 Penolakan berulang pada rute admin dan API {alertname=D-2 Penolakan berulang pada rute admin dan API,datasource_uid=kyrion-loki,grafana_folder=Kyrion Deteksi,ref_id=A,risk=R-03,R-15,rule=D-2,severity=medium} | state=Normal (NoData) | activeAt=2026-11-25T07:18:30Z BELUM TERBUKTI: nilai tidak ada di API
+  rule D-3 Pemindaian port yang diblokir UFW | state=inactive health=ok | lastEvaluation=2026-11-25T07:41:30Z
+  instance D-3 Pemindaian port yang diblokir UFW {alertname=D-3 Pemindaian port yang diblokir UFW,datasource_uid=kyrion-loki,grafana_folder=Kyrion Deteksi,ref_id=A,risk=R-09,R-15,rule=D-3,severity=medium} | state=Normal (NoData) | activeAt=2026-11-25T07:18:30Z BELUM TERBUKTI: nilai tidak ada di API
+2026-11-25T07:42:33Z BERUBAH rule D-1 Tebakan kode OTP pada sign-in | state=inactive health=ok -> state=pending health=ok | lastEvaluation=2026-11-25T07:42:30Z
+2026-11-25T07:42:33Z BERUBAH instance D-1 Tebakan kode OTP pada sign-in {alertname=D-1 Tebakan kode OTP pada sign-in,grafana_folder=Kyrion Deteksi,ip=192.168.56.1,risk=R-14,rule=D-1,severity=high} | state=Normal (NoData) -> state=Pending | activeAt=2026-11-25T07:42:30Z value=1e+00
+2026-11-25T07:43:28Z detak: polling berhasil 4, gagal 0
+  rule D-1 Tebakan kode OTP pada sign-in | state=pending health=ok | lastEvaluation=2026-11-25T07:42:30Z
+  instance D-1 Tebakan kode OTP pada sign-in {alertname=D-1 Tebakan kode OTP pada sign-in,grafana_folder=Kyrion Deteksi,ip=192.168.56.1,risk=R-14,rule=D-1,severity=high} | state=Pending | activeAt=2026-11-25T07:42:30Z value=1e+00
+  rule D-2 Penolakan berulang pada rute admin dan API | state=inactive health=ok | lastEvaluation=2026-11-25T07:42:30Z
+  instance D-2 Penolakan berulang pada rute admin dan API {alertname=D-2 Penolakan berulang pada rute admin dan API,datasource_uid=kyrion-loki,grafana_folder=Kyrion Deteksi,ref_id=A,risk=R-03,R-15,rule=D-2,severity=medium} | state=Normal (NoData) | activeAt=2026-11-25T07:18:30Z BELUM TERBUKTI: nilai tidak ada di API
+  rule D-3 Pemindaian port yang diblokir UFW | state=inactive health=ok | lastEvaluation=2026-11-25T07:42:30Z
+  instance D-3 Pemindaian port yang diblokir UFW {alertname=D-3 Pemindaian port yang diblokir UFW,datasource_uid=kyrion-loki,grafana_folder=Kyrion Deteksi,ref_id=A,risk=R-09,R-15,rule=D-3,severity=medium} | state=Normal (NoData) | activeAt=2026-11-25T07:18:30Z BELUM TERBUKTI: nilai tidak ada di API
+2026-11-25T07:43:43Z BERUBAH rule D-1 Tebakan kode OTP pada sign-in | state=pending health=ok -> state=firing health=ok | lastEvaluation=2026-11-25T07:43:30Z
+2026-11-25T07:43:43Z BERUBAH instance D-1 Tebakan kode OTP pada sign-in {alertname=D-1 Tebakan kode OTP pada sign-in,grafana_folder=Kyrion Deteksi,ip=192.168.56.1,risk=R-14,rule=D-1,severity=high} | state=Pending -> state=Alerting | activeAt=2026-11-25T07:43:30Z value=1e+00
+[2026-11-25T07:43:43Z] pantauan berhenti sesudah 100 detik
+polling berhasil: 5; gagal: 0; transisi sesudah keadaan dasar: 4
+D-1 pertama teramati pending: 2026-11-25T07:42:33Z
+D-1 pertama teramati firing: 2026-11-25T07:43:43Z
+
+== jejak rahasia
+kata sandi tidak ditemukan di keluaran

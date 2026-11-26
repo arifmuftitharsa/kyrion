@@ -1,0 +1,110 @@
+# Bukti pemeriksaan sumber log deteksi (Tugas 7)
+# Tanggal: 2026-11-25 06:53:51 UTC
+# Hash commit: 0c6c45a
+# Perintah: .\deploy\uji\07-deteksi-periksa.ps1 (ssh -t kyrion-staging sudo bash 07-deteksi-periksa-vm.sh)
+# Kode keluar skrip VM: 0
+
+== 4. lalu lintas uji dari laptop (sebelum skrip VM)
+2026-11-25T06:51:51Z Test-NetConnection 192.168.56.101:8081 -> TcpTestSucceeded=False
+2026-11-25T06:52:17Z Test-NetConnection 192.168.56.101:8082 -> TcpTestSucceeded=False
+2026-11-25T06:52:17Z ssh -o BatchMode=yes -o ConnectTimeout=10 uji-tidak-ada@192.168.56.101
+Akses ke sistem ini hanya untuk pengguna berwenang. Aktivitas dapat dicatat. Server staging Kyrion (DATA SINTETIS).
+uji-tidak-ada@192.168.56.101: Permission denied (publickey).
+kode keluar ssh: 255
+
+[2026-11-25T06:52:32Z] Pemeriksaan sumber log (waktu UTC)
+
+== 1. nginx -T: log_format, access_log, error_log (konteks 2 baris)
+5-worker_processes  auto;
+6-
+7:error_log  /var/log/nginx/error.log notice;
+8-pid        /tmp/nginx.pid;
+9-
+--
+24-    default_type  application/octet-stream;
+25-
+26:    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+27-                      '$status $body_bytes_sent "$http_referer" '
+28-                      '"$http_user_agent" "$http_x_forwarded_for"';
+29-
+30:    access_log  /var/log/nginx/access.log  main;
+31-
+32-    sendfile        on;
+
+== 2. ufw status verbose
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp on enp0s8           ALLOW IN    192.168.56.1               # SSH-admin-laptop
+
+== 3. lalu lintas uji sintetis lewat nginx
+2026-11-25T06:52:32Z GET / -> HTTP 307
+2026-11-25T06:52:32Z GET /admin -> HTTP 307
+2026-11-25T06:52:32Z POST /api/v1/regulations/uji/versions/uji/approval -> HTTP 401
+2026-11-25T06:52:32Z POST /api/auth/sign-in/email-otp -> HTTP 400
+
+[2026-11-25T06:52:32Z] menunggu 20 detik
+
+== 5a. lima baris terakhir {container="kyrion-vm-nginx-1"} di Loki (rentang 10 menit)
+2026-11-25T06:52:32Z level=info 172.19.0.1 - - [25/Nov/2026:06:52:32 +0000] "GET / HTTP/2.0" 307 6 "-" "curl/8.5.0" "-"
+2026-11-25T06:52:32Z level=info 172.19.0.1 - - [25/Nov/2026:06:52:32 +0000] "GET /admin HTTP/2.0" 307 6 "-" "curl/8.5.0" "-"
+2026-11-25T06:52:32Z level=info 172.19.0.1 - - [25/Nov/2026:06:52:32 +0000] "POST /api/v1/regulations/uji/versions/uji/approval HTTP/2.0" 401 154 "-" "curl/8.5.0" "-"
+2026-11-25T06:52:32Z level=info 172.19.0.1 - - [25/Nov/2026:06:52:32 +0000] "POST /api/auth/sign-in/email-otp HTTP/2.0" 400 63 "-" "curl/8.5.0" "-"
+baris 'limiting requests', rentang 10m: 0 baris   [query: {container="kyrion-vm-nginx-1"} |= "limiting requests"]
+BELUM TERBUKTI: baris 'limiting requests' (0 baris)
+
+== 5b. journal kernel, pola UFW (10 menit, maksimal 20 baris)
+[UFW BLOCK] IN=enp0s8 OUT= MAC=08:00:27:78:5c:0b:0a:00:27:00:00:0d:08:00 SRC=192.168.56.1 DST=192.168.56.101 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=51208 DF PROTO=TCP SPT=13322 DPT=8081 WINDOW=65535 RES=0x00 SYN URGP=0 
+[UFW BLOCK] IN=enp0s8 OUT= MAC=08:00:27:78:5c:0b:0a:00:27:00:00:0d:08:00 SRC=192.168.56.1 DST=192.168.56.101 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=51209 DF PROTO=TCP SPT=13322 DPT=8081 WINDOW=65535 RES=0x00 SYN URGP=0 
+[UFW BLOCK] IN=enp0s8 OUT= MAC=08:00:27:78:5c:0b:0a:00:27:00:00:0d:08:00 SRC=192.168.56.1 DST=192.168.56.101 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=51210 DF PROTO=TCP SPT=13322 DPT=8081 WINDOW=65535 RES=0x00 SYN URGP=0 
+[UFW BLOCK] IN=enp0s8 OUT= MAC=08:00:27:78:5c:0b:0a:00:27:00:00:0d:08:00 SRC=192.168.56.1 DST=192.168.56.101 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=51211 DF PROTO=TCP SPT=13322 DPT=8081 WINDOW=65535 RES=0x00 SYN URGP=0 
+[UFW BLOCK] IN=enp0s8 OUT= MAC=08:00:27:78:5c:0b:0a:00:27:00:00:0d:08:00 SRC=192.168.56.1 DST=192.168.56.101 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=51212 DF PROTO=TCP SPT=13322 DPT=8081 WINDOW=65535 RES=0x00 SYN URGP=0 
+[UFW BLOCK] IN=enp0s8 OUT= MAC=08:00:27:78:5c:0b:0a:00:27:00:00:0d:08:00 SRC=192.168.56.1 DST=192.168.56.101 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=51217 DF PROTO=TCP SPT=13324 DPT=8082 WINDOW=65535 RES=0x00 SYN URGP=0 
+[UFW BLOCK] IN=enp0s8 OUT= MAC=08:00:27:78:5c:0b:0a:00:27:00:00:0d:08:00 SRC=192.168.56.1 DST=192.168.56.101 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=51218 DF PROTO=TCP SPT=13324 DPT=8082 WINDOW=65535 RES=0x00 SYN URGP=0 
+[UFW BLOCK] IN=enp0s8 OUT= MAC=08:00:27:78:5c:0b:0a:00:27:00:00:0d:08:00 SRC=192.168.56.1 DST=192.168.56.101 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=51219 DF PROTO=TCP SPT=13324 DPT=8082 WINDOW=65535 RES=0x00 SYN URGP=0 
+[UFW BLOCK] IN=enp0s8 OUT= MAC=08:00:27:78:5c:0b:0a:00:27:00:00:0d:08:00 SRC=192.168.56.1 DST=192.168.56.101 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=51220 DF PROTO=TCP SPT=13324 DPT=8082 WINDOW=65535 RES=0x00 SYN URGP=0 
+[UFW BLOCK] IN=enp0s8 OUT= MAC=08:00:27:78:5c:0b:0a:00:27:00:00:0d:08:00 SRC=192.168.56.1 DST=192.168.56.101 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=51221 DF PROTO=TCP SPT=13324 DPT=8082 WINDOW=65535 RES=0x00 SYN URGP=0 
+
+== 5c. journal ssh.service (10 menit, maksimal 20 baris)
+User child is on pid 10650
+pam_unix(sshd:session): session closed for user arif
+Connection from 192.168.56.1 port 13321 on 192.168.56.101 port 22 rdomain ""
+Accepted key ED25519 SHA256:<disamarkan> found at /home/arif/.ssh/authorized_keys:1
+Postponed publickey for arif from 192.168.56.1 port 13321 ssh2 [preauth]
+Accepted key ED25519 SHA256:<disamarkan> found at /home/arif/.ssh/authorized_keys:1
+Accepted publickey for arif from 192.168.56.1 port 13321 ssh2: ED25519 SHA256:<disamarkan>
+pam_unix(sshd:session): session opened for user arif(uid=1000) by arif(uid=0)
+User child is on pid 10700
+pam_unix(sshd:session): session closed for user arif
+Connection from 192.168.56.1 port 13325 on 192.168.56.101 port 22 rdomain ""
+Invalid user uji-tidak-ada from 192.168.56.1 port 13325
+Connection reset by invalid user uji-tidak-ada 192.168.56.1 port 13325 [preauth]
+Connection from 192.168.56.1 port 13326 on 192.168.56.101 port 22 rdomain ""
+Accepted key ED25519 SHA256:<disamarkan> found at /home/arif/.ssh/authorized_keys:1
+Postponed publickey for arif from 192.168.56.1 port 13326 ssh2 [preauth]
+Accepted key ED25519 SHA256:<disamarkan> found at /home/arif/.ssh/authorized_keys:1
+Accepted publickey for arif from 192.168.56.1 port 13326 ssh2: ED25519 SHA256:<disamarkan>
+pam_unix(sshd:session): session opened for user arif(uid=1000) by arif(uid=0)
+User child is on pid 11060
+
+== 5d. label dan nilainya di Loki
+stream {job="loki.source.journal.kernel"} (12 jam)
+  job: loki.source.journal.kernel
+  level: debug,emerg,error,info,notice,warning
+  service_name: loki.source.journal.kernel
+  unit: systemd-journald.service
+stream {job="loki.source.journal.sshd"} (12 jam)
+  job: loki.source.journal.sshd
+  level: info
+  service_name: loki.source.journal.sshd
+  unit: ssh.service
+
+== 5e. baris kernel di Loki
+semua baris kernel (pembanding), rentang 12h: 1805 baris   [query: {job="loki.source.journal.kernel"}]
+baris kernel tanpa '[UFW ', rentang 12h: 1816 baris   [query: {job="loki.source.journal.kernel"} != "[UFW "]
+
+[2026-11-25T06:53:42Z] selesai

@@ -1,0 +1,83 @@
+# Bukti pemasangan rule alert deteksi (Tugas 7)
+# Tanggal: 2026-11-25 07:20:19 UTC
+# Hash commit: a7f4ea8
+# Perintah: .\deploy\uji\09-deteksi-pasang.ps1 (ssh -t kyrion-staging sudo bash 09-deteksi-pasang-vm.sh)
+# Kode keluar skrip VM: 0
+
+[2026-11-25T07:17:51Z] Pasang dan periksa rule alert (waktu UTC)
+== 1. pasang rules.yaml
+sama dengan kiriman (cmp)
+5572 byte, mode 644, root:root, /srv/kyrion/monitoring/grafana/provisioning/alerting/rules.yaml
+folder mode 755, root:root, /srv/kyrion/monitoring/grafana/provisioning/alerting
+
+== 2. restart Grafana; waktu awal 2026-11-25T07:17:52Z
+ Container kyrion-mon-grafana-1 Restarting 
+ Container kyrion-mon-grafana-1 Started 
+
+== 3. tunggu /api/health (maksimal 60 detik)
+2026-11-25T07:18:09Z database ok
+{
+  "database": "ok",
+  "version": "13.3.1",
+  "commit": "da3aa3ff574e7dbbf808c66b6daa744defed0441"
+}
+
+== 4. log Grafana sejak 2026-11-25T07:17:52Z: provisioning, alerting, level=error, level=warn
+jumlah baris cocok: 43 (ditampilkan maksimal 40 baris pertama)
+grafana-1  | logger=backgroundsvcs.managerAdapter t=2026-11-25T07:17:52.274479607Z level=info msg="module stopped" module=provisioning
+grafana-1  | logger=settings t=2026-11-25T07:17:56.244138613Z level=warn msg="Deprecation Notice: The [security]x_xss_protection setting is enabled, but it will be removed in a future major version. Support for it has been removed by browsers. Consider disabling it in the meantime and using [security]content_security_policy instead."
+grafana-1  | logger=settings t=2026-11-25T07:17:56.246388803Z level=info msg="Config overridden from command line" arg="default.paths.provisioning=/etc/grafana/provisioning"
+grafana-1  | logger=settings t=2026-11-25T07:17:56.246397934Z level=info msg="Config overridden from Environment variable" var="GF_PATHS_PROVISIONING=/etc/grafana/provisioning"
+grafana-1  | logger=settings t=2026-11-25T07:17:56.246429124Z level=info msg="Path Provisioning" path=/etc/grafana/provisioning
+grafana-1  | logger=featuremgmt t=2026-11-25T07:17:56.250550168Z level=info msg=FeatureToggles alertRuleRestore=true alertingListViewV2=true alertingNavigationV2=true alertingNotificationHistory=true alertingRuleRecoverDeleted=true alertingTriage=true alertingUIUseBackendFilters=true alertingUIUseFullyCompatBackendFilters=true alertingUseNewSimplifiedRoutingHashAlgorithm=true annotationPermissionUpdate=true auditLoggingAppPlatform=true awsAsyncQueryCaching=true awsDatasourcesTempCredentials=true azureMonitorEnableUserAuth=true azureMonitorPrometheusExemplars=true azureResourcePickerUpdates=true cloudWatchCrossAccountQuerying=true cloudWatchNewLabelParsing=true cloudWatchRoundUpEndTime=true dashboard.recentlyDeletedViaTrash=true dashboardNewLayouts=true datasources.azureMonitorBatchAPI=true datetime.useLuxon=true disableScriptedDashboards=true enableSCIM=true feedbackButton=true foldersAppPlatformAPI=true grafana.announcementBannerDismissible=true grafana.dashboardAutoGridDefault=true grafana.dashboardSettingsRedesign=true grafana.filterablePanels=true grafana.newPanelQueryErrorsUI=true grafana.queryVarEditorRedesign=true grafana.recordedQueriesDisableCreate=true grafana.scenesFlickeringFix=true grafana.thresholdsInterpolation=true grafana.unifiedDataSourcePicker=true grafana.viewPanelPane=true grafanaAssistantInProfilesDrilldown=true inlineLogDetailsNoScrolls=true kubernetesAuthzTeamLBACRuleApi=true logsTablePanelNG=true lokiAlignedQuerySplitting=true lokiLabelNamesQueryApi=true lokiQuerySplitting=true newClickhouseConfigPageDesign=true newSavedQueriesExperience=true onlyStoreActionSets=true otelLogsFormatting=true panelTimeSettings=true profilesHeatmap=true prometheusAzureOverrideAudience=true prometheusTypeMigration=true provisioningFolderMetadata=true pyroscopeUTF8LabelNames=true queryLibrary=true rememberUserOrgForSso=true renderAuthJWT=true savedQueriesRBAC=true sqlExpressions=true timeComparison=true useKubernetesShortURLsAPI=true useSessionStorageForRedirection=true
+grafana-1  | logger=plugins.dedupe t=2026-11-25T07:18:04.183759611Z level=warn msg="Skipping loading of plugin as it's a duplicate" pluginId=cloudwatch
+grafana-1  | logger=plugins.dedupe t=2026-11-25T07:18:04.186884412Z level=warn msg="Skipping loading of plugin as it's a duplicate" pluginId=elasticsearch
+grafana-1  | logger=plugins.dedupe t=2026-11-25T07:18:04.81531154Z level=warn msg="Skipping loading of plugin as it's a duplicate" pluginId=influxdb
+grafana-1  | logger=plugins.dedupe t=2026-11-25T07:18:05.946975722Z level=warn msg="Skipping loading of plugin as it's a duplicate" pluginId=prometheus
+grafana-1  | logger=plugins.dedupe t=2026-11-25T07:18:05.954631528Z level=warn msg="Skipping loading of plugin as it's a duplicate" pluginId=stackdriver
+grafana-1  | logger=plugins.dedupe t=2026-11-25T07:18:05.967431311Z level=warn msg="Skipping loading of plugin as it's a duplicate" pluginId=tempo
+grafana-1  | logger=plugins.dedupe t=2026-11-25T07:18:05.971399926Z level=warn msg="Skipping loading of plugin as it's a duplicate" pluginId=zipkin
+grafana-1  | logger=search-manifest-watcher t=2026-11-25T07:18:06.017211578Z level=warn msg="manifest watcher: source listed zero manifests" source=discovery
+grafana-1  | logger=search-manifest-watcher t=2026-11-25T07:18:06.017339095Z level=warn msg="manifest watcher poll cycle: zero manifests, keeping previous set"
+grafana-1  | logger=provisioning.stub t=2026-11-25T07:18:06.056363221Z level=warn msg="can't read dashboard provisioning files from directory" path=/etc/grafana/provisioning/dashboards error="open /etc/grafana/provisioning/dashboards: no such file or directory"
+grafana-1  | logger=provisioning.dashboard t=2026-11-25T07:18:06.091570923Z level=error msg="can't read dashboard provisioning files from directory" path=/etc/grafana/provisioning/dashboards error="open /etc/grafana/provisioning/dashboards: no such file or directory"
+grafana-1  | logger=grafana-apiserver t=2026-11-25T07:18:06.588873701Z level=info msg="Adding GroupVersion provisioning.grafana.app v0alpha1 to ResourceManager"
+grafana-1  | logger=grafana-apiserver t=2026-11-25T07:18:06.590151744Z level=info msg="Adding GroupVersion provisioning.grafana.app v1beta1 to ResourceManager"
+grafana-1  | logger=grafana-apiserver t=2026-11-25T07:18:06.614687274Z level=info msg="Adding GroupVersion rules.alerting.grafana.app v1beta1 to ResourceManager"
+grafana-1  | logger=grafana-apiserver t=2026-11-25T07:18:06.618362928Z level=info msg="Adding GroupVersion rules.alerting.grafana.app v0alpha1 to ResourceManager"
+grafana-1  | t=2026-11-25T07:18:06.618555282Z level=info caller=logger.go:218 time=2026-11-25T07:18:06.618549058Z msg="Installed APIs for app" app=alerting
+grafana-1  | logger=grafana-apiserver t=2026-11-25T07:18:06.623360611Z level=info msg="Adding GroupVersion notifications.alerting.grafana.app v1beta1 to ResourceManager"
+grafana-1  | logger=grafana-apiserver t=2026-11-25T07:18:06.624817128Z level=info msg="Adding GroupVersion notifications.alerting.grafana.app v0alpha1 to ResourceManager"
+grafana-1  | t=2026-11-25T07:18:06.625279762Z level=info caller=logger.go:218 time=2026-11-25T07:18:06.625266371Z msg="Installed APIs for app" app=alerting-notifications
+grafana-1  | logger=grafana-apiserver t=2026-11-25T07:18:06.627596559Z level=info msg="Adding GroupVersion historian.alerting.grafana.app v0alpha1 to ResourceManager"
+grafana-1  | t=2026-11-25T07:18:06.627752641Z level=info caller=logger.go:218 time=2026-11-25T07:18:06.627747149Z msg="Installed APIs for app" app=alerting-historian
+grafana-1  | t=2026-11-25T07:18:07.168295512Z level=info caller=logger.go:218 time=2026-11-25T07:18:07.168289157Z msg="App initialized" app=alerting-notifications
+grafana-1  | t=2026-11-25T07:18:07.168448487Z level=info caller=logger.go:218 time=2026-11-25T07:18:07.168444237Z msg="App initialized" app=alerting-historian
+grafana-1  | t=2026-11-25T07:18:07.168473397Z level=info caller=logger.go:218 time=2026-11-25T07:18:07.168464948Z msg="App initialized" app=alerting
+grafana-1  | logger=backgroundsvcs.managerAdapter t=2026-11-25T07:18:07.192831426Z level=info msg=starting module=provisioning
+grafana-1  | logger=provisioning.plugins t=2026-11-25T07:18:07.243466338Z level=error msg="Failed to read plugin provisioning files from directory" path=/etc/grafana/provisioning/plugins error="open /etc/grafana/provisioning/plugins: no such file or directory"
+grafana-1  | logger=provisioning.alerting t=2026-11-25T07:18:07.248757699Z level=info msg="starting to provision alerting"
+grafana-1  | t=2026-11-25T07:18:07.294486623Z level=info caller=logger.go:218 time=2026-11-25T07:18:07.294470456Z msg="Starting ConnectionController" logger=provisioning-connection-controller
+grafana-1  | t=2026-11-25T07:18:07.294643417Z level=info caller=logger.go:218 time=2026-11-25T07:18:07.294633654Z msg="Starting workers" logger=provisioning-connection-controller count=1
+grafana-1  | t=2026-11-25T07:18:07.296731108Z level=info caller=logger.go:218 time=2026-11-25T07:18:07.296724773Z msg="Started workers" logger=provisioning-connection-controller
+grafana-1  | t=2026-11-25T07:18:07.297118171Z level=info caller=logger.go:218 time=2026-11-25T07:18:07.297108259Z msg="Starting RepositoryController" logger=provisioning-repository-controller
+grafana-1  | t=2026-11-25T07:18:07.29716639Z level=info caller=logger.go:218 time=2026-11-25T07:18:07.297162401Z msg="Starting workers" logger=provisioning-repository-controller count=1
+grafana-1  | t=2026-11-25T07:18:07.297543801Z level=info caller=logger.go:218 time=2026-11-25T07:18:07.297538078Z msg="Started workers" logger=provisioning-repository-controller
+grafana-1  | logger=provisioning.alerting t=2026-11-25T07:18:07.378883408Z level=info msg="finished to provision alerting"
+
+== 6. rule menurut API provisioning
+uid=kyrion-d1-tebak-otp | title=D-1 Tebakan kode OTP pada sign-in | folderUID=fg5cf1a2wd7nka | for=1m | noDataState=OK | execErrState=Error | labels={"risk": "R-14", "rule": "D-1", "severity": "high"}
+uid=kyrion-d2-rute-sensitif | title=D-2 Penolakan berulang pada rute admin dan API | folderUID=fg5cf1a2wd7nka | for=1m | noDataState=OK | execErrState=Error | labels={"risk": "R-03,R-15", "rule": "D-2", "severity": "medium"}
+uid=kyrion-d3-pindai-port | title=D-3 Pemindaian port yang diblokir UFW | folderUID=fg5cf1a2wd7nka | for=1m | noDataState=OK | execErrState=Error | labels={"risk": "R-09,R-15", "rule": "D-3", "severity": "medium"}
+
+[2026-11-25T07:18:09Z] menunggu 75 detik (satu siklus evaluasi)
+
+== 7. status evaluasi rule
+name=D-1 Tebakan kode OTP pada sign-in | state=inactive | health=ok | lastError=(tidak ada) | lastEvaluation=2026-11-25T07:18:30Z
+name=D-2 Penolakan berulang pada rute admin dan API | state=inactive | health=ok | lastError=(tidak ada) | lastEvaluation=2026-11-25T07:18:30Z
+name=D-3 Pemindaian port yang diblokir UFW | state=inactive | health=ok | lastError=(tidak ada) | lastEvaluation=0001-01-01T00:00:00Z
+
+[2026-11-25T07:20:11Z] selesai
+
+== 8. jejak rahasia
+kata sandi tidak ditemukan di keluaran

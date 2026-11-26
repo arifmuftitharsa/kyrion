@@ -1,0 +1,38 @@
+# Bukti header keamanan HTTP dan HSTS yang keluar dari nginx di VM staging (R-10, T-15)
+# Tanggal: 2026-11-26
+# Rilis: sec-0.3
+# Konfigurasi yang diuji: deploy/nginx/kyrion.conf baris 38 (add_header Strict-Transport-Security "max-age=300" always;)
+# Perintah (di VM): date -u; curl -skI --resolve kyrion.test:443:127.0.0.1 https://kyrion.test/masuk; curl -sI http://127.0.0.1/ -H "Host: kyrion.test"
+# Catatan: disalin apa adanya dari terminal Arif. -k dipakai karena sertifikat berasal dari CA lokal kyrion.test. Tidak ada cookie atau kata sandi yang dikirim.
+# Batas bukti: permintaan dari dalam VM (127.0.0.1), bukan dari laptop; membuktikan header yang keluar dari nginx, bukan perilaku peramban menyimpan HSTS. Atribut cookie Secure TIDAK dibuktikan di sini.
+
+Thu Nov 26 04:15:03 AM UTC 2026
+== HTTPS /masuk
+HTTP/2 200 
+server: nginx
+date: Thu, 26 Nov 2026 04:15:04 GMT
+content-type: text/html; charset=utf-8
+x-content-type-options: nosniff
+x-frame-options: DENY
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+link: </_next/static/media/797e433ab948586e-s.p.0r6juujl39pe6.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </_next/static/media/caa3a2e1cccd8315-s.p.0wgildi0cnwt9.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2"
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+strict-transport-security: max-age=300
+
+== HTTP port 80
+HTTP/1.1 301 Moved Permanently
+Server: nginx
+Date: Thu, 26 Nov 2026 04:15:04 GMT
+Content-Type: text/html
+Content-Length: 162
+Connection: keep-alive
+Location: https://kyrion.test/
+
+# Catatan hasil:
+# 1. Respons HTTPS memuat strict-transport-security: max-age=300 (sesuai konfigurasi: tanpa includeSubDomains dan preload).
+# 2. Empat header dasar aplikasi hadir: x-content-type-options, x-frame-options, referrer-policy, permissions-policy.
+# 3. Port 80 menjawab 301 ke https://kyrion.test/ dan tidak memuat header HSTS.
+# 4. Header "server: nginx" tanpa nomor versi (server_tokens off). Header X-Powered-By tidak ada.
+# 5. CSP (Content-Security-Policy) tidak ada pada respons; sesuai catatan docs/keamanan.md bahwa CSP belum ada.

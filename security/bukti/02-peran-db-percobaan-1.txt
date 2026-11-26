@@ -1,0 +1,56 @@
+# Bukti uji peran DB terpisah (Tugas 2, R-13, T-18)
+# Tanggal: 2026-11-22 08:26:11 UTC
+# Hash commit: 8d39769
+# Perintah: ssh -t kyrion-staging bash /tmp/kyrion-uji-02/uji-negatif-peran.sh --terapkan-roles
+# Kode keluar uji: 1
+
+Uji peran DB, mulai 2026-11-22T08:25:52Z (UTC)
+[2026-11-22T08:25:59Z] Menerapkan roles.sql sebagai superuser bootstrap
+[2026-11-22T08:25:59Z] roles.sql selesai, kode keluar 0
+== Atribut peran ==
+[2026-11-22T08:25:59Z] LULUS  jumlah peran kyrion_ddl dan kyrion_app = 2
+[2026-11-22T08:26:00Z] LULUS  peran dengan superuser/createrole/createdb/replication/bypassrls = 0
+[2026-11-22T08:26:00Z] LULUS  tabel public yang pemiliknya bukan kyrion_ddl = 0
+[2026-11-22T08:26:00Z] Hak kyrion_app per tabel (sebagai kyrion_app)
+  table_name   |             hak             
+---------------+-----------------------------
+ accounts      | DELETE,INSERT,SELECT,UPDATE
+ audit_logs    | INSERT,SELECT
+ categories    | DELETE,INSERT,SELECT,UPDATE
+ changes       | DELETE,INSERT,SELECT,UPDATE
+ regulations   | DELETE,INSERT,SELECT,UPDATE
+ sessions      | DELETE,INSERT,SELECT,UPDATE
+ signing_keys  | SELECT
+ users         | INSERT,SELECT,UPDATE
+ verifications | DELETE,INSERT,SELECT,UPDATE
+ versions      | DELETE,INSERT,SELECT,UPDATE
+(10 rows)
+
+[2026-11-22T08:26:00Z] Peran non-sistem (sebagai kyrion_app)
+  rolname   | rolsuper | rolcreaterole | rolcreatedb | rolreplication | rolbypassrls | rolcanlogin 
+------------+----------+---------------+-------------+----------------+--------------+-------------
+ kyrion     | t        | t             | t           | t              | t            | t
+ kyrion_app | f        | f             | f           | f              | f            | t
+ kyrion_ddl | f        | f             | f           | f              | f            | t
+(3 rows)
+
+== kyrion_app: yang harus ditolak ==
+[2026-11-22T08:26:00Z] LULUS  kyrion_app ditolak: CREATE TABLE | psql:<stdin>:1: ERROR:  permission denied for schema public
+[2026-11-22T08:26:01Z] LULUS  kyrion_app ditolak: CREATE ROLE | psql:<stdin>:1: ERROR:  permission denied to create role
+[2026-11-22T08:26:01Z] LULUS  kyrion_app ditolak: UPDATE audit_logs | psql:<stdin>:1: ERROR:  permission denied for table audit_logs
+[2026-11-22T08:26:01Z] LULUS  kyrion_app ditolak: DELETE audit_logs | psql:<stdin>:1: ERROR:  permission denied for table audit_logs
+[2026-11-22T08:26:01Z] LULUS  kyrion_app ditolak: TRUNCATE audit_logs | psql:<stdin>:1: ERROR:  permission denied for table audit_logs
+[2026-11-22T08:26:01Z] LULUS  kyrion_app ditolak: DELETE signing_keys | psql:<stdin>:1: ERROR:  permission denied for table signing_keys
+[2026-11-22T08:26:02Z] LULUS  kyrion_app ditolak: SELECT _prisma_migrations | psql:<stdin>:1: ERROR:  permission denied for table _prisma_migrations
+== kyrion_app: yang harus berhasil ==
+[2026-11-22T08:26:02Z] LULUS  kyrion_app berhasil: SELECT audit_logs
+[2026-11-22T08:26:02Z] LULUS  kyrion_app berhasil: SELECT signing_keys
+[2026-11-22T08:26:02Z] GAGAL  kyrion_app seharusnya berhasil: INSERT audit_logs (dibatalkan, butuh minimal satu baris users) | psql:<stdin>:1: ERROR:  division by zero
+[2026-11-22T08:26:02Z] LULUS  kyrion_app berhasil: DML normal pada categories (INSERT, UPDATE, DELETE, dibatalkan)
+== kyrion_ddl ==
+[2026-11-22T08:26:02Z] LULUS  kyrion_ddl berhasil: login dan SELECT users
+[2026-11-22T08:26:03Z] LULUS  kyrion_ddl berhasil: DDL: CREATE, ALTER (tabel yang ada), DROP (dibatalkan)
+[2026-11-22T08:26:03Z] LULUS  kyrion_ddl ditolak: CREATE ROLE (bukan CREATEROLE) | psql:<stdin>:1: ERROR:  permission denied to create role
+
+Ringkasan: 16 lulus, 1 gagal, selesai 2026-11-22T08:26:03Z (UTC)
+Belum diuji di skrip ini: prisma migrate deploy nyata sebagai kyrion_ddl (butuh diff compose diterapkan) dan alur aplikasi sebagai kyrion_app.

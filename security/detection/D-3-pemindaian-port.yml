@@ -1,0 +1,74 @@
+title: D-3 Pemindaian port yang diblokir UFW
+id: ced4797e-688f-4977-9534-5afdb22b5623
+status: test
+description: Satu alamat sumber tercatat diblokir UFW pada banyak port tujuan (DPT) berbeda.
+
+logsource:
+  product: loki
+  datasource_uid: kyrion-loki
+  job: loki.source.journal.kernel
+  labels:
+    job: loki.source.journal.kernel
+  bentuk_baris: '[UFW BLOCK] IN=enp0s8 ... SRC=<ip> ... DPT=<port> ...'
+  catatan: >-
+    Stream kernel juga berisi baris non-UFW (08-deteksi-uji.txt baris 48), sehingga query menyaring sendiri
+    teks "[UFW BLOCK]".
+
+query: |-
+  count by (src) (sum by (src, dpt) (count_over_time({job="loki.source.journal.kernel"} |= "[UFW BLOCK]" | regexp `SRC=(?P<src>\S+) .*DPT=(?P<dpt>\d+)` | dpt!="" [5m])))
+
+window: 5m
+
+threshold:
+  operator: gt
+  value: 3  # minimal 4 DPT berbeda
+  alasan: >-
+    Dari SATU pengukuran: pemindaian 30 port (9001-9030) hanya menghasilkan 10 baris [UFW BLOCK] dengan 5 DPT berbeda
+    (security/bukti/08-deteksi-uji.txt baris 11-19 dan 32-34). Aturan log UFW dibatasi 3 per menit dengan burst 10
+    (baris 27-30). Pembatas itu sebagai penyebab hanya 5 DPT tercatat adalah penjelasan yang cocok dengan angka
+    tersebut, belum diuji terpisah. Akibatnya ambang 20 pada slide tidak mungkin tercapai pada kondisi ini (isi slide
+    tidak ada di repo: belum terbukti). Ambang minimal 4 belum divalidasi dengan pengukuran kedua maupun lalu lintas
+    normal.
+
+level: medium
+tags:
+  - attack.t1046  # USUL, harus diverifikasi Arif di attack.mitre.org
+related_risk:
+  - R-09
+  - R-15
+
+catatan_risiko: >-
+  Sebelum dikoreksi 2026-11-26, teks R-09 di security/risk-register.md menyebut D-3 sebagai deteksi percobaan SSH. Itu
+  bertentangan dengan definisi rule ini (pemindaian port).
+
+bukti:
+  - berkas: security/bukti/08-deteksi-uji.txt
+    isi: >-
+      Baris 27-30: aturan LOG dengan limit 3/min burst 10. Baris 32-34: sejak awal uji, 10 baris [UFW BLOCK] dan 5 DPT
+      berbeda dari 192.168.56.1. Baris 38: nilai label job. Baris 65-66: query hitung DPT dengan jendela [15m] dijawab
+      Loki, hasil 7. Baris 68-69: 20 baris per src. Jendela 15 menit itu juga memuat lalu lintas uji sebelumnya.
+  - berkas: security/bukti/07-deteksi-periksa.txt
+    isi: >-
+      Baris 61-70: bentuk baris [UFW BLOCK]; 10 baris untuk dua port (8081 dan 8082), 5 baris per port.
+  - belum_terbukti: >-
+      Query dengan jendela [5m], alert yang benar-benar Firing, pengulangan pengukuran, dan perilaku untuk UDP atau IPv6.
+
+false_positive:
+  - Perangkat atau layanan sah di jaringan yang mencoba beberapa port tertutup, termasuk paket UDP siaran. Belum terbukti.
+  - Uji firewall atau pemindaian oleh operator sendiri dari alamat admin.
+
+batas:
+  - >-
+    Bucket pembatas log dipakai bersama: aturan limit di rantai UFW tidak dipisah per sumber (baris 28 dan 30 pada
+    08-deteksi-uji.txt). Lalu lintas terblokir lain, atau banyak paket ke satu port, dapat menghabiskan kuota sehingga
+    port berikutnya tidak tercatat (dampaknya belum diuji).
+  - >-
+    Port yang dipublikasikan Docker ditangani DOCKER-USER. Aturan DROP di sana tidak punya target LOG
+    (security/bukti/firewall-konfigurasi.txt baris 19-24), sehingga tidak tercatat sebagai [UFW BLOCK] (belum diuji
+    dengan lalu lintas).
+  - Pemindaian lambat, 3 DPT berbeda atau kurang tercatat dalam 5 menit, bisa lolos.
+  - Jumlah DPT tercatat bukan jumlah port yang dipindai.
+  - Baris tanpa DPT (mis. ICMP) tidak dihitung.
+  - Pemindaian dari banyak alamat sumber dihitung per src, sehingga bisa lolos.
+  - Bila banyak sekali pasangan src dan dpt tercatat, batas jumlah seri Loki dapat menggagalkan query (belum terbukti).
+  - Percobaan masuk SSH tidak dideteksi rule ini.

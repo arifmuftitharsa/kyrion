@@ -1,0 +1,15 @@
+[Unit]
+Description=Backup terenkripsi Kyrion (dump db, volume storage, kunci; age)
+Documentation=file:///srv/kyrion/backup/bin/backup.sh
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/srv/kyrion/backup/bin/backup.sh
+Nice=10
+NoNewPrivileges=true
+ProtectHome=true
+ProtectSystem=full
+TimeoutStartSec=30min

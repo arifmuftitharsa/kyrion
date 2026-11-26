@@ -1,0 +1,44 @@
+# Konfigurasi efektif firewall VM kyrion-staging (UFW, DOCKER-USER, soket, container). Kyrion v0.3, konfigurasi dari commit cc27253, bukti diambil pada HEAD 1586d47.
+# Waktu UTC (jam VM): 2026-11-22T06:36:16Z.
+# Perintah (di VM, lewat ssh -t kyrion-staging): date -u +%FT%TZ; sudo ufw status verbose; sudo iptables -S DOCKER-USER; sudo iptables -S FORWARD | head -5; sudo ss -tlnp | cut -c1-110; sudo docker ps --format {{.Names}}:{{.Ports}}
+# Kontrol: R-09 (T-23). Aturan SSH dibatasi ke satu alamat admin (192.168.56.1); aturan DOCKER-USER untuk 80 dan 443 memakai subnet host-only 192.168.56.0/24 (hanya berisi laptop dan VM).
+---WAKTU-VM-UTC---
+2026-11-22T06:36:16Z
+---UFW---
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp on enp0s8           ALLOW IN    192.168.56.1               # SSH-admin-laptop
+
+---DOCKER-USER---
+-N DOCKER-USER
+-A DOCKER-USER -m conntrack --ctstate RELATED,ESTABLISHED -j RETURN
+-A DOCKER-USER -s 192.168.56.0/24 -i enp0s8 -p tcp -m conntrack --ctorigdstport 80 -j RETURN
+-A DOCKER-USER -s 192.168.56.0/24 -i enp0s8 -p tcp -m conntrack --ctorigdstport 443 -j RETURN
+-A DOCKER-USER -i enp0s8 -j DROP
+-A DOCKER-USER -i enp0s3 -j DROP
+-A DOCKER-USER -j RETURN
+---FORWARD---
+-P FORWARD DROP
+-A FORWARD -j DOCKER-USER
+-A FORWARD -j DOCKER-FORWARD
+-A FORWARD -j ufw-before-logging-forward
+-A FORWARD -j ufw-before-forward
+---SOKET---
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                                              
+LISTEN 0      4096   127.0.0.53%lo:53        0.0.0.0:*    users:(("systemd-resolve",pid=610,fd=15))           
+LISTEN 0      4096         0.0.0.0:443       0.0.0.0:*    users:(("docker-proxy",pid=30867,fd=8))             
+LISTEN 0      4096         0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=1565,fd=3),("systemd",pid=1,fd=90
+LISTEN 0      4096         0.0.0.0:80        0.0.0.0:*    users:(("docker-proxy",pid=30845,fd=8))             
+LISTEN 0      4096      127.0.0.54:53        0.0.0.0:*    users:(("systemd-resolve",pid=610,fd=17))           
+LISTEN 0      4096            [::]:443          [::]:*    users:(("docker-proxy",pid=30873,fd=8))             
+LISTEN 0      4096            [::]:22           [::]:*    users:(("sshd",pid=1565,fd=4),("systemd",pid=1,fd=91
+LISTEN 0      4096            [::]:80           [::]:*    users:(("docker-proxy",pid=30851,fd=8))             
+---CONTAINER---
+kyrion-vm-nginx-1:0.0.0.0:80->8080/tcp, [::]:80->8080/tcp, 0.0.0.0:443->8443/tcp, [::]:443->8443/tcp
+kyrion-vm-app-1:3000/tcp
+kyrion-vm-db-1:5432/tcp

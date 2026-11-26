@@ -179,7 +179,7 @@ Dua mekanisme terpisah menjaga agar tidak ada petunjuk bagi penyerang:
 | Cadangan | Salinan di drive terpisah (D:) dengan akses dibatasi; hash identik dengan berkas asli |
 | Kunci hilang | Semua unduhan versi berberkas gagal tertutup; data lama tidak bisa ditandatangani ulang tanpa kunci baru |
 | Kunci bocor | Semua tag dianggap bisa dipalsukan. Kunci baru harus dibuat dan data dicek terhadap salinan tepercaya sebelum ditandatangani ulang |
-| Rotasi | **Belum didukung di v0.2.** Menjadi bagian siklus hidup kunci di Tugas 3. Rancangan konsepnya: tag memuat pengenal kunci, penandatanganan memakai kunci baru, verifikasi menerima kunci lama atau baru, lalu tag lama diganti bertahap |
+| Rotasi | **Belum didukung di v0.2.** Di krip-0.3 juga tidak ada rotasi atau siklus hidup untuk kunci induk. Rancangan konsepnya (belum diterapkan): tag memuat pengenal kunci, penandatanganan memakai kunci baru, verifikasi menerima kunci lama atau baru, lalu tag lama diganti bertahap |
 | Windows | Mode `0600` tidak berlaku seperti di POSIX; akses dibatasi dengan ACL (`icacls`). Uji izin POSIX tidak berjalan di Windows |
 
 ### 6.2 Hash kata sandi Admin (K-6)
@@ -207,12 +207,12 @@ Urut dari yang terpenting:
 | # | Keterbatasan | Dampak | Arah perbaikan |
 |---|---|---|---|
 | 1 | `status` di luar tag | Penyerang basis data bisa mengubah Draf menjadi Sah dan memublikasikan draf | F-32, F-34, F-15, hak akses basis data minimal |
-| 2 | Verifikasi hanya saat unduh | Nomor versi dan tanggal yang tampil di halaman tidak diverifikasi | F-33 (Tugas 3) |
-| 3 | HMAC tidak melindungi dari pembaca kunci | Penyerang yang bisa membaca berkas kunci di server bisa membuat tag palsu | Pembatasan akses, siklus hidup kunci (Tugas 3) |
+| 2 | Verifikasi hanya saat unduh | Nomor versi dan tanggal yang tampil di halaman tidak diverifikasi | Belum ditutup di krip-0.3: F-33 memeriksa tanda tangan pengesahan, bukan nilai yang tampil di halaman. |
+| 3 | HMAC tidak melindungi dari pembaca kunci | Penyerang yang bisa membaca berkas kunci di server bisa membuat tag palsu | Pembatasan akses. Rotasi atau siklus hidup kunci induk tidak ada di krip-0.3 |
 | 4 | Versi tanpa berkas tidak bertag | `version_number` dan `effective_date` versi tanpa PDF tidak terlindungi | Pengesahan mewajibkan berkas (v0.3) |
 | 5 | Backfill mempercayai isi basis data saat dijalankan | Data yang sudah dirusak sebelum backfill bisa ikut ditandatangani bila hash polosnya cocok | Backfill memeriksa hash berkas dulu dan melewati yang tidak cocok; selebihnya dijalankan hanya pada data tepercaya |
 | 6 | Kunci hilang | Semua unduhan versi berberkas gagal | Cadangan kunci |
-| 7 | Rotasi belum didukung | Kunci tidak bisa diganti tanpa menandatangani ulang | Tugas 3 |
+| 7 | Rotasi kunci induk HMAC belum didukung | Kunci tidak bisa diganti tanpa menandatangani ulang | Belum dikerjakan di krip-0.3 |
 | 8 | Uji izin POSIX tidak berjalan di Windows | Pemeriksaan mode berkas hanya teruji di non-Windows | Jalankan di WSL atau Docker |
 
 ---
@@ -223,7 +223,7 @@ Urut dari yang terpenting:
 |---|---|
 | KKS | Kunci HMAC adalah aset baru: catat di inventaris aset dan register risiko. Pada container (Dockerfile dan `compose.yaml`), berkas kunci harus dimasukkan lewat volume atau secret, tidak ada di image atau repository |
 | PAW | Unggah PDF (F-12) dan unduhan (F-05) kini bergantung pada kunci; kolom baru `integrity_tag` di tabel `versions` (sudah di ERD `docs/tugas-2/erd-v0.2.mmd`) |
-| Kriptografi Tugas 3 | F-32 (tanda tangan saat pengesahan), F-33 (verifikasi dan siklus hidup kunci), dan F-34 (rantai versi) melanjutkan keterbatasan nomor 1, 2, dan 7 |
+| Kriptografi Tugas 3 | F-32 (tanda tangan saat pengesahan) dan F-33 (verifikasi dan siklus hidup kunci tanda tangan) melanjutkan keterbatasan nomor 1; F-34 (rantai versi) masih rencana untuk nomor itu. Di krip-0.3, nomor 2 belum ditutup dan nomor 7 (rotasi kunci induk HMAC) belum dikerjakan |
 
 ---
 
@@ -292,6 +292,16 @@ Penomoran melanjutkan K-1 sampai K-6. ID kerja Tugas 3 dicantumkan dalam tanda k
 | 5 | `approvedAt` | ISO 8601 UTC milidetik, dibuat di aplikasi dan disimpan dengan nilai yang sama |
 | 6 | `signingKeyId` | Mencegah penukaran kunci |
 
+**Peninjauan dan bukti K-7.**
+
+- **Ditinjau ulang bila:** ada pihak luar yang memverifikasi dan hanya mendukung RSA atau ECDSA; atau `node:crypto` menghentikan Ed25519; atau ada standar yang mewajibkan algoritma lain.
+- **Konsekuensi:** payload memakai domain `kyrion/pengesahan-versi/v1`. Kode saat ini hanya mendukung Ed25519 dan tidak punya pemilih versi domain atau algoritma. Bila algoritma diganti kelak, perlu domain v2, dan cara verifikasi lama harus dipertahankan agar tanda tangan lama tetap bisa diperiksa.
+- **Bukti:** uji fungsi murni (jalur relatif ke `apps/web/lib/`, nomor baris pada commit `bc1d3d5`; hasil run di [krip-0.3-vitest.txt](docs/kriptografi/bukti/krip-0.3-vitest.txt)).
+  - Vektor RFC 8032 bagian 7.1, hanya TEST 1: `crypto/tanda-tangan.test.ts` > `RFC 8032 TEST 1` > `tandatangani menghasilkan tanda tangan RFC` (:25), `verifikasi tanda tangan RFC lolos` (:29). A-01.
+  - `crypto/tanda-tangan.test.ts` > `pasangan kunci dan tanda tangan` > `tanda tangan 64 byte dan lolos verifikasi` (:41), `pesan diubah 1 byte: false` (:46), `tanda tangan diubah 1 byte: false` (:52), `kunci publik lain: false` (:58), `dua kali tandatangani pesan sama: identik` (:73). T-01.
+  - `crypto/payload-pengesahan.test.ts` > `bangunPayloadPengesahan` > `deterministik` (:20), `mengubah %s mengubah payload` (:37), `berbeda dari kanonisasiVersi dengan tujuh field sama (pemisah domain)` (:47). T-02.
+  - Tidak ada uji otomatis yang memeriksa teks domain `kyrion/pengesahan-versi/v1` itu sendiri.
+
 ### 10.2 Keputusan K-8 (K-B1): penyimpanan kunci privat tanda tangan
 
 | Alternatif | Akibat |
@@ -301,6 +311,16 @@ Penomoran melanjutkan K-1 sampai K-6. ID kerja Tugas 3 dicantumkan dalam tanda k
 | (c) Diturunkan dengan HKDF dari kunci induk HMAC krip-0.2 | Melanggar pemisahan kunci per tujuan: bocornya satu berkas memberi kemampuan memalsukan HMAC dan tanda tangan sekaligus, dan rotasi keduanya terikat |
 
 **Keputusan.** (a). Kunci privat tidak pernah disimpan di basis data. Berkas kunci ditulis dengan flag `wx` (tidak pernah menimpa).
+
+**Peninjauan dan bukti K-8.**
+
+- **Ditinjau ulang bila:** deployment ke VM atau Docker memakai secret manager; atau berkas kunci terbukti terbaca pihak lain; atau ada kebutuhan HSM.
+- **Konsekuensi:** di Windows mode `0o600` tidak ditegakkan dan perlindungannya hanya ACL (bagian 10.6); di server, kunci masuk lewat volume atau secret, tidak ke image.
+- **Bukti:** uji dengan berkas sementara nyata dan basis data tiruan (jalur relatif ke `apps/web/lib/`, baris pada commit `bc1d3d5`).
+  - `crypto/operasi-kunci.test.ts` > `buatKunci` > `membuat berkas privat, entri keyring publik-saja, dan baris DB AKTIF` (:132), `menolak berkas --out yang sudah ada tanpa menimpanya` (:168), `menolak --out dan keyring di dalam repo, menerima folder bernama mirip di luar` (:177). T-09.
+  - `crypto/penandatangan.test.ts` > `muatKunciPrivat` > `memuat PEM Ed25519 yang bisa menandatangani` (:37), `menolak PEM RSA` (:45). T-06.
+  - Mode berkas belum terbukti pada run Windows: `menolak berkas yang bisa dibaca grup atau pengguna lain` (`crypto/penandatangan.test.ts:59`) dilewati (T-07), dan pemeriksaan `0o600` di `crypto/operasi-kunci.test.ts:138` hanya dijalankan di POSIX.
+  - Tidak ada uji otomatis untuk ACL Windows, volume atau secret di server, dan isi image Docker.
 
 ### 10.3 Keputusan K-9 (K-B2): kebijakan kunci dirotasi dan dicabut
 
@@ -316,14 +336,26 @@ Aturan lain:
 - Tanda tangan dengan `approvedAt` sebelum `dibuatPada` kunci ditolak.
 - Paling banyak satu kunci AKTIF (indeks unik parsial).
 
+**Peninjauan dan bukti K-9.**
+
+- **Ditinjau ulang bila:** pencabutan membuat terlalu banyak versi sah menjadi "tidak cocok" sehingga operasional tidak sanggup; atau tanda tangan ulang (ditunda ke v1.0) sudah ada.
+- **Konsekuensi:** versi yang ditandatangani kunci dicabut menjadi "tidak cocok" dan belum bisa ditandatangani ulang (bagian 10.6).
+- **Bukti:** (jalur relatif ke `apps/web/lib/`, baris pada commit `bc1d3d5`)
+  - Fungsi murni: `crypto/keyring.test.ts` > `kunciBolehMemverifikasi` > `dirotasi: tepat di dirotasiPada boleh, 1 ms sesudahnya tidak` (:147), `dicabut selalu ditolak` (:155), `1 ms sebelum dibuatPada ditolak (aktif dan dirotasi); tepat di dibuatPada boleh` (:161). B-05, B-06, T-08.
+  - Fungsi murni: `crypto/verifikasi-pengesahan.test.ts` > `positif` > `B-05 kunci DIROTASI tetap sah untuk approvedAt <= dirotasiPada` (:142); > `negatif: kunci` > `B-06 kunci dicabut` (:213), `approvedAt setelah kunci dirotasi` (:219), `approvedAt sebelum kunci dibuat` (:228). B-05, B-06, T-12.
+  - Tanda tangan baru ditolak: `crypto/penandatangan.test.ts` > `siapkanPenandatangan` > `galat bila kunci ada tetapi dirotasi atau dicabut` (:83), berkas sementara; `data/pengesahan.test.ts` > `isiTransaksiSahkan` > `kunci DB tidak ada atau bukan AKTIF ditolak tanpa updateMany dan audit` (:113), transaksi tiruan. A-10.
+  - Satu AKTIF di keyring: `crypto/keyring.test.ts` > `parseKeyring` > `menolak: %s`, kasus `dua aktif` (:59); > `siklus kunci` > `menolak: cabut dua kali, cabut id tak dikenal, putar tanpa aktif, tambah saat sudah ada aktif` (:106). T-08.
+  - Indeks unik parsial di basis data: tidak ada uji otomatis; hanya probe manual P07 (M-01).
+  - Tidak ada uji ujung ke ujung dengan basis data nyata. "Pengesahan baru memakai kunci baru" belum diuji (tabel skenario bagian 4).
+
 ### 10.4 Keputusan K-10 (K-B3): akar kepercayaan kunci publik
 
 | Alternatif | Akibat |
 |---|---|
 | (a) Tabel `signing_keys` di basis data saja | Penyerang yang bisa menulis ke basis data cukup menyisipkan kunci publik miliknya lalu menandatangani versi palsu, sehingga tanda tangan tidak menambah apa pun dibanding HMAC |
-| (b) Keyring berkas JSON berisi kunci publik saja, di luar basis data dan di luar repository (`KYRION_KEYRING_FILE`); tabel `signing_keys` harus sama persis dengannya | Verifikasi memakai kunci publik dari keyring |
+| (b) Keyring berkas JSON berisi kunci publik saja, di luar basis data dan di luar repository (`KYRION_KEYRING_FILE`); baris `signing_keys` untuk kunci yang dirujuk versi harus sama dengan entri keyring | Verifikasi memakai kunci publik dari keyring |
 
-**Keputusan.** (b). Tabel harus sama dalam lima hal: kunci publik, status, `dibuatPada`, `dirotasiPada`, `dicabutPada` sampai milidetik. Bila berbeda, hasilnya "kunci tidak sinkron" (gagal tertutup).
+**Keputusan.** (b). Saat verifikasi, baris `signing_keys` untuk kunci yang dirujuk versi harus sama dengan entri keyring dalam lima hal: kunci publik, status, `dibuatPada`, `dirotasiPada`, `dicabutPada` (stempel waktu sama sampai milidetik). Bila berbeda, hasilnya "kunci tidak sinkron" (gagal tertutup). Baris lain di tabel tidak dibandingkan.
 
 **Operasi operator** (`prisma/kelola-kunci.ts` buat, putar, cabut):
 1. Tulis kunci privat dulu.
@@ -334,6 +366,16 @@ Aturan lain:
 |---|---|
 | Sebelum keyring ditulis | Rollback dan hapus kunci privat yang dibuat proses itu |
 | Setelah keyring ditulis | `KeadaanTidakPasti`; tidak ada perubahan atau penghapusan otomatis; operator memulihkan manual |
+
+**Peninjauan dan bukti K-10.**
+
+- **Ditinjau ulang bila:** aplikasi berjalan di lebih dari satu instance sehingga keyring harus dibagi; atau keyring terbukti berubah tanpa operator; atau registri pindah ke layanan lain.
+- **Konsekuensi:** kegagalan setelah keyring ditulis menghasilkan `KeadaanTidakPasti` dan pemulihan manual; tidak ada pemulihan otomatis (bagian 10.4 dan 10.6).
+- **Bukti:** (jalur relatif ke `apps/web/lib/`, baris pada commit `bc1d3d5`)
+  - Fungsi murni: `crypto/verifikasi-pengesahan.test.ts` > `negatif: kunci` > `B-07 kunci ada di tabel tetapi tidak di keyring` (:235), `kunci ada di keyring tetapi tidak di tabel` (:239), `kunci publik tabel berbeda dari keyring` (:243), `status tabel berbeda dari keyring` (:249), `status tabel tidak dikenal` (:253), `rotatedAt tabel berbeda dari dirotasiPada keyring (1 ms)` (:257), `revokedAt tabel berbeda dari dicabutPada keyring (1 ms)` (:264), `createdAt tabel berbeda dari dibuatPada keyring -> kunci-tidak-sinkron` (:271). B-07, T-12.
+  - Berkas sementara: `crypto/keyring.test.ts` > `berkas keyring` > `berkas tidak ada adalah galat, bukan keyring kosong` (:181), `berkas rusak adalah galat` (:185), `tulis lalu baca kembali sama, dan tidak meninggalkan berkas sementara` (:190), `menolak menulis keyring tidak valid dan tidak mengubah berkas lama` (:198). T-08.
+  - Basis data tiruan: `crypto/operasi-kunci.test.ts` > `kegagalan di tengah` > `tulisKeyring gagal di dalam tx: DB rollback, privat baru dihapus, keyring lama utuh` (:312), `commit gagal setelah keyring ditulis: keyring tidak diubah, privat tidak dihapus, galat tidak pasti` (:341). T-09.
+  - Tidak ada uji otomatis dengan basis data nyata, untuk pemulihan manual, atau bahwa baris lain di tabel tidak dibandingkan.
 
 ### 10.5 Keputusan K-11 (K-T3-5): hash kata sandi scrypt dipensiunkan
 
@@ -355,3 +397,19 @@ Aturan lain:
 - Satu PDF yang sama bisa melekat pada beberapa versi; pemeriksa memberi satu hasil per versi kandidat tanpa agregasi.
 - Versi Sah dengan tanggal berlaku di masa depan tetap dilabeli "asli dan sah".
 - Tidak ada pemulihan otomatis setelah kegagalan sesudah keyring ditulis.
+
+### 10.7 Pemetaan ke rubrik R3 (Tugas 3)
+
+Bagian A = F-32 (tanda tangan pengesahan). Bagian B = F-33 (verifikasi berkas) dan pengelolaan kunci. Nomor skenario (A-xx, B-xx) ada di tabel-skenario-krip-0.3.md.
+
+| Kriteria | Dijawab di |
+|---|---|
+| A1 Integrasi kunci publik ke alur utama | `docs/kriptografi/alur-tanda-tangan.md` bagian 1 dan 1.2 (pengesahan versi F-32, isi payload); bagian 10.1 dan 10.4 dokumen ini |
+| A2 Peran kunci dan alur data | `docs/kriptografi/peran-kunci.md` (tabel peran kunci, pemisahan kunci per tujuan); `docs/kriptografi/alur-tanda-tangan.md` (alur data pengesahan dan verifikasi) |
+| A3 Skenario uji alur utama | `docs/kriptografi/tabel-skenario-krip-0.3.md` bagian 1, skenario A-01 sampai A-10; `docs/kriptografi/bukti/krip-0.3-vitest.txt` |
+| B1 Rancangan fitur berbasis kebutuhan | `docs/kriptografi/rancangan-fitur-f33.md` bagian 1 sampai 4 (masalah, pengguna, ancaman, cara kerja) |
+| B2 Keputusan desain dan alternatif | Bagian 10.1 sampai 10.4 dokumen ini (alternatif, keputusan, pemicu peninjauan ulang, bukti); keterbatasan di 10.6 |
+| B3 Implementasi fitur dan pengelolaan kunci | `docs/kriptografi/rancangan-fitur-f33.md` bagian 5 dan 6 (akar kepercayaan, kompromi kunci); `docs/kriptografi/alur-tanda-tangan.md` bagian 2 (F-33); operasi operator di bagian 10.4 dokumen ini |
+| B4 Uji fitur | `docs/kriptografi/tabel-skenario-krip-0.3.md` bagian 1 (B-01 sampai B-09), bagian 2 (uji manual), bagian 4 (batas tingkat bukti); berkas di `docs/kriptografi/bukti/` |
+
+Batas bukti: tidak ada uji ujung ke ujung 'cabut lalu verifikasi' dan 'pengesahan baru memakai kunci baru' (tabel-skenario-krip-0.3.md bagian 4; rancangan-fitur-f33.md bagian 6.4).

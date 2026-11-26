@@ -1,0 +1,43 @@
+﻿# Bukti audit dependensi produksi sesudah menaikkan next ke 16.4.6
+# Tanggal: 2026-11-26 (waktu lokal WIB)
+# Rilis: v0.3
+# Perintah: npm audit --omit=dev --audit-level=high; npm ls next effect prisma @prisma/client
+# Catatan: keluaran terminal apa adanya. Bukti 15 November (npm-audit-v0.3.txt, 0 temuan) tidak diubah dan sudah usang untuk next dan effect.
+
+===== npm audit =====
+# npm audit report
+
+effect  <=3.22.0
+Severity: high
+Effect: ReDoS in Schema.TemplateLiteral compiled regex - https://github.com/advisories/GHSA-7589-6fvf-x4pw
+fix available via `npm audit fix --force`
+Will install prisma@6.12.0, which is a breaking change
+node_modules/effect
+  @prisma/config  >=6.13.0-dev.1
+  Depends on vulnerable versions of effect
+  node_modules/@prisma/config
+    prisma  >=6.13.0-dev.1
+    Depends on vulnerable versions of @prisma/config
+    node_modules/prisma
+
+3 high severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+===== npm ls =====
+web@0.1.0 C:\Projects\kyrion\apps\web
+├─┬ @prisma/client@7.10.1
+│ └── prisma@7.10.1 deduped
+├─┬ better-auth@1.7.22
+│ ├─┬ @better-auth/prisma-adapter@1.7.22
+│ │ ├── @prisma/client@7.10.1 deduped
+│ │ └── prisma@7.10.1 deduped
+│ ├── @prisma/client@7.10.1 deduped
+│ ├── next@16.4.6 deduped
+│ └── prisma@7.10.1 deduped
+├── next@16.4.6
+└─┬ prisma@7.10.1
+  └─┬ @prisma/config@7.10.1
+    └── effect@3.20.0
+

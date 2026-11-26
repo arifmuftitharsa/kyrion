@@ -1,0 +1,25 @@
+# Bukti monitoring, fase jalankan (Tugas 6, R-15)
+# Tanggal: 2026-11-23 08:59:26 UTC
+# Hash commit: 111ee53
+# Perintah: .\deploy\uji\06-monitoring.ps1 -Fase jalankan (ssh -t kyrion-staging sudo bash 06-monitoring-vm.sh jalankan)
+# Kode keluar: 0
+
+[2026-11-23T08:59:16Z] Fase jalankan
+-- mode berkas yang di-mount ke container non-root (Loki UID 10001, Grafana UID 472)
+root:root 644 loki-config.yaml
+root:root 644 config.alloy
+root:root 755 grafana
+root:root 755 grafana/provisioning
+root:root 755 grafana/provisioning/datasources
+root:root 644 grafana/provisioning/datasources/loki.yaml
+-- keadaan stack sebelum up (aman diulang; volume tidak dihapus)
+NAME                   IMAGE                                                                                     COMMAND                  SERVICE   CREATED         STATUS                     PORTS
+kyrion-mon-alloy-1     grafana/alloy@sha256:c958aef7294bc40c67caadb2bcecc93b95ab7961ff8afae3abee170d77426193     "/bin/alloy run /etc…"   alloy     6 minutes ago   Created                    
+kyrion-mon-grafana-1   grafana/grafana@sha256:0615ec4fbd4072004b7d86b46ded63013a74b7d6eb1119273dd89e8fa25c13cf   "/run.sh"                grafana   6 minutes ago   Created                    
+kyrion-mon-loki-1      grafana/loki@sha256:b43c257ccfc925d4a50b8717cac61a3b51df8c48d01847936057e5c4075a24a7      "/usr/bin/loki -conf…"   loki      6 minutes ago   Up 6 minutes (unhealthy)   3100/tcp
+ Container kyrion-mon-loki-1 Running 
+ Container kyrion-mon-loki-1 Waiting 
+ Container kyrion-mon-loki-1 Waiting 
+ Container kyrion-mon-loki-1 Error dependency loki failed to start
+ Container kyrion-mon-loki-1 Error dependency loki failed to start
+dependency failed to start: container kyrion-mon-loki-1 is unhealthy

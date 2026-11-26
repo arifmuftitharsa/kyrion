@@ -1,0 +1,14 @@
+# Uji pembatas laju login OTP lewat Nginx. Kyrion v0.3 + kontrol sec-0.3 tahap 3, commit b128d2a. Waktu UTC: 2026-11-22 06:25
+# Perintah tiap baris: curl.exe -sS -o NUL --max-time 10 -w '%{http_code} %{content_type}' -X POST -H 'Origin: https://kyrion.test' -H 'Content-Type: application/json' -H 'X-Forwarded-For: 10.9.9.N' -d @otp-uji.json --ssl-no-revoke https://kyrion.test/api/auth/sign-in/email-otp
+# N = nomor permintaan; XFF dipalsukan berbeda tiap permintaan. Email dan OTP sintetis.
+# Harapan: 1-3 dijawab aplikasi, 4-6 ditolak aplikasi (429 application/json), 7-10 ditolak Nginx (429 text/html).
+permintaan 1 (XFF 10.9.9.1): 400 application/json
+permintaan 2 (XFF 10.9.9.2): 400 application/json
+permintaan 3 (XFF 10.9.9.3): 400 application/json
+permintaan 4 (XFF 10.9.9.4): 429 application/json
+permintaan 5 (XFF 10.9.9.5): 429 application/json
+permintaan 6 (XFF 10.9.9.6): 429 application/json
+permintaan 7 (XFF 10.9.9.7): 429 text/html
+permintaan 8 (XFF 10.9.9.8): 429 text/html
+permintaan 9 (XFF 10.9.9.9): 429 text/html
+permintaan 10 (XFF 10.9.9.10): 429 text/html

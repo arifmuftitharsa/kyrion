@@ -97,7 +97,7 @@ Semua respons memakai `Cache-Control: no-store`. Isi regulasi bisa berubah saat 
 - Setiap endpoint punya uji Vitest pada handler-nya, mencakup jalur berhasil dan jalur gagal (400, 401, 403, 404, 409, 500, 503, sesuai endpoint).
 - Lapisan data ditiru di uji handler, sehingga uji tidak membutuhkan basis data dan memeriksa handler saja. Yang **tidak** dibuktikan uji ini adalah kueri ke basis data sungguhan; itu diperiksa dengan permintaan nyata ke server pengembangan.
 - Aturan versi berlaku diuji terpisah sebagai fungsi murni.
-- Spesifikasi diperiksa dengan `npx @redocly/cli lint docs/api/openapi.yaml`.
+- Spesifikasi diperiksa dengan `npx @redocly/cli lint docs/api/openapi.yaml` (keluarannya: `docs/api/bukti-lint-redocly.txt`).
 
 Cara menjalankan uji: `npm test` di `apps/web`.
 

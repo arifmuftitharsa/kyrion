@@ -1,0 +1,147 @@
+# Rule alert deteksi D-1..D-3 (Tugas 7). Dokumen dan alasan ambang: security/detection/.
+# Dibaca Grafana saat start. Tanpa contact point dan notification policy (tanpa saluran eksternal).
+# Template memakai .Labels, bukan $labels, karena "$" di berkas provisioning ditafsirkan sebagai variabel lingkungan.
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: kyrion-deteksi
+    folder: Kyrion Deteksi
+    interval: 1m
+    rules:
+      - uid: kyrion-d1-tebak-otp
+        title: D-1 Tebakan kode OTP pada sign-in
+        condition: C
+        for: 1m
+        noDataState: OK
+        execErrState: Error
+        labels:
+          rule: D-1
+          severity: high
+          risk: R-14
+        annotations:
+          summary: 'D-1: tebakan OTP dari ip {{ .Labels.ip }}'
+          description: 'Lebih dari 10 respons non-2xx pada /api/auth/sign-in/email-otp dalam 5 menit dari ip {{ .Labels.ip }}.'
+        data:
+          - refId: A
+            queryType: instant
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: kyrion-loki
+            model:
+              refId: A
+              datasource: { type: loki, uid: kyrion-loki }
+              queryType: instant
+              instant: true
+              range: false
+              expr: |-
+                sum by (ip) (count_over_time({container="kyrion-vm-nginx-1"} | regexp `^(?P<ip>\S+) \S+ \S+ \[[^\]]*\] "(?P<method>\S+) (?P<path>[^ ?"]+)[^"]*" (?P<status>\d{3}) ` | path="/api/auth/sign-in/email-otp" | status!~"2.." [5m]))
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: __expr__
+            model:
+              refId: B
+              datasource: { type: __expr__, uid: __expr__ }
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: __expr__
+            model:
+              refId: C
+              datasource: { type: __expr__, uid: __expr__ }
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator: { type: gt, params: [10] }
+
+      - uid: kyrion-d2-rute-sensitif
+        title: D-2 Penolakan berulang pada rute admin dan API
+        condition: C
+        for: 1m
+        noDataState: OK
+        execErrState: Error
+        labels:
+          rule: D-2
+          severity: medium
+          risk: R-03,R-15
+        annotations:
+          summary: 'D-2: penolakan berulang dari ip {{ .Labels.ip }}'
+          description: 'Lebih dari 10 respons 401, 403, atau 404 pada /admin atau /api/v1/ dalam 5 menit dari ip {{ .Labels.ip }}.'
+        data:
+          - refId: A
+            queryType: instant
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: kyrion-loki
+            model:
+              refId: A
+              datasource: { type: loki, uid: kyrion-loki }
+              queryType: instant
+              instant: true
+              range: false
+              expr: |-
+                sum by (ip) (count_over_time({container="kyrion-vm-nginx-1"} | regexp `^(?P<ip>\S+) \S+ \S+ \[[^\]]*\] "(?P<method>\S+) (?P<path>[^ ?"]+)[^"]*" (?P<status>\d{3}) ` | path=~"(/admin|/api/v1/).*" | status=~"401|403|404" [5m]))
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: __expr__
+            model:
+              refId: B
+              datasource: { type: __expr__, uid: __expr__ }
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: __expr__
+            model:
+              refId: C
+              datasource: { type: __expr__, uid: __expr__ }
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator: { type: gt, params: [10] }
+
+      - uid: kyrion-d3-pindai-port
+        title: D-3 Pemindaian port yang diblokir UFW
+        condition: C
+        for: 1m
+        noDataState: OK
+        execErrState: Error
+        labels:
+          rule: D-3
+          severity: medium
+          risk: R-09,R-15
+        annotations:
+          summary: 'D-3: pemindaian port dari src {{ .Labels.src }}'
+          description: 'Lebih dari 3 port tujuan berbeda tercatat [UFW BLOCK] dalam 5 menit dari src {{ .Labels.src }}.'
+        data:
+          - refId: A
+            queryType: instant
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: kyrion-loki
+            model:
+              refId: A
+              datasource: { type: loki, uid: kyrion-loki }
+              queryType: instant
+              instant: true
+              range: false
+              expr: |-
+                count by (src) (sum by (src, dpt) (count_over_time({job="loki.source.journal.kernel"} |= "[UFW BLOCK]" | regexp `SRC=(?P<src>\S+) .*DPT=(?P<dpt>\d+)` | dpt!="" [5m])))
+          - refId: B
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: __expr__
+            model:
+              refId: B
+              datasource: { type: __expr__, uid: __expr__ }
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: __expr__
+            model:
+              refId: C
+              datasource: { type: __expr__, uid: __expr__ }
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator: { type: gt, params: [3] }

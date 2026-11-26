@@ -1,0 +1,37 @@
+# Bukti cadangan oleh timer pada boot sungguhan sesudah perbaikan (R-12)
+# Tanggal: 2026-11-26
+# Rilis: sec-0.3
+# Rujukan: bukti/11-timer-backup-gagal.txt (kegagalan sebelum perbaikan), bukti/13-timer-backup-diperbaiki.txt (uji sengaja)
+# Perubahan yang diuji: deploy/backup/backup.sh menunggu pg_isready sukses sebelum dump
+# Perintah: ssh kyrion-staging, lalu: uptime -s ; sudo journalctl -u kyrion-backup.service -b --no-pager ; systemctl list-timers kyrion-backup.timer --no-pager
+# Catatan: disalin apa adanya dari terminal Arif. Tidak ada yang dijalankan Arif untuk memicu backup ini: VM dinyalakan pagi hari dan backup berjalan sendiri.
+#          Baris "^[[200~ ... ^[[201~" dan "asj" adalah sisa penempelan di terminal (bracketed paste), bukan keluaran perintah.
+#          Keluaran list-timers terpotong lebar terminal.
+
+2026-11-26 02:05:21
+
+Nov 26 02:05:46 kyrion-staging systemd[1]: Starting kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age)...
+Nov 26 02:05:51 kyrion-staging backup.sh[1855]: [2026-11-26T02:05:51Z] mulai backup ke /srv/kyrion/backup
+Nov 26 02:05:51 kyrion-staging backup.sh[1855]: [2026-11-26T02:05:51Z] menunggu database siap (maksimal 120 detik)
+Nov 26 02:05:53 kyrion-staging backup.sh[1855]: [2026-11-26T02:05:53Z] database siap
+Nov 26 02:05:53 kyrion-staging backup.sh[1855]: [2026-11-26T02:05:53Z] 1/4 dump PostgreSQL
+Nov 26 02:05:58 kyrion-staging backup.sh[1855]: [2026-11-26T02:05:58Z] 2/4 volume kyrion-storage
+Nov 26 02:05:58 kyrion-staging backup.sh[1855]: [2026-11-26T02:05:58Z] 3/4 folder kunci dan kunci induk HMAC
+Nov 26 02:05:58 kyrion-staging backup.sh[1855]: [2026-11-26T02:05:58Z] 4/4 enkripsi age dan checksum
+Nov 26 02:05:59 kyrion-staging backup.sh[1855]: [2026-11-26T02:05:59Z] selesai: kyrion-backup-20261126T020558Z.tar.age (61640 byte)
+Nov 26 02:05:59 kyrion-staging backup.sh[1855]: [2026-11-26T02:05:59Z] jumlah cadangan tersisa: 9
+Nov 26 02:05:59 kyrion-staging systemd[1]: kyrion-backup.service: Deactivated successfully.
+Nov 26 02:05:59 kyrion-staging systemd[1]: Finished kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age).
+Nov 26 02:05:59 kyrion-staging systemd[1]: kyrion-backup.service: Consumed 2.188s CPU time.
+
+NEXT           LEFT LAST               PASSED UNIT            ACTIVATES
+Fri 2026-11-2…  23h Thu 2026-11-26… 44min ago kyrion-backup.… kyrion-backup.…
+
+1 timers listed.
+Pass --all to see loaded but inactive timers, too.
+
+# Catatan hasil (dari log di atas, bukan keluaran perintah):
+# - Boot 02:05:21; service dimulai 02:05:46 (25 detik sesudah boot), sebagai entri pertama dan satu-satunya pada boot ini.
+# - "menunggu database siap" 02:05:51 ke "database siap" 02:05:53: tunggu 2 detik pada boot nyata; backup selesai 02:05:59.
+# - Pada boot sebelum perbaikan (bukti 11) langkah dump gagal dengan "the database system is starting up".
+# - Batas bukti: ini menyusul jadwal 02:00 UTC yang terlewat karena VM mati (Persistent=true); belum ada rangkaian cadangan harian dari jadwal 02:00 UTC pada VM yang menyala.

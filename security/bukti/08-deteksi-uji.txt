@@ -1,0 +1,71 @@
+# Bukti uji query deteksi (Tugas 7)
+# Tanggal: 2026-11-25 07:03:38 UTC
+# Hash commit: 0c6c45a
+# Perintah: .\deploy\uji\08-deteksi-uji.ps1 (ssh -t kyrion-staging sudo bash 08-deteksi-uji-vm.sh <waktu-awal>)
+# Kode keluar skrip VM: 0
+
+== A. lalu lintas uji dari laptop; waktu awal 2026-11-25T06:59:22Z (epoch 1795589962)
+2026-11-25T06:59:22Z GET /admin -> HTTP 307
+2026-11-25T06:59:23Z POST /api/v1/regulations/uji/versions/uji/approval -> HTTP 401
+2026-11-25T06:59:23Z POST /api/auth/sign-in/email-otp -> HTTP 400
+2026-11-25T06:59:23Z pindai port 9001-9030 di 192.168.56.101, alat: nmap -sT --max-retries 0
+Starting Nmap 7.80 ( https://nmap.org ) at 2026-11-25 13:59 SE Asia Standard Time
+Warning: 192.168.56.101 giving up on port because retransmission cap hit (0).
+Nmap scan report for 192.168.56.101
+Host is up.
+All 30 scanned ports on 192.168.56.101 are filtered
+
+Nmap done: 1 IP address (1 host up) scanned in 6.20 seconds
+2026-11-25T06:59:29Z pindai selesai, durasi 6.2 detik
+
+[2026-11-25T06:59:35Z] Uji query deteksi (waktu UTC)
+waktu awal dari laptop: 2026-11-25T06:59:22Z; dipakai mundur 5 detik
+menunggu 25 detik
+
+== B1. rantai iptables pencatatan UFW
+-N ufw-logging-deny
+-A ufw-logging-deny -m conntrack --ctstate INVALID -m limit --limit 3/min --limit-burst 10 -j RETURN
+-A ufw-logging-deny -m limit --limit 3/min --limit-burst 10 -j LOG --log-prefix "[UFW BLOCK] "
+-N ufw-after-logging-input
+-A ufw-after-logging-input -m limit --limit 3/min --limit-burst 10 -j LOG --log-prefix "[UFW BLOCK] "
+
+== B2. journal kernel sejak waktu awal: ringkasan [UFW BLOCK]
+baris [UFW BLOCK]: 10
+SRC=192.168.56.1 jumlah DPT berbeda: 5
+
+== B3. stream kernel di Loki
+stream {job="loki.source.journal.kernel"} (12 jam)
+  label job            nilai: loki.source.journal.kernel
+  label level          nilai: debug,emerg,error,info,notice,warning,alert
+  label service_name   nilai: loki.source.journal.kernel
+  label unit           nilai: systemd-journald.service
+waktu evaluasi semua query di bawah: 1795590000 (2026-11-25T07:00:00Z)
+rentang 15m: 458 baris   [query: {job="loki.source.journal.kernel"}]
+rentang 15m: 20 baris   [query: {job="loki.source.journal.kernel"} |= "[UFW "]
+rentang 15m: 438 baris   [query: {job="loki.source.journal.kernel"} != "[UFW "]
+rentang 12h: 1944 baris   [query: {job="loki.source.journal.kernel"}]
+rentang 12h: 20 baris   [query: {job="loki.source.journal.kernel"} |= "[UFW "]
+rentang 12h: 1924 baris   [query: {job="loki.source.journal.kernel"} != "[UFW "]
+
+== B4. baris nginx dari request laptop (field IP)
+ip=192.168.56.1 method=GET path=/admin status=307
+ip=192.168.56.1 method=POST path=/api/v1/regulations/uji/versions/uji/approval status=401
+ip=192.168.56.1 method=POST path=/api/auth/sign-in/email-otp status=400
+
+== B5. query kandidat, jendela 15 menit, tanpa threshold
+-- D-1 non-2xx pada sign-in OTP per ip
+query: sum by (ip) (count_over_time({container="kyrion-vm-nginx-1"} | regexp `^(?P<ip>\S+) \S+ \S+ \[[^\]]*\] "(?P<method>\S+) (?P<path>[^ ?"]+)[^"]*" (?P<status>\d{3}) ` | path="/api/auth/sign-in/email-otp" | status!~"2.." [15m]))
+{ip=172.19.0.1} 1
+{ip=192.168.56.1} 1
+-- D-2 401/403/404 pada /admin atau /api/v1/ per ip
+query: sum by (ip) (count_over_time({container="kyrion-vm-nginx-1"} | regexp `^(?P<ip>\S+) \S+ \S+ \[[^\]]*\] "(?P<method>\S+) (?P<path>[^ ?"]+)[^"]*" (?P<status>\d{3}) ` | path=~"(/admin|/api/v1/).*" | status=~"401|403|404" [15m]))
+{ip=172.19.0.1} 1
+{ip=192.168.56.1} 1
+-- D-3 jumlah DPT berbeda per src
+query: count by (src) (sum by (src, dpt) (count_over_time({job="loki.source.journal.kernel"} |= "[UFW BLOCK]" | regexp `SRC=(?P<src>\S+) .*DPT=(?P<dpt>\d+)` | dpt!="" [15m])))
+{src=192.168.56.1} 7
+-- D-3 jumlah baris per src
+query: sum by (src) (count_over_time({job="loki.source.journal.kernel"} |= "[UFW BLOCK]" | regexp `SRC=(?P<src>\S+) ` | src!="" [15m]))
+{src=192.168.56.1} 20
+
+[2026-11-25T07:03:31Z] selesai

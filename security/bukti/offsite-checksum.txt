@@ -1,0 +1,3 @@
+# Verifikasi SHA-256 salinan offsite (laptop), 2026-11-23T08:20:18Z UTC
+hitung_lokal: 586cc13dd0145c1adb0439bef7acbb5e7f547709e6f1924674ddac024476b3b9
+dari_vm:      586cc13dd0145c1adb0439bef7acbb5e7f547709e6f1924674ddac024476b3b9

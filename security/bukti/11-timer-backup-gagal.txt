@@ -1,0 +1,74 @@
+# Bukti pemeriksaan timer cadangan di VM (R-12)
+# Tanggal: 2026-11-25
+# Rilis: sec-0.3
+# Perintah 1: ssh -t kyrion-staging "date -u; systemctl list-timers kyrion-backup.timer --no-pager; sudo ls -l --time-style=full-iso /srv/kyrion/backup"
+# Perintah 2: ssh -t kyrion-staging "systemctl status kyrion-backup.service --no-pager -l; sudo journalctl -u kyrion-backup.service --no-pager --since '2026-11-22' | tail -40"
+# Catatan: disalin apa adanya dari terminal Arif; tidak diedit
+
+===== Keluaran 1 =====
+Wed Nov 25 08:54:11 AM UTC 2026
+NEXT           LEFT LAST                 PASSED UNIT           ACTIVATES
+Thu 2026-11-2…  17h Wed 2026-11-2… 2h 43min ago kyrion-backup… kyrion-backup…
+
+1 timers listed.
+Pass --all to see loaded but inactive timers, too.
+total 140
+drwxr-x--- 2 root arif  4096 2026-11-22 10:07:57.093393744 +0000 bin
+-rw-r----- 1 root arif 61640 2026-11-22 10:05:02.449892441 +0000 kyrion-backup-20261122T100502Z.tar.age
+-rw-r----- 1 root arif   105 2026-11-22 10:05:02.456892317 +0000 kyrion-backup-20261122T100502Z.tar.age.sha256
+-rw-r----- 1 root arif 61640 2026-11-22 10:07:58.073381070 +0000 kyrion-backup-20261122T100758Z.tar.age
+-rw-r----- 1 root arif   105 2026-11-22 10:07:58.079380993 +0000 kyrion-backup-20261122T100758Z.tar.age.sha256
+
+===== Keluaran 2 =====
+× kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age)
+     Loaded: loaded (/etc/systemd/system/kyrion-backup.service; static)
+     Active: failed (Result: exit-code) since Wed 2026-11-25 06:10:42 UTC; 2h 44min ago
+TriggeredBy: ● kyrion-backup.timer
+       Docs: file:///srv/kyrion/backup/bin/backup.sh
+    Process: 1894 ExecStart=/srv/kyrion/backup/bin/backup.sh (code=exited, status=1/FAILURE)
+   Main PID: 1894 (code=exited, status=1/FAILURE)
+        CPU: 537ms
+
+Nov 25 06:10:39 kyrion-staging systemd[1]: Starting kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age)...
+Nov 25 06:10:42 kyrion-staging backup.sh[1894]: [2026-11-25T06:10:42Z] mulai backup ke /srv/kyrion/backup
+Nov 25 06:10:42 kyrion-staging backup.sh[1894]: [2026-11-25T06:10:42Z] 1/4 dump PostgreSQL
+Nov 25 06:10:42 kyrion-staging backup.sh[1939]: pg_dump: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  the database system is starting up
+Nov 25 06:10:42 kyrion-staging systemd[1]: kyrion-backup.service: Main process exited, code=exited, status=1/FAILURE
+Nov 25 06:10:42 kyrion-staging systemd[1]: kyrion-backup.service: Failed with result 'exit-code'.
+Nov 25 06:10:42 kyrion-staging systemd[1]: Failed to start kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age).
+Nov 22 10:05:01 kyrion-staging systemd[1]: Starting kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age)...
+Nov 22 10:05:01 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:01Z] mulai backup ke /srv/kyrion/backup
+Nov 22 10:05:01 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:01Z] 1/4 dump PostgreSQL
+Nov 22 10:05:02 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:02Z] 2/4 volume kyrion-storage
+Nov 22 10:05:02 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:02Z] 3/4 folder kunci dan kunci induk HMAC
+Nov 22 10:05:02 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:02Z] 4/4 enkripsi age dan checksum
+Nov 22 10:05:02 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:02Z] selesai: kyrion-backup-20261122T100502Z.tar.age (61640 byte)
+Nov 22 10:05:02 kyrion-staging backup.sh[3194]: [2026-11-22T10:05:02Z] jumlah cadangan tersisa: 1
+Nov 22 10:05:02 kyrion-staging systemd[1]: kyrion-backup.service: Deactivated successfully.
+Nov 22 10:05:02 kyrion-staging systemd[1]: Finished kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age).
+Nov 22 10:07:57 kyrion-staging systemd[1]: Starting kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age)...
+Nov 22 10:07:57 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:57Z] mulai backup ke /srv/kyrion/backup
+Nov 22 10:07:57 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:57Z] 1/4 dump PostgreSQL
+Nov 22 10:07:58 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:58Z] 2/4 volume kyrion-storage
+Nov 22 10:07:58 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:58Z] 3/4 folder kunci dan kunci induk HMAC
+Nov 22 10:07:58 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:58Z] 4/4 enkripsi age dan checksum
+Nov 22 10:07:58 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:58Z] selesai: kyrion-backup-20261122T100758Z.tar.age (61640 byte)
+Nov 22 10:07:58 kyrion-staging backup.sh[5177]: [2026-11-22T10:07:58Z] jumlah cadangan tersisa: 2
+Nov 22 10:07:58 kyrion-staging systemd[1]: kyrion-backup.service: Deactivated successfully.
+Nov 22 10:07:58 kyrion-staging systemd[1]: Finished kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age).
+-- Boot 41ccb5833c88425c982885e7020b2bdc --
+Nov 23 08:22:53 kyrion-staging systemd[1]: Starting kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age)...
+Nov 23 08:22:54 kyrion-staging backup.sh[1692]: [2026-11-23T08:22:54Z] mulai backup ke /srv/kyrion/backup
+Nov 23 08:22:54 kyrion-staging backup.sh[1692]: [2026-11-23T08:22:54Z] 1/4 dump PostgreSQL
+Nov 23 08:22:54 kyrion-staging backup.sh[1728]: pg_dump: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  the database system is starting up
+Nov 23 08:22:54 kyrion-staging systemd[1]: kyrion-backup.service: Main process exited, code=exited, status=1/FAILURE
+Nov 23 08:22:54 kyrion-staging systemd[1]: kyrion-backup.service: Failed with result 'exit-code'.
+Nov 23 08:22:54 kyrion-staging systemd[1]: Failed to start kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age).
+-- Boot 49a4b08b3c0a42e59f2fab8e326af7b3 --
+Nov 25 06:10:39 kyrion-staging systemd[1]: Starting kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age)...
+Nov 25 06:10:42 kyrion-staging backup.sh[1894]: [2026-11-25T06:10:42Z] mulai backup ke /srv/kyrion/backup
+Nov 25 06:10:42 kyrion-staging backup.sh[1894]: [2026-11-25T06:10:42Z] 1/4 dump PostgreSQL
+Nov 25 06:10:42 kyrion-staging backup.sh[1939]: pg_dump: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  the database system is starting up
+Nov 25 06:10:42 kyrion-staging systemd[1]: kyrion-backup.service: Main process exited, code=exited, status=1/FAILURE
+Nov 25 06:10:42 kyrion-staging systemd[1]: kyrion-backup.service: Failed with result 'exit-code'.
+Nov 25 06:10:42 kyrion-staging systemd[1]: Failed to start kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age).

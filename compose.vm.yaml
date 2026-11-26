@@ -46,21 +46,19 @@ services:
       - no-new-privileges:true
     environment:
       NODE_ENV: production
-      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL wajib diisi}
       KYRION_STORAGE_DIR: ${KYRION_STORAGE_DIR:?KYRION_STORAGE_DIR wajib diisi}
       KYRION_MASTER_KEY_FILE: ${KYRION_MASTER_KEY_FILE:?KYRION_MASTER_KEY_FILE wajib diisi}
-      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET wajib diisi}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:?BETTER_AUTH_URL wajib diisi}
       EMAIL_ADAPTER: ${EMAIL_ADAPTER:?EMAIL_ADAPTER wajib diisi}
       EMAIL_FROM: ${EMAIL_FROM:?EMAIL_FROM wajib diisi}
-      MAILTRAP_API_TOKEN: ${MAILTRAP_API_TOKEN:?MAILTRAP_API_TOKEN wajib diisi}
       MAILTRAP_SANDBOX_ID: ${MAILTRAP_SANDBOX_ID:?MAILTRAP_SANDBOX_ID wajib diisi}
       KYRION_SIGNING_KEY_FILE: ${KYRION_SIGNING_KEY_FILE:?KYRION_SIGNING_KEY_FILE wajib diisi}
       KYRION_KEYRING_FILE: ${KYRION_KEYRING_FILE:?KYRION_KEYRING_FILE wajib diisi}
-    ports:
-      - "127.0.0.1:3000:3000"
     secrets:
       - kyrion_master_key
+      - kyrion_database_url
+      - kyrion_better_auth_secret
+      - kyrion_mailtrap_api_token
     volumes:
       - kyrion-storage:/app/storage
       # Folder (bukan berkas) agar rename atomik keyring terlihat; app hanya membaca.
@@ -77,6 +75,31 @@ services:
       timeout: 5s
       retries: 3
       start_period: 20s
+
+  nginx:
+    # nginx 1.30.6 (stable-alpine), ditarik 2026-11-22; dikunci lewat digest agar scan dan runtime sama.
+    image: nginxinc/nginx-unprivileged@sha256:f5116ed4606f3eb015dd4a8e28cb9b351476dc0ad4bc6e9f93b19cec130cdf03
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    # Satu-satunya layanan yang dipublikasikan ke luar VM (R-09, R-10); app dan db tidak punya "ports".
+    ports:
+      - "80:8080"
+      - "443:8443"
+    volumes:
+      - ./deploy/nginx/kyrion.conf:/etc/nginx/conf.d/default.conf:ro
+      - /srv/kyrion/tls/server.crt:/etc/nginx/tls/server.crt:ro
+      - /srv/kyrion/tls/server.key:/etc/nginx/tls/server.key:ro
+    networks:
+      - frontend
+    depends_on:
+      app:
+        condition: service_healthy
 
   tools:
     image: kyrion-web:tools
@@ -105,6 +128,12 @@ services:
 secrets:
   kyrion_master_key:
     file: /srv/kyrion/secrets/kyrion_master_key
+  kyrion_database_url:
+    file: /srv/kyrion/secrets/kyrion_database_url
+  kyrion_better_auth_secret:
+    file: /srv/kyrion/secrets/kyrion_better_auth_secret
+  kyrion_mailtrap_api_token:
+    file: /srv/kyrion/secrets/kyrion_mailtrap_api_token
 
 volumes:
   kyrion-pgdata:

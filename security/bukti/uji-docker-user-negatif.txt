@@ -1,0 +1,17 @@
+# Uji negatif DOCKER-USER (R-09, T-23). Kyrion v0.3, konfigurasi dari commit cc27253, bukti pada HEAD 38d08b1. Tanggal UTC: 2026-11-22.
+# Perintah uji dari laptop: curl.exe -sS -o NUL --max-time 8 -w %{http_code} --ssl-no-revoke https://kyrion.test/masuk (dan http://kyrion.test/masuk sebagai kontrol). Kode 000 berarti koneksi time out.
+## 1. Sebelum aturan sementara (pembanding)
+[06:39:02 UTC] HTTPS 443: 200
+[06:39:02 UTC] HTTP 80: 301
+
+## 2. Aturan DROP sementara untuk 192.168.56.1, port asal 443, urutan pertama DOCKER-USER (tidak ditulis ke after.rules); dihapus otomatis timer systemd 90 detik
+Perintah di VM: sudo iptables -I DOCKER-USER 1 -i enp0s8 -s 192.168.56.1 -p tcp -m conntrack --ctorigdstport 443 -j DROP && sudo systemd-run --on-active=90s /usr/sbin/iptables -D DOCKER-USER -i enp0s8 -s 192.168.56.1 -p tcp -m conntrack --ctorigdstport 443 -j DROP
+[06:39:16 UTC] HTTPS 443 (harus gagal): 000
+[06:39:24 UTC] HTTP 80 (kontrol, harus tetap berhasil): 301
+
+## 3. Sesudah aturan sementara dihapus oleh timer
+[06:40:59 UTC] HTTPS 443 (harus pulih): 000
+
+## 4. Pemeriksaan ulang berkala. Pada bagian 3 aturan sementara belum terhapus: timer systemd-run memiliki AccuracySec bawaan 1 menit, sehingga penghapusan dapat terlambat sampai satu menit setelah 90 detik. Pemeriksaan dilakukan tiap beberapa detik sampai HTTPS pulih (maksimal 8 percobaan).
+[07:24:10 UTC] HTTPS 443 percobaan 1: 200
+Catatan: pemeriksaan bagian 4 dijalankan sekitar 44 menit setelah bagian 3, sehingga saat persis aturan sementara terhapus tidak teramati. Yang terbukti: aturan sementara sudah tidak ada (enam aturan permanen tersisa, timer 0) dan HTTPS 443 pulih. AccuracySec 1 menit adalah penyebab yang paling mungkin, bukan hasil pengukuran. Uji berikutnya memakai --timer-property=AccuracySec=1s.

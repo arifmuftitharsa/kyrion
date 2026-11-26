@@ -1,0 +1,59 @@
+title: D-1 Tebakan kode OTP pada sign-in
+id: 573c537a-55bb-490e-bd7b-44b7ce450aa9
+status: test
+description: Banyak respons non-2xx pada /api/auth/sign-in/email-otp dari satu IP.
+
+logsource:
+  product: loki
+  datasource_uid: kyrion-loki
+  container: kyrion-vm-nginx-1
+  labels:
+    container: kyrion-vm-nginx-1
+  bentuk_baris: '<ip> - - [..] "METHOD PATH HTTP/2.0" STATUS bytes "-" "UA" "-" (diawali IP klien)'
+
+query: |-
+  sum by (ip) (count_over_time({container="kyrion-vm-nginx-1"} | regexp `^(?P<ip>\S+) \S+ \S+ \[[^\]]*\] "(?P<method>\S+) (?P<path>[^ ?"]+)[^"]*" (?P<status>\d{3}) ` | path="/api/auth/sign-in/email-otp" | status!~"2.." [5m]))
+
+window: 5m
+
+threshold:
+  operator: gt
+  value: 10
+  alasan: >-
+    Nilai adalah keputusan Arif, bukan hasil pengukuran lalu lintas normal (belum terbukti). Konteks: dari satu sumber,
+    aplikasi menjawab 3 percobaan pertama dengan 400 lalu 429, dan Nginx menolak mulai permintaan ke-7
+    (security/bukti/uji-rate-limit.txt); semuanya non-2xx dan dihitung rule ini.
+
+level: high
+tags:
+  - attack.t1110  # USUL, harus diverifikasi Arif di attack.mitre.org
+related_risk:
+  - R-14  # T-11, T-12, T-13
+
+bukti:
+  - berkas: security/bukti/08-deteksi-uji.txt
+    isi: >-
+      Baris 57: query ini dengan jendela [15m] dijawab Loki. Baris 58-59: masing-masing 1 untuk ip 172.19.0.1 dan
+      192.168.56.1. Baris 51-53: request dari laptop tercatat dengan ip 192.168.56.1.
+  - berkas: security/bukti/07-deteksi-periksa.txt
+    isi: >-
+      Baris 53-56: bentuk baris log Nginx (awalan waktu dan level adalah cetakan skrip 07). ip 172.19.0.1 pada baris itu
+      berasal dari request loopback di VM.
+  - berkas: security/bukti/uji-rate-limit.txt
+    isi: >-
+      Baris 5-14: status 400 (permintaan 1-3) lalu 429 (4-10).
+  - belum_terbukti: >-
+      Query dengan jendela [5m], alert yang benar-benar Firing pada nilai di atas 10, dan tingkat lalu lintas normal.
+
+false_positive:
+  - Pengguna sah yang berulang kali salah memasukkan atau memakai OTP kedaluwarsa. Frekuensinya belum terbukti.
+  - Beberapa pengguna di balik satu alamat IP (NAT) dihitung sebagai satu ip. Belum terbukti.
+  - Uji otomatis atau uji pembatas laju oleh operator sendiri.
+
+batas:
+  - Endpoint kirim OTP (/api/auth/email-otp/send-verification-otp) tidak tercakup, termasuk banjir surat OTP pada T-13.
+  - Respons 5xx saat aplikasi mati ikut terhitung (konsekuensi filter status bukan 2xx; belum diuji).
+  - 10 kegagalan atau kurang dalam 5 menit tidak memicu alert, sehingga tebakan yang lambat lolos.
+  - Penyerang yang membagi percobaan ke banyak IP lolos karena hitungan per ip.
+  - Varian path yang di-encode atau memakai garis miring ganda mungkin tidak cocok dengan filter path persis (belum terbukti).
+  - Request loopback atau lewat proxy Docker dapat tercatat sebagai ip gateway 172.19.0.1; perilaku IPv6 belum terbukti.
