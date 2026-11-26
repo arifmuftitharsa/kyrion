@@ -22,6 +22,7 @@ Disusun 2026-11-25. Jalur relatif terhadap `security/`. Isi tabel hanya dari ber
 | `15-rto-latihan-pulih.txt` | 2026-11-26 | sec-0.3 | `restore-test.sh` (uji terisolasi), lalu latihan pulih produksi: fase 1 (hentikan layanan, ambil dan verifikasi cadangan), fase 2 (DB lama diganti nama `kyrion_lama`, DB baru, `pg_restore`, `roles.sql`), fase 3a (storage dan kunci), fase 3b (jalankan kembali layanan), dan verifikasi browser; teks perintah per fase tidak tercatat di berkas |
 | `16-hsts-header-https.txt` | 2026-11-26 | sec-0.3 | di VM: `date -u`, `curl -skI --resolve kyrion.test:443:127.0.0.1 https://kyrion.test/masuk`, `curl -sI http://127.0.0.1/ -H "Host: kyrion.test"` |
 | `17-cookie-sesi-atribut.png` | 2026-11-26 (keterangan Arif; tidak tercatat di gambar) | sec-0.3 | DevTools Chrome, tab Application, Cookies (tangkapan layar; kolom Value disamarkan) |
+| `npm-audit-2026-11-26.txt` | 2026-11-26 | v0.3 | `npm audit --omit=dev --audit-level=high; npm ls next effect prisma @prisma/client` |
 | `ir-plan.md` | 2026-11-26 | sec-0.3 | tidak tercatat di berkas (dokumen) |
 | `playbooks/PB-02-pemindaian-port.md` | 2026-11-26 | sec-0.3 | tidak tercatat di berkas (dokumen) |
 | `playbooks/PB-03-rahasia-atau-kunci-bocor.md` | 2026-11-26 | sec-0.3 | tidak tercatat di berkas (dokumen) |
