@@ -27,7 +27,7 @@ Teks R-09 di `security/risk-register.md` menyebut D-3 sebagai deteksi percobaan 
 - Evaluasi tiap 1 menit, pending 1 menit, `noDataState: OK`, `execErrState: Error`. Label: `rule`, `severity`, `risk`.
 - Karena pending 1 menit, kondisi harus bertahan pada evaluasi berikutnya sebelum Firing.
 - **Notifikasi tidak ada.** Keputusan Arif: tanpa saluran eksternal. Berkas ini tidak membuat contact point maupun notification policy. Bukti alert adalah status **Firing** dan **riwayat alert** di Grafana (ketersediaan riwayat di VM belum terbukti). Perilaku pengiriman bawaan Grafana tidak dikonfigurasi dan belum diperiksa.
-- Belum ada tautan playbook.
+- Playbook: D-1 dan D-2 menuju `../playbooks/PB-01-tebakan-otp-dan-rute-sensitif.md`; D-3 menuju `../playbooks/PB-02-pemindaian-port.md`. Rencana induk: `../ir-plan.md`.
 
 ### Memuat rule
 

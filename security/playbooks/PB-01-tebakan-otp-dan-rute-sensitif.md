@@ -5,6 +5,8 @@
 | Versi, tanggal | 1, 2026-11-25 (sec-0.3) |
 | Pemicu | Alert D-1 dan/atau D-2 berstatus Firing di Grafana, folder "Kyrion Deteksi" |
 | Risiko | R-14, R-03, R-15 |
+| Technique ATT&CK | D-1: T1110 Brute Force. D-2: T1190 Exploit Public-Facing Application (usulan di rule D-1 dan D-2, belum diverifikasi Arif di attack.mitre.org) |
+| Rencana induk | Peran, kontak, severity, dan komunikasi ada di `../ir-plan.md` |
 | Status | Dilatih sekali sebagai tabletop diskusi pada 2026-11-25 (`../tabletop-report.md`); perintah penahanan dan pemulihan tidak dijalankan |
 
 D-1: > 10 respons non-2xx pada `/api/auth/sign-in/email-otp` per `ip` dalam 5 menit. D-2: > 10 respons 401/403/404 pada `/admin` atau `/api/v1/` per `ip` dalam 5 menit (307 tidak dihitung). Query: `../detection/D-1-tebak-otp.yml`, `D-2-rute-sensitif.yml`.
@@ -22,7 +24,7 @@ Pada proyek ini semua peran dipegang Arif. Saat mengambil keputusan, catat peran
 | Eksekutor penahanan/pemulihan (Penanggap Insiden) | Menjalankan perintah di VM dan memverifikasi hasilnya |
 | Pencatat/komunikasi (Pencatat waktu dan keputusan) | Linimasa UTC, bukti, laporan |
 
-Eskalasi pihak luar: dosen atau pengelola. Data kontak tidak tercatat di repo.
+Eskalasi pihak luar dan kontak: lihat ../ir-plan.md bagian 2 dan 4.
 
 ## 1. Deteksi
 
@@ -34,6 +36,8 @@ Eskalasi pihak luar: dosen atau pengelola. Data kontak tidak tercatat di repo.
 1. Di Grafana, buka log `{container="kyrion-vm-nginx-1"}` pada rentang alert, saring menurut `ip`. Catat path, status, jumlah, dan urutan waktu. Simpan salinan sebelum bertindak.
 2. Periksa apakah ada 2xx dari `ip` yang sama sesudah rentetan non-2xx.
 3. Periksa `audit_logs` dan `sessions` untuk rentang yang sama. Login gagal tidak tercatat di `audit_logs` (T-21); tabel itu tidak dikirim ke Loki. Perintah kueri tidak ada di dokumen sumber.
+
+**Severity** (definisi lengkap di `../ir-plan.md` bagian 3): S3 bila semua percobaan gagal dan tidak ada akses berhasil; S2 bila ada 2xx pada sign-in OTP dari sumber tak dikenal, sesi baru yang tidak dikenal, atau baris `audit_logs` yang tidak dikenal; S1 bila aset berkelas Rahasia terbaca atau berubah, atau rahasia dan kunci diduga dikuasai pihak lain (lanjutkan dengan PB-03). Severity ditentukan oleh fakta yang ditemukan, bukan oleh nama rule, dan boleh direvisi saat analisis.
 
 **DP-1, true atau false positive.**
 
@@ -109,3 +113,4 @@ Lihat `../bcp.md`. RTO belum terukur (`../backup-restore.md` 7).
 2. Simpan bukti tanpa nilai rahasia atau email asli.
 3. Tulis pelajaran: yang berjalan, yang gagal, celah playbook, tindakan perbaikan beserta pemilik dan target.
 4. Usulkan perubahan rule, playbook, atau skor risiko; `../risk-register.md` diubah hanya atas keputusan Arif.
+5. Komunikasi menurut `../ir-plan.md` bagian 4. Jadwalkan review dalam 7 hari (usulan, mengikuti contoh di slide pekan 13).
