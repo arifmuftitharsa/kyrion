@@ -179,7 +179,7 @@ Dua mekanisme terpisah menjaga agar tidak ada petunjuk bagi penyerang:
 | Cadangan | Salinan di drive terpisah (D:) dengan akses dibatasi; hash identik dengan berkas asli |
 | Kunci hilang | Semua unduhan versi berberkas gagal tertutup; data lama tidak bisa ditandatangani ulang tanpa kunci baru |
 | Kunci bocor | Semua tag dianggap bisa dipalsukan. Kunci baru harus dibuat dan data dicek terhadap salinan tepercaya sebelum ditandatangani ulang |
-| Rotasi | **Belum didukung di v0.2.** Menjadi bagian siklus hidup kunci di Tugas 3. Rancangan konsepnya: tag memuat pengenal kunci, penandatanganan memakai kunci baru, verifikasi menerima kunci lama atau baru, lalu tag lama diganti bertahap |
+| Rotasi | **Belum didukung di v0.2.** Di krip-0.3 juga tidak ada rotasi atau siklus hidup untuk kunci induk. Rancangan konsepnya (belum diterapkan): tag memuat pengenal kunci, penandatanganan memakai kunci baru, verifikasi menerima kunci lama atau baru, lalu tag lama diganti bertahap |
 | Windows | Mode `0600` tidak berlaku seperti di POSIX; akses dibatasi dengan ACL (`icacls`). Uji izin POSIX tidak berjalan di Windows |
 
 ### 6.2 Hash kata sandi Admin (K-6)
@@ -207,12 +207,12 @@ Urut dari yang terpenting:
 | # | Keterbatasan | Dampak | Arah perbaikan |
 |---|---|---|---|
 | 1 | `status` di luar tag | Penyerang basis data bisa mengubah Draf menjadi Sah dan memublikasikan draf | F-32, F-34, F-15, hak akses basis data minimal |
-| 2 | Verifikasi hanya saat unduh | Nomor versi dan tanggal yang tampil di halaman tidak diverifikasi | F-33 (Tugas 3) |
-| 3 | HMAC tidak melindungi dari pembaca kunci | Penyerang yang bisa membaca berkas kunci di server bisa membuat tag palsu | Pembatasan akses, siklus hidup kunci (Tugas 3) |
+| 2 | Verifikasi hanya saat unduh | Nomor versi dan tanggal yang tampil di halaman tidak diverifikasi | Belum ditutup di krip-0.3: F-33 memeriksa tanda tangan pengesahan, bukan nilai yang tampil di halaman. |
+| 3 | HMAC tidak melindungi dari pembaca kunci | Penyerang yang bisa membaca berkas kunci di server bisa membuat tag palsu | Pembatasan akses. Rotasi atau siklus hidup kunci induk tidak ada di krip-0.3 |
 | 4 | Versi tanpa berkas tidak bertag | `version_number` dan `effective_date` versi tanpa PDF tidak terlindungi | Pengesahan mewajibkan berkas (v0.3) |
 | 5 | Backfill mempercayai isi basis data saat dijalankan | Data yang sudah dirusak sebelum backfill bisa ikut ditandatangani bila hash polosnya cocok | Backfill memeriksa hash berkas dulu dan melewati yang tidak cocok; selebihnya dijalankan hanya pada data tepercaya |
 | 6 | Kunci hilang | Semua unduhan versi berberkas gagal | Cadangan kunci |
-| 7 | Rotasi belum didukung | Kunci tidak bisa diganti tanpa menandatangani ulang | Tugas 3 |
+| 7 | Rotasi kunci induk HMAC belum didukung | Kunci tidak bisa diganti tanpa menandatangani ulang | Belum dikerjakan di krip-0.3 |
 | 8 | Uji izin POSIX tidak berjalan di Windows | Pemeriksaan mode berkas hanya teruji di non-Windows | Jalankan di WSL atau Docker |
 
 ---
@@ -223,7 +223,7 @@ Urut dari yang terpenting:
 |---|---|
 | KKS | Kunci HMAC adalah aset baru: catat di inventaris aset dan register risiko. Pada container (Dockerfile dan `compose.yaml`), berkas kunci harus dimasukkan lewat volume atau secret, tidak ada di image atau repository |
 | PAW | Unggah PDF (F-12) dan unduhan (F-05) kini bergantung pada kunci; kolom baru `integrity_tag` di tabel `versions` (sudah di ERD `docs/tugas-2/erd-v0.2.mmd`) |
-| Kriptografi Tugas 3 | F-32 (tanda tangan saat pengesahan), F-33 (verifikasi dan siklus hidup kunci), dan F-34 (rantai versi) melanjutkan keterbatasan nomor 1, 2, dan 7 |
+| Kriptografi Tugas 3 | F-32 (tanda tangan saat pengesahan) dan F-33 (verifikasi dan siklus hidup kunci tanda tangan) melanjutkan keterbatasan nomor 1; F-34 (rantai versi) masih rencana untuk nomor itu. Di krip-0.3, nomor 2 belum ditutup dan nomor 7 (rotasi kunci induk HMAC) belum dikerjakan |
 
 ---
 
@@ -321,9 +321,9 @@ Aturan lain:
 | Alternatif | Akibat |
 |---|---|
 | (a) Tabel `signing_keys` di basis data saja | Penyerang yang bisa menulis ke basis data cukup menyisipkan kunci publik miliknya lalu menandatangani versi palsu, sehingga tanda tangan tidak menambah apa pun dibanding HMAC |
-| (b) Keyring berkas JSON berisi kunci publik saja, di luar basis data dan di luar repository (`KYRION_KEYRING_FILE`); tabel `signing_keys` harus sama persis dengannya | Verifikasi memakai kunci publik dari keyring |
+| (b) Keyring berkas JSON berisi kunci publik saja, di luar basis data dan di luar repository (`KYRION_KEYRING_FILE`); baris `signing_keys` untuk kunci yang dirujuk versi harus sama dengan entri keyring | Verifikasi memakai kunci publik dari keyring |
 
-**Keputusan.** (b). Tabel harus sama dalam lima hal: kunci publik, status, `dibuatPada`, `dirotasiPada`, `dicabutPada` sampai milidetik. Bila berbeda, hasilnya "kunci tidak sinkron" (gagal tertutup).
+**Keputusan.** (b). Saat verifikasi, baris `signing_keys` untuk kunci yang dirujuk versi harus sama dengan entri keyring dalam lima hal: kunci publik, status, `dibuatPada`, `dirotasiPada`, `dicabutPada` (stempel waktu sama sampai milidetik). Bila berbeda, hasilnya "kunci tidak sinkron" (gagal tertutup). Baris lain di tabel tidak dibandingkan.
 
 **Operasi operator** (`prisma/kelola-kunci.ts` buat, putar, cabut):
 1. Tulis kunci privat dulu.
