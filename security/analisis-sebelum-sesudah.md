@@ -31,7 +31,7 @@ Dipilih: risiko prioritas yang disentuh kontrol sec-0.3 (R-01, R-03, R-08 dari s
 
 T-22 (R-15, 3x2=6) tidak berubah: register menetapkan `console.error` hanya didaftar sebagai temuan, bukan diubah.
 
-Catatan R-09: register menyebut D-3 sebagai deteksi percobaan SSH, sedangkan D-3 yang dibuat mendeteksi pemindaian port; deteksi percobaan SSH tidak ada pada D-3.
+Catatan R-09: sebelum dikoreksi 2026-11-26, register menyebut D-3 sebagai deteksi percobaan SSH, sedangkan D-3 yang dibuat mendeteksi pemindaian port; deteksi percobaan SSH tidak ada pada D-3.
 
 ## 2. Perbandingan terukur
 
@@ -75,7 +75,7 @@ Port terbuka bertambah dari 22 menjadi 22, 80, 443 karena layanan kini sengaja d
 | R-12 | Salinan offsite tidak dipangkas otomatis | Data sintetis dan kecil | Diterima (`backup-restore.md` 4) |
 | R-08 | `effect` HIGH di image v0.3; jalur tak langsung belum ditelusuri | Pindai sesudah perbaikan tidak ada di bukti | Register: Mitigate; rencana (usulan): naikkan versi lalu pindai ulang |
 | R-15 | Trivy: Alloy HIGH 15, Grafana HIGH 20, CRITICAL 0; relevansi tiap temuan belum terbukti | Residu image yang dipakai | Diterima (`monitoring/README.md`) |
-| R-15 | Ambang D-1, D-2 tanpa baseline; D-3 dari satu pengukuran; D-3 benign tidak dijalankan; tanpa uji batas ambang | `alerts-analysis.md` | Rencana (usulan): ukur baseline, jalankan D-3 benign |
+| R-15 | Ambang D-1, D-2 tanpa baseline; D-3 dari satu pengukuran; D-3 benign dijalankan sekali (di bawah ambang), tidak Firing (`bukti/10-simulasi-D-3-benign.txt`); tanpa uji batas ambang | `alerts-analysis.md` | Rencana (usulan): ukur baseline |
 | R-14, R-09 | D-1 tidak mencakup endpoint kirim OTP; D-3 bisa dilewati scan lambat, bucket log UFW dipakai bersama, port Docker tidak dicatat (dampak dua terakhir belum diuji) | Batas desain rule | Alasan belum ditutup dan rencana: tidak tercatat |
 | R-15, R-03 | D-2 menghitung 404 data yang memang tidak ada dan tidak menghitung 307; annotation `{{ .Labels.* }}` belum diverifikasi | `alerts-analysis.md` | Rencana (usulan): verifikasi annotation; alasan 307 tidak tercatat |
 | R-15 | Tanpa kanal notifikasi eksternal | Keputusan Arif; bukti hanya status Firing | Keputusan: tidak dibuat di rilis ini |

@@ -15,6 +15,7 @@ Disusun 2026-11-25. Jalur relatif terhadap `security/`. Isi tabel hanya dari ber
 | `08-deteksi-uji.txt` | 2026-11-25 | sec-0.3 (berdasarkan riwayat git: commit f1a9310) | `08-deteksi-uji.ps1` |
 | `09-deteksi-pasang.txt` | 2026-11-25 | sec-0.3 (berdasarkan riwayat git: commit caa36eb) | `09-deteksi-pasang.ps1` |
 | `10-simulasi-D-1-benign.txt`, `D-1-serangan`, `D-2-benign`, `D-2-serangan`, `D-3-serangan` | 2026-11-25 | sec-0.3 (berdasarkan riwayat git: commit 08c9418) | `10-deteksi-simulasi.ps1 -Skenario <D-n> -Mode <mode>` |
+| `10-simulasi-D-3-benign.txt` | 2026-11-26 | sec-0.3 | `.\deploy\uji\10-deteksi-simulasi.ps1 -Skenario D-3 -Mode benign` |
 | `11-timer-backup-gagal.txt` | 2026-11-25 | sec-0.3 | dua perintah `ssh` (`systemctl`, `journalctl`, `ls`) |
 | `13-timer-backup-diperbaiki.txt` | 2026-11-25 | sec-0.3 | `sudo touch` pada stamp timer lalu `sudo reboot`, `sudo docker pause` dengan `systemctl start --no-block`, dan `journalctl -b` |
 | `14-timer-backup-catchup-boot.txt` | 2026-11-26 | sec-0.3 | `ssh kyrion-staging`, lalu `uptime -s`, `sudo journalctl -u kyrion-backup.service -b --no-pager`, `systemctl list-timers kyrion-backup.timer --no-pager` |

@@ -19,7 +19,7 @@ Query penuh ada di tiap berkas rule; harus sama dengan `expr` di rules.yaml.
 
 **Semua ID ATT&CK adalah USUL dan harus diverifikasi Arif di attack.mitre.org.**
 
-Teks R-09 di `security/risk-register.md` menyebut D-3 sebagai deteksi percobaan SSH. Itu bertentangan dengan D-3 di sini (pemindaian port) dan diselesaikan di Tugas 13. R-09 tidak diubah.
+Sebelum dikoreksi 2026-11-26, teks R-09 di `security/risk-register.md` menyebut D-3 sebagai deteksi percobaan SSH. Itu bertentangan dengan D-3 di sini (pemindaian port).
 
 ## Alert Grafana
 
@@ -41,7 +41,7 @@ Sesudahnya periksa di Grafana (Alerting, Alert rules) bahwa tiga rule tampil di 
 
 ## Cara uji
 
-Skrip simulasi untuk memicu tiap rule: `security/detection/simulasi.ps1` (pembangkit lalu lintas) dan `deploy/uji/10-deteksi-simulasi.ps1` beserta `10-deteksi-simulasi-vm.sh` (menjalankan dan memantau status alert). Bukti: `security/bukti/10-simulasi-*.txt`. **D-3 benign TIDAK dijalankan** (tidak ada berkas `10-simulasi-D-3-benign.txt`).
+Skrip simulasi untuk memicu tiap rule: `security/detection/simulasi.ps1` (pembangkit lalu lintas) dan `deploy/uji/10-deteksi-simulasi.ps1` beserta `10-deteksi-simulasi-vm.sh` (menjalankan dan memantau status alert). Bukti: `security/bukti/10-simulasi-*.txt`. D-3 benign dijalankan sekali pada 2026-11-26, di bawah ambang, tidak Firing (`security/bukti/10-simulasi-D-3-benign.txt`).
 
 `deploy/uji/08-deteksi-uji.ps1` hanya menguji query tanpa ambang; skrip itu tidak membuktikan alert Firing.
 

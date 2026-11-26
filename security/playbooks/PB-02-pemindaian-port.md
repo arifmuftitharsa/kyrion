@@ -90,7 +90,7 @@ S3: tidak ada pemberitahuan, dicatat. S2 dan S1: sesuai `../ir-plan.md` bagian 4
 
 1. Susun linimasa UTC: deteksi, keputusan DP-1 sampai DP-3 dan pembuatnya, tindakan, penutupan.
 2. Simpan bukti tanpa nilai rahasia atau email asli.
-3. Tulis pelajaran, termasuk apakah ambang D-3 perlu disesuaikan dengan lalu lintas nyata dan apakah celah deteksi di atas masih diterima. Teks R-09 di `../risk-register.md` yang menyebut D-3 sebagai deteksi SSH perlu diselaraskan (atas keputusan Arif).
+3. Tulis pelajaran, termasuk apakah ambang D-3 perlu disesuaikan dengan lalu lintas nyata dan apakah celah deteksi di atas masih diterima.
 4. Jadwalkan review dalam 7 hari (usulan, mengikuti contoh di slide pekan 13).
 
 ## Kategori CSF 2.0

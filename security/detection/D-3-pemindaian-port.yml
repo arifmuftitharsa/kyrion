@@ -38,8 +38,8 @@ related_risk:
   - R-15
 
 catatan_risiko: >-
-  Teks R-09 di security/risk-register.md menyebut D-3 sebagai deteksi percobaan SSH. Itu bertentangan dengan definisi
-  rule ini (pemindaian port) dan diselesaikan di Tugas 13. R-09 tidak ditulis ulang di sini.
+  Sebelum dikoreksi 2026-11-26, teks R-09 di security/risk-register.md menyebut D-3 sebagai deteksi percobaan SSH. Itu
+  bertentangan dengan definisi rule ini (pemindaian port).
 
 bukti:
   - berkas: security/bukti/08-deteksi-uji.txt

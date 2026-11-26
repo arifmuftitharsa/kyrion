@@ -64,7 +64,7 @@ Bagian sebelumnya tidak diubah. Penilaian T-11 sampai T-27 dan risiko prioritas 
 
 | ID Risiko | Threat | Kontrol | Turunkan L/I | Tugas | MK terkait | Alasan |
 |-----------|--------|---------|--------------|-------|------------|--------|
-| R-09 | T-23 | UFW default deny masuk, aturan di DOCKER-USER, hanya port 80 dan 443 dibuka, SSH dibatasi ke satu alamat admin; bukti nmap sebelum dan sesudah serta deteksi percobaan SSH (D-3). | L 3 ke 1 (target) | sec-0.3 (ditambahkan sec-0.3) | KKS | Permukaan jaringan VM adalah pintu masuk ke semua aset dan memenuhi syarat nmap tidak menemukan 3000 dan 5432. |
+| R-09 | T-23 | UFW default deny masuk, aturan di DOCKER-USER, hanya port 80 dan 443 dibuka, SSH dibatasi ke satu alamat admin; bukti nmap sebelum dan sesudah serta deteksi pemindaian port yang diblokir UFW (D-3); percobaan SSH tidak terdeteksi. | L 3 ke 1 (target) | sec-0.3 (ditambahkan sec-0.3) | KKS | Permukaan jaringan VM adalah pintu masuk ke semua aset dan memenuhi syarat nmap tidak menemukan 3000 dan 5432. |
 | R-10 | T-15 | Nginx dengan TLS 1.2/1.3 dan sertifikat CA lokal kyrion.test, HSTS, BETTER_AUTH_URL berawalan https agar cookie Secure; bukti tls-check. | L 3 ke 1 (target) | sec-0.3 (ditambahkan sec-0.3) | KKS, Kriptografi (konfigurasi TLS dikoordinasikan), PAW (deployment) | OTP dan sesi Admin adalah aset paling bernilai di jalur jaringan. |
 | R-11 | T-17, T-27 | Rahasia dibaca dari /run/secrets lewat entrypoint tanpa mengubah kode aplikasi; gitleaks git riwayat penuh bersih; docker inspect tidak lagi menampilkan nilai rahasia (disamarkan di bukti). | T-17 L 3 ke 2 (target; tetap terbaca lewat /proc dan docker exec, risiko turun bukan hilang), T-27 L 2 ke 1 (target) | sec-0.3 (ditambahkan sec-0.3) | KKS, Kriptografi (kunci), PAW (deployment) | Rahasia bocor membuka sesi dan basis data sekaligus. |
 | R-12 | T-20, T-26 | Backup terjadwal dump db, volume kyrion-storage, /srv/kyrion/keys, dan kunci induk HMAC; dienkripsi age; salinan di luar VM; kunci age disimpan terpisah; uji pemulihan berwaktu dengan RTO dan RPO. | T-20 L 3 ke 1 (target), T-26 L 2 ke 1 (target) | sec-0.3 (ditambahkan sec-0.3) | KKS, Kriptografi (kunci), PAW | Hilangnya PDF, basis data, atau kunci induk HMAC lebih merusak daripada hilangnya kunci privat penandatangan. |
@@ -108,9 +108,9 @@ Induk: R-08 (catatan T-24 sebagai induk tambahan sudah tercantum di bagian sebel
 
 ## Catatan sec-0.3 (2026-11-25)
 
-Teks dan skor di bagian sebelumnya tidak diubah.
+Skor di bagian sebelumnya tidak diubah; teks hanya diubah pada R-09 (butir 1).
 
-1. **R-09 / T-23:** register menyebut D-3 sebagai deteksi percobaan SSH, sedangkan D-3 yang dibuat mendeteksi pemindaian port (security/detection/D-3-pemindaian-port.yml). Deteksi percobaan SSH tidak ada.
+1. **R-09 / T-23:** teks R-09 dikoreksi pada 2026-11-26: D-3 mendeteksi pemindaian port yang diblokir UFW (security/detection/D-3-pemindaian-port.yml). Deteksi percobaan SSH tetap tidak ada.
 2. **R-12 / T-20:** servis cadangan gagal dua kali sesudah 22 Nov (23 dan 25 Nov); cadangan terbaru 2026-11-22T10:07:58Z, sehingga RPO 24 jam tidak terpenuhi (security/bukti/11-timer-backup-gagal.txt, security/tabletop-report.md bagian 3). Pembaruan 2026-11-25: penyebab (database belum siap saat boot) diperbaiki di backup.sh dan teruji (security/bukti/13-timer-backup-diperbaiki.txt); cadangan dari jadwal 02:00 UTC sungguhan dan pemantauan kegagalan unit belum ada, jadi skor tidak diubah.
 3. **R-14:** D-1 tidak mencakup endpoint kirim OTP (security/detection/D-1-tebak-otp.yml, security/alerts-analysis.md).
 4. **R-15:** deteksi tanpa notifikasi eksternal, dan ambang D-1 dan D-2 tanpa baseline (security/alerts-analysis.md; notifikasi: security/detection/README.md).
