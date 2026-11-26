@@ -19,6 +19,8 @@ Disusun 2026-11-25. Jalur relatif terhadap `security/`. Isi tabel hanya dari ber
 | `13-timer-backup-diperbaiki.txt` | 2026-11-25 | sec-0.3 | `sudo touch` pada stamp timer lalu `sudo reboot`, `sudo docker pause` dengan `systemctl start --no-block`, dan `journalctl -b` |
 | `14-timer-backup-catchup-boot.txt` | 2026-11-26 | sec-0.3 | `ssh kyrion-staging`, lalu `uptime -s`, `sudo journalctl -u kyrion-backup.service -b --no-pager`, `systemctl list-timers kyrion-backup.timer --no-pager` |
 | `15-rto-latihan-pulih.txt` | 2026-11-26 | sec-0.3 | `restore-test.sh` (uji terisolasi), lalu latihan pulih produksi: fase 1 (hentikan layanan, ambil dan verifikasi cadangan), fase 2 (DB lama diganti nama `kyrion_lama`, DB baru, `pg_restore`, `roles.sql`), fase 3a (storage dan kunci), fase 3b (jalankan kembali layanan), dan verifikasi browser; teks perintah per fase tidak tercatat di berkas |
+| `16-hsts-header-https.txt` | 2026-11-26 | sec-0.3 | di VM: `date -u`, `curl -skI --resolve kyrion.test:443:127.0.0.1 https://kyrion.test/masuk`, `curl -sI http://127.0.0.1/ -H "Host: kyrion.test"` |
+| `17-cookie-sesi-atribut.png` | 2026-11-26 (keterangan Arif; tidak tercatat di gambar) | sec-0.3 | DevTools Chrome, tab Application, Cookies (tangkapan layar; kolom Value disamarkan) |
 | `ir-plan.md` | 2026-11-26 | sec-0.3 | tidak tercatat di berkas (dokumen) |
 | `playbooks/PB-02-pemindaian-port.md` | 2026-11-26 | sec-0.3 | tidak tercatat di berkas (dokumen) |
 | `playbooks/PB-03-rahasia-atau-kunci-bocor.md` | 2026-11-26 | sec-0.3 | tidak tercatat di berkas (dokumen) |
