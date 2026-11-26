@@ -16,6 +16,7 @@ Disusun 2026-11-25. Jalur relatif terhadap `security/`. Isi tabel hanya dari ber
 | `09-deteksi-pasang.txt` | 2026-11-25 | sec-0.3 (berdasarkan riwayat git: commit caa36eb) | `09-deteksi-pasang.ps1` |
 | `10-simulasi-D-1-benign.txt`, `D-1-serangan`, `D-2-benign`, `D-2-serangan`, `D-3-serangan` | 2026-11-25 | sec-0.3 (berdasarkan riwayat git: commit 08c9418) | `10-deteksi-simulasi.ps1 -Skenario <D-n> -Mode <mode>` |
 | `11-timer-backup-gagal.txt` | 2026-11-25 | sec-0.3 | dua perintah `ssh` (`systemctl`, `journalctl`, `ls`) |
+| `13-timer-backup-diperbaiki.txt` | 2026-11-25 | sec-0.3 | `sudo touch` pada stamp timer lalu `sudo reboot`, `sudo docker pause` dengan `systemctl start --no-block`, dan `journalctl -b` |
 | `vm-sumber-daya.txt` | 2026-11-23 | sec-0.3 (berdasarkan riwayat git: commit 111ee53) | `06-sumber-daya-vm.sh` lewat ssh |
 | `bukti-sebelum-tahap-2.txt` | 2026-11-21 | sebelum sec-0.3, v0.3 | perintah tercetak di berkas (baris `+`); nama skrip tidak tercatat di berkas |
 | `bukti-sebelum-tahap-2b.txt` | 2026-11-22 | sebelum sec-0.3, v0.3 | perintah tercetak di berkas (baris `$`) |

@@ -111,6 +111,6 @@ Induk: R-08 (catatan T-24 sebagai induk tambahan sudah tercantum di bagian sebel
 Teks dan skor di bagian sebelumnya tidak diubah.
 
 1. **R-09 / T-23:** register menyebut D-3 sebagai deteksi percobaan SSH, sedangkan D-3 yang dibuat mendeteksi pemindaian port (security/detection/D-3-pemindaian-port.yml). Deteksi percobaan SSH tidak ada.
-2. **R-12 / T-20:** servis cadangan gagal dua kali sesudah 22 Nov (23 dan 25 Nov); cadangan terbaru 2026-11-22T10:07:58Z, sehingga RPO 24 jam tidak terpenuhi (security/bukti/11-timer-backup-gagal.txt, security/tabletop-report.md bagian 3).
+2. **R-12 / T-20:** servis cadangan gagal dua kali sesudah 22 Nov (23 dan 25 Nov); cadangan terbaru 2026-11-22T10:07:58Z, sehingga RPO 24 jam tidak terpenuhi (security/bukti/11-timer-backup-gagal.txt, security/tabletop-report.md bagian 3). Pembaruan 2026-11-25: penyebab (database belum siap saat boot) diperbaiki di backup.sh dan teruji (security/bukti/13-timer-backup-diperbaiki.txt); cadangan dari jadwal 02:00 UTC sungguhan dan pemantauan kegagalan unit belum ada, jadi skor tidak diubah.
 3. **R-14:** D-1 tidak mencakup endpoint kirim OTP (security/detection/D-1-tebak-otp.yml, security/alerts-analysis.md).
 4. **R-15:** deteksi tanpa notifikasi eksternal, dan ambang D-1 dan D-2 tanpa baseline (security/alerts-analysis.md; notifikasi: security/detection/README.md).

@@ -40,6 +40,8 @@ kyrion-backup.timer: `OnCalendar=*-*-* 02:00:00 UTC`, `AccuracySec=1s`, `Persist
 
 > **Catatan 2026-11-25** (`bukti/11-timer-backup-gagal.txt`): servis berjalan lagi 2026-11-23T08:22:54Z dan 2026-11-25T06:10:42Z dan gagal (`pg_dump`: the database system is starting up). Timer memicu tetapi belum menghasilkan cadangan; cadangan terbaru tetap 2026-11-22T10:07:58Z.
 
+> **Perbaikan 2026-11-25** (`bukti/13-timer-backup-diperbaiki.txt`): `deploy/backup/backup.sh` kini menunggu `pg_isready` sukses (maksimal 120 detik, gagal tertutup) sebelum dump. Teruji lewat boot dengan jadwal terlewat (cadangan berhasil, tunggu sekitar 1 detik) dan lewat database ditahan 6 detik (`menunggu database siap` 13:30:05, `database siap` 13:30:11, cadangan selesai).
+
 ## 3a. Enkripsi dan pengelolaan kunci age
 
 - age 1.1.1 di VM (03-backup.txt). Enkripsi ke penerima publik di deploy/backup/age-recipient.txt (di repo; berisi kunci publik saja, pemeriksaan di backup.sh menolak berkas yang memuat AGE-SECRET-KEY).
@@ -94,7 +96,7 @@ Durasi 2 detik berasal dari data uji kecil (61 KB) dan **bukan RTO**.
 - Interval jadwal: harian 02:00 UTC, T = 24 jam.
 - Durasi satu backup: 10:05:01Z sampai 10:05:02Z dan 10:07:57Z sampai 10:07:58Z, sekitar 1 detik (log systemd).
 - Kehilangan data terburuk = data yang ditulis sejak backup terakhir sampai kegagalan, paling banyak sesaat sebelum backup berikutnya: RPO ≤ T + durasi ≈ 24 jam + 1 detik.
-- `Persistent=yes` menjalankan backup yang terlewat saat VM menyala kembali; bila VM mati melewati 02:00, selang dapat lebih dari 24 jam sebesar lama mati. Pemicu itu belum diuji.
+- `Persistent=yes` menjalankan backup yang terlewat saat VM menyala kembali; bila VM mati melewati 02:00, selang dapat lebih dari 24 jam sebesar lama mati. Pemicu itu diuji 2026-11-25 dengan cap waktu timer disimulasikan lalu reboot: backup berjalan sendiri 23 detik sesudah boot dan berhasil (bukti/13-timer-backup-diperbaiki.txt, uji A).
 - Hitungan ini hanya berlaku bila kegagalan tidak memusnahkan VM beserta isinya.
 
 > **Catatan 2026-11-25** (`bukti/11-timer-backup-gagal.txt`): RPO di atas adalah turunan dari jadwal dengan anggapan tiap run berhasil. Anggapan itu tidak terpenuhi: servis gagal pada 23 dan 25 Nov. Pada 2026-11-25T08:54:11Z umur cadangan terbaru 70 jam 46 menit 13 detik, sehingga RPO 24 jam tidak terpenuhi.
@@ -129,9 +131,11 @@ Durasi 2 detik berasal dari data uji kecil (61 KB) dan **bukan RTO**.
 | Checksum offsite sama dengan VM | 03-backup.txt, fase offsite (keluaran offsite.ps1); verifikasi Get-FileHash oleh Arif | **Belum terbukti** sampai hasil Get-FileHash ditempel Arif |
 | Cadangan dapat didekripsi dan dipulihkan ke container sementara, baris dan PDF sama | 03-backup.txt, fase restore | Bukti operasional (data kecil) |
 | Kunci privat age tidak tertinggal di VM | keterangan Arif (/dev/shm kosong) | Tidak ada berkas bukti |
-| Cadangan dibuat oleh timer | - | **Belum terbukti** |
+| Cadangan dibuat oleh timer | 13-timer-backup-diperbaiki.txt, uji A | Bukti operasional (sekali, jadwal terlewat disimulasikan; belum lewat jadwal 02:00 UTC sungguhan) |
 | Rotasi retensi 14 hari | - | **Belum terbukti** |
 | Pemulihan ke produksi | - | **Belum terbukti** |
 | RTO | - | **Belum terukur** |
 
 > **Catatan 2026-11-25** atas baris "Cadangan dibuat oleh timer": dua percobaan sesudah 22 Nov gagal (`bukti/11-timer-backup-gagal.txt`).
+
+> **Catatan 2026-11-25 (sesudah perbaikan)** atas baris itu: timer memicu dan cadangan berhasil pada uji boot (`bukti/13-timer-backup-diperbaiki.txt`). RPO 24 jam belum terbukti secara operasional: belum ada rangkaian cadangan harian dari jadwal 02:00 UTC sungguhan. Pemantauan kegagalan unit juga belum ada (`tabletop-report.md` bagian 5 butir 1).

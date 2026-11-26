@@ -18,7 +18,7 @@ Layanan: `db`, `app`, `nginx` (project `kyrion-vm`); Alloy, Loki, Grafana (proje
 
 | Layanan | RPO | RTO | Dasar | Status bukti |
 |---|---|---|---|---|
-| Data (db, PDF, kunci Ed25519 dan keyring, kunci induk HMAC) | Target 24 jam, **hanya bila VM selamat** | Target 2 jam (**usulan Arif, asumsi awal**) | RPO: timer harian 02:00 UTC, turunan ≤ 24 jam + sekitar 1 detik (`backup-restore.md` 7) | **Timer memicu pada 2026-11-23 dan 2026-11-25 tetapi gagal (`bukti/11-timer-backup-gagal.txt`); cadangan terbaru 2026-11-22T10:07:58Z.** RTO belum terukur; tabletop tidak mengukur waktu; pengukuran adalah perbaikan no. 4 di `tabletop-report.md` |
+| Data (db, PDF, kunci Ed25519 dan keyring, kunci induk HMAC) | Target 24 jam, **hanya bila VM selamat** | Target 2 jam (**usulan Arif, asumsi awal**) | RPO: timer harian 02:00 UTC, turunan ≤ 24 jam + sekitar 1 detik (`backup-restore.md` 7) | **Timer memicu pada 2026-11-23 dan 2026-11-25 tetapi gagal (`bukti/11-timer-backup-gagal.txt`); cadangan terbaru 2026-11-22T10:07:58Z.** Sesudah perbaikan 2026-11-25, cadangan oleh timer berhasil pada uji boot (`bukti/13-timer-backup-diperbaiki.txt`), tetapi RPO 24 jam belum terbukti dari jadwal 02:00 UTC sungguhan. RTO belum terukur; tabletop tidak mengukur waktu; pengukuran adalah perbaikan no. 4 di `tabletop-report.md` |
 | `app`, `nginx` | Tidak ada RPO tersendiri di dokumen | Masuk target 2 jam di atas (usulan Arif, asumsi awal) | Data yang dipakai `app` ada di baris data | Belum terukur |
 | Bila VM atau laptop hilang | **Tidak dapat diturunkan** | Target 2 jam tidak didukung bukti untuk kejadian ini | Salinan ke laptop manual, tanpa jadwal | Tidak terukur |
 | Monitoring dan log (Loki, Grafana) | Tidak ada di dokumen. **Usulan:** tanpa jaminan; log boleh hilang seluruhnya | Tidak ada di dokumen. **Usulan:** 4 jam | Log tidak masuk cadangan (`backup-restore.md` 2); retensi 30 hari bukan RPO (`monitoring/README.md`) | Belum terukur; retensi juga belum diukur |
@@ -31,7 +31,7 @@ Layanan: `db`, `app`, `nginx` (project `kyrion-vm`); Alloy, Loki, Grafana (proje
 - **R-12:** salinan "offsite" dan kunci privat age ada di laptop yang sama dengan host VM. Kehilangan laptop dapat menghilangkan data, cadangan, dan kunci sekaligus. Tidak ada salinan kunci.
 - **R-12:** pulih produksi (`backup-restore.md` 5 langkah 6-9) **belum teruji**; uji pulih memakai `--no-owner --no-privileges`, sehingga pemulihan peran juga belum terbukti.
 - **R-12:** tidak dicadangkan: `/srv/kyrion/env`, rahasia selain kunci induk HMAC, TLS, konfigurasi compose di VM, image Docker, log, kunci age.
-- **R-12:** timer memicu tetapi servis gagal (`bukti/11-timer-backup-gagal.txt`); rotasi 14 hari belum teruji. Perintah stop dan start `kyrion-vm` untuk pemulihan tidak ada di dokumen.
+- **R-12:** timer memicu tetapi servis gagal (`bukti/11-timer-backup-gagal.txt`); penyebab sudah diperbaiki dan teruji (`bukti/13-timer-backup-diperbaiki.txt`), pemantauan kegagalan unit belum ada; rotasi 14 hari belum teruji. Perintah stop dan start `kyrion-vm` untuk pemulihan tidak ada di dokumen.
 - **R-15:** deteksi bergantung pada Alloy, Loki, dan Grafana; tidak ada notifikasi eksternal.
 
 ## 4. Aktivasi

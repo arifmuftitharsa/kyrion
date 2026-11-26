@@ -1,0 +1,47 @@
+# Bukti perbaikan timer cadangan: backup.sh menunggu database siap (R-12)
+# Tanggal: 2026-11-25
+# Rilis: sec-0.3
+# Rujukan kegagalan sebelum perbaikan: bukti/11-timer-backup-gagal.txt (pg_dump: "the database system is starting up", 23 dan 25 Nov, tepat setelah boot)
+# Perubahan: deploy/backup/backup.sh menunggu pg_isready sukses (maksimal 120 detik, gagal tertutup) sebelum dump
+# Catatan: disalin apa adanya dari terminal Arif; tidak diedit selain baris permintaan kata sandi sudo yang dihilangkan
+
+===== Uji A: jadwal terlewat lalu boot ulang (Persistent=true) =====
+# Perintah A1 (sebelum reboot): sudo touch -d "2026-11-24 12:00:00" /var/lib/systemd/timers/stamp-kyrion-backup.timer && sudo reboot
+# Cap waktu stamp-kyrion-backup.timer terpasang: 2026-11-24 12:00:00.000000000 +0000
+# Perintah A2 (setelah reboot): uptime -s ; sudo journalctl -u kyrion-backup.service -b --no-pager
+
+2026-11-25 13:25:19
+
+Nov 25 13:25:42 kyrion-staging systemd[1]: Starting kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age)...
+Nov 25 13:25:43 kyrion-staging backup.sh[1733]: [2026-11-25T13:25:43Z] mulai backup ke /srv/kyrion/backup
+Nov 25 13:25:43 kyrion-staging backup.sh[1733]: [2026-11-25T13:25:43Z] menunggu database siap (maksimal 120 detik)
+Nov 25 13:25:44 kyrion-staging backup.sh[1733]: [2026-11-25T13:25:44Z] database siap
+Nov 25 13:25:44 kyrion-staging backup.sh[1733]: [2026-11-25T13:25:44Z] 1/4 dump PostgreSQL
+Nov 25 13:25:46 kyrion-staging backup.sh[1733]: [2026-11-25T13:25:46Z] 2/4 volume kyrion-storage
+Nov 25 13:25:46 kyrion-staging backup.sh[1733]: [2026-11-25T13:25:46Z] 3/4 folder kunci dan kunci induk HMAC
+Nov 25 13:25:46 kyrion-staging backup.sh[1733]: [2026-11-25T13:25:46Z] 4/4 enkripsi age dan checksum
+Nov 25 13:25:46 kyrion-staging backup.sh[1733]: [2026-11-25T13:25:46Z] selesai: kyrion-backup-20261125T132546Z.tar.age (61640 byte)
+Nov 25 13:25:46 kyrion-staging backup.sh[1733]: [2026-11-25T13:25:46Z] jumlah cadangan tersisa: 6
+Nov 25 13:25:46 kyrion-staging systemd[1]: kyrion-backup.service: Deactivated successfully.
+Nov 25 13:25:46 kyrion-staging systemd[1]: Finished kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age).
+
+# Catatan uji A: tanpa pg_dump error pada boot. Tunggu database sekitar 1 detik, jadi uji A belum menekan jalur tunggu; lihat uji B.
+
+===== Uji B: database sengaja ditahan 6 detik (docker pause) =====
+# Perintah B: sudo docker pause kyrion-vm-db-1 ; sudo systemctl start --no-block kyrion-backup.service ; sleep 6 ; sudo docker unpause kyrion-vm-db-1 ; sleep 5 ; sudo journalctl -u kyrion-backup.service -b --no-pager | tail -12
+
+Nov 25 13:30:05 kyrion-staging systemd[1]: Starting kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age)...
+Nov 25 13:30:05 kyrion-staging backup.sh[3079]: [2026-11-25T13:30:05Z] mulai backup ke /srv/kyrion/backup
+Nov 25 13:30:05 kyrion-staging backup.sh[3079]: [2026-11-25T13:30:05Z] menunggu database siap (maksimal 120 detik)
+Nov 25 13:30:11 kyrion-staging backup.sh[3079]: [2026-11-25T13:30:11Z] database siap
+Nov 25 13:30:11 kyrion-staging backup.sh[3079]: [2026-11-25T13:30:11Z] 1/4 dump PostgreSQL
+Nov 25 13:30:12 kyrion-staging backup.sh[3079]: [2026-11-25T13:30:12Z] 2/4 volume kyrion-storage
+Nov 25 13:30:12 kyrion-staging backup.sh[3079]: [2026-11-25T13:30:12Z] 3/4 folder kunci dan kunci induk HMAC
+Nov 25 13:30:12 kyrion-staging backup.sh[3079]: [2026-11-25T13:30:12Z] 4/4 enkripsi age dan checksum
+Nov 25 13:30:12 kyrion-staging backup.sh[3079]: [2026-11-25T13:30:12Z] selesai: kyrion-backup-20261125T133012Z.tar.age (61640 byte)
+Nov 25 13:30:12 kyrion-staging backup.sh[3079]: [2026-11-25T13:30:12Z] jumlah cadangan tersisa: 8
+Nov 25 13:30:12 kyrion-staging systemd[1]: kyrion-backup.service: Deactivated successfully.
+Nov 25 13:30:12 kyrion-staging systemd[1]: Finished kyrion-backup.service - Backup terenkripsi Kyrion (dump db, volume storage, kunci; age).
+
+# Catatan uji B: "menunggu database siap" 13:30:05 ke "database siap" 13:30:11 (6 detik, sama dengan lama container ditahan), lalu backup selesai.
+# Batas bukti: uji B mensimulasikan database tidak terhubung, bukan keadaan "starting up" persis; perulangan tunggu yang diuji sama.

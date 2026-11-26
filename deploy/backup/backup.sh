@@ -19,6 +19,7 @@ STORAGE_VOLUME=kyrion-vm_kyrion-storage
 KEYS_DIR=/srv/kyrion/keys
 MASTER_KEY_FILE=/srv/kyrion/secrets/kyrion_master_key
 RECIPIENT_FILE="${RECIPIENT_FILE:-$(dirname "$(readlink -f "$0")")/age-recipient.txt}"
+DB_TUNGGU_DETIK=120                  # batas tunggu database siap (timer Persistent=true dapat jalan tepat setelah boot)
 
 log() { echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] $*"; }
 die() { log "FATAL: $*" >&2; exit 1; }
@@ -44,6 +45,20 @@ trap 'rm -rf "$STAGING"' EXIT
 SQL_BARIS="SELECT table_name, (xpath('/row/c/text()', query_to_xml(format('SELECT count(*) AS c FROM %I.%I', table_schema, table_name), false, true, '')))[1]::text FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY 1;"
 
 log "mulai backup ke $BACKUP_DIR"
+
+# "Container jalan" belum berarti "database siap": setelah boot, PostgreSQL masih memulihkan diri dan menolak koneksi
+# ("the database system is starting up"). Tunggu sampai pg_isready sukses; gagal tertutup bila melewati batas waktu.
+log "menunggu database siap (maksimal ${DB_TUNGGU_DETIK} detik)"
+siap=0
+for ((detik = 0; detik < DB_TUNGGU_DETIK; detik += 2)); do
+  if docker exec "$DB_CONTAINER" sh -c 'pg_isready -q -U "$POSTGRES_USER" -d "$POSTGRES_DB"' >/dev/null 2>&1; then
+    siap=1
+    break
+  fi
+  sleep 2
+done
+[ "$siap" -eq 1 ] || die "database tidak siap setelah ${DB_TUNGGU_DETIK} detik"
+log "database siap"
 
 log "1/4 dump PostgreSQL"
 docker exec "$DB_CONTAINER" sh -c 'exec pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc' > "$STAGING/db.dump"
