@@ -56,17 +56,17 @@ kyrion-backup.timer: `OnCalendar=*-*-* 02:00:00 UTC`, `AccuracySec=1s`, `Persist
 
 ## 5. Prosedur pemulihan langkah demi langkah
 
-Status: langkah 1 sampai 4 dan pemulihan dump ke container sementara (langkah 5, versi uji) **teruji** oleh restore-test.sh. Pemulihan ke produksi (langkah 5 sampai 9 versi produksi) **belum diuji**; disusun dari struktur arsip dan skrip.
+Status: langkah 1 sampai 4 dan pemulihan dump ke container sementara (langkah 5, versi uji) **teruji** oleh restore-test.sh. Pemulihan ke produksi (langkah 6 sampai 9 versi produksi) **teruji pada SATU percobaan** di VM staging dengan data sintetis (`bukti/15-rto-latihan-pulih.txt`).
 
 1. Ambil berkas .tar.age dan .sha256 dari /srv/kyrion/backup (VM) atau C:\Projects\offsite-kyrion (laptop).
 2. Verifikasi checksum: `sha256sum -c kyrion-backup-<UTC>.tar.age.sha256` (OK pada 03-backup.txt).
 3. Dekripsi dan ekstrak: `age -d -i <kunci-privat> <berkas> | tar -xf - -C <folder>`; periksa `sha256sum -c komponen.sha256` (db.dump, storage.tar, keys.tar, kyrion_master_key: OK).
 4. Periksa checksum tiap PDF terhadap storage-files.sha256 (2 berkas: OK).
 5. **Uji (teruji):** `sudo bash restore-test.sh <kunci> [berkas]` memulihkan db.dump ke container PostgreSQL sementara tanpa jaringan dan membandingkan hitungan baris.
-6. **Produksi (belum teruji):** hentikan app dan nginx; pulihkan dump ke database baru dengan `pg_restore`, lalu jalankan deploy/db/roles.sql (idempotent) untuk memulihkan kepemilikan dan hak peran kyrion_ddl dan kyrion_app. Restore-test memakai `--no-owner --no-privileges`, sehingga langkah peran belum terbukti.
+6. **Produksi, langkah 6 sampai 9 (teruji satu kali, bukti/15-rto-latihan-pulih.txt):** hentikan app dan nginx; pulihkan dump ke database baru dengan `pg_restore`, lalu jalankan deploy/db/roles.sql (idempotent) untuk memulihkan kepemilikan dan hak peran kyrion_ddl dan kyrion_app. Restore-test memakai `--no-owner --no-privileges`, sehingga restore-test tidak membuktikan langkah peran; pada latihan bukti/15, `roles.sql` selesai dalam rantai pemulihan yang berjalan utuh (satu percobaan).
 7. Pulihkan isi storage.tar ke volume kyrion-vm_kyrion-storage dengan pemilik UID 10001.
 8. Pulihkan keys.tar ke /srv/kyrion/keys (folder 0700, berkas 0600, UID 10001) dan kyrion_master_key ke /srv/kyrion/secrets (0400, UID 10001).
-9. Jalankan app dan nginx; verifikasi: login OTP, unduh dan verifikasi satu PDF, hitungan baris.
+9. Jalankan app dan nginx; verifikasi: login OTP, unduh dan verifikasi satu PDF, hitungan baris. Verifikasi memakai akun ADMIN lewat `/admin/regulasi/<slug>/versi` (unduh) dan `/admin/verifikasi` (periksa berkas).
 
 ## 6. Hasil uji pemulihan
 
@@ -103,7 +103,7 @@ Durasi 2 detik berasal dari data uji kecil (61 KB) dan **bukan RTO**.
 
 **RPO (kehilangan VM atau laptop).** Tidak dapat diturunkan: offsite.ps1 dijalankan manual dan tidak ada jadwal. Saat ini salinan offsite terakhir adalah 22 Nov 10:07:58Z; selisih sampai kejadian tidak dibatasi oleh apa pun di sistem.
 
-**RTO.** Tidak dapat diturunkan sekarang. Yang terukur hanya komponen data: 2 detik untuk memulihkan 61 KB ke container sementara. Tidak terukur: waktu deteksi dan keputusan, mengambil berkas dari offsite, memulihkan ke produksi (langkah 6 sampai 9), rebuild image atau VM, dan verifikasi. Nilai target ditetapkan di Tugas 10 dari ukuran terukur, setelah uji pemulihan produksi dan data lebih besar.
+**RTO.** Status: **belum terbukti**. Komponen terukur: 2 detik untuk memulihkan 61 KB ke container sementara (bagian 6); pada latihan pulih produksi 2026-11-26 (`bukti/15-rto-latihan-pulih.txt` bagian F): durasi perintah aktif sekitar 14 detik (fase 1 sampai blok 2); T0 03:01:43Z sampai nginx mulai (StartedAt) 03:04:47Z = 184 detik, termasuk jeda antar-langkah; `https /masuk` 200 pada 03:06:05Z (262 detik, batas atas kesiapan); verifikasi fungsional selesai 03:39:10Z (37 menit 27 detik dari T0). Keterbatasan: satu percobaan, data sintetis (arsip cadangan 61.640 byte), ada jeda manusia, verifikasi sekitar 32 menit karena salah halaman dan akun; **angka ini bukan RTO realistis**. Tidak terukur: waktu deteksi, keputusan penahanan, mengambil kunci privat age dari laptop, latihan oleh orang yang belum pernah menjalankannya, mengambil berkas dari offsite, dan rebuild image atau VM. Nilai target ditetapkan di Tugas 10 dari ukuran terukur, setelah uji pemulihan produksi dan data lebih besar.
 
 ## 8. Residual
 
@@ -121,6 +121,8 @@ Durasi 2 detik berasal dari data uji kecil (61 KB) dan **bukan RTO**.
 
 > **Catatan 2026-11-25** atas butir 5: jadwal timer kini terbukti gagal menghasilkan cadangan (`bukti/11-timer-backup-gagal.txt`); rotasi 14 hari dan pemulihan produksi tetap belum teruji.
 
+> **Catatan 2026-11-26** atas butir 5: pemulihan ke produksi (langkah 6-9) teruji pada satu percobaan (`bukti/15-rto-latihan-pulih.txt`); RTO tetap belum terbukti.
+
 ## 9. Tabel bukti per klaim
 
 | Klaim | Bukti | Kekuatan |
@@ -133,8 +135,8 @@ Durasi 2 detik berasal dari data uji kecil (61 KB) dan **bukan RTO**.
 | Kunci privat age tidak tertinggal di VM | keterangan Arif (/dev/shm kosong) | Tidak ada berkas bukti |
 | Cadangan dibuat oleh timer | 13-timer-backup-diperbaiki.txt, uji A | Bukti operasional (sekali, jadwal terlewat disimulasikan; belum lewat jadwal 02:00 UTC sungguhan) |
 | Rotasi retensi 14 hari | - | **Belum terbukti** |
-| Pemulihan ke produksi | - | **Belum terbukti** |
-| RTO | - | **Belum terukur** |
+| Pemulihan ke produksi | `bukti/15-rto-latihan-pulih.txt` (langkah 6-9) | Bukti operasional (satu percobaan, data kecil) |
+| RTO | `bukti/15-rto-latihan-pulih.txt` bagian F: perintah aktif sekitar 14 detik; T0 sampai nginx mulai 184 detik. Satu percobaan, data sintetis (arsip cadangan 61.640 byte), ada jeda manusia, verifikasi sekitar 32 menit karena salah halaman dan akun; bukan RTO realistis | **Belum terbukti** |
 
 > **Catatan 2026-11-25** atas baris "Cadangan dibuat oleh timer": dua percobaan sesudah 22 Nov gagal (`bukti/11-timer-backup-gagal.txt`).
 

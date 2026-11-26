@@ -23,13 +23,13 @@ Layanan: `db`, `app`, `nginx` (project `kyrion-vm`); Alloy, Loki, Grafana (proje
 | Bila VM atau laptop hilang | **Tidak dapat diturunkan** | Target 2 jam tidak didukung bukti untuk kejadian ini | Salinan ke laptop manual, tanpa jadwal | Tidak terukur |
 | Monitoring dan log (Loki, Grafana) | Tidak ada di dokumen. **Usulan:** tanpa jaminan; log boleh hilang seluruhnya | Tidak ada di dokumen. **Usulan:** 4 jam | Log tidak masuk cadangan (`backup-restore.md` 2); retensi 30 hari bukan RPO (`monitoring/README.md`) | Belum terukur; retensi juga belum diukur |
 
-- Uji pulih yang ada (61 KB, 2 detik, container sementara) **bukan RTO**. Waktu deteksi dan keputusan, pengambilan cadangan, pulih produksi, rebuild image atau VM, dan verifikasi tidak terukur.
+- Uji pulih terisolasi (61 KB, 2 detik, container sementara) **bukan RTO**. Pulih produksi (`backup-restore.md` 5 langkah 6-9) teruji satu kali pada 2026-11-26 (`bukti/15-rto-latihan-pulih.txt`): perintah aktif sekitar 14 detik; dari T0, nginx mulai pada 184 detik, `https /masuk` 200 pada 262 detik, dan verifikasi fungsional selesai pada 37 menit 27 detik. Satu percobaan, data sintetis (arsip cadangan 61.640 byte), ada jeda manusia, verifikasi sekitar 32 menit karena salah halaman dan akun: **bukan RTO realistis**. Celah yang belum terukur: waktu deteksi, keputusan, pengambilan kunci age dari laptop, dan latihan oleh operator baru. Pengambilan cadangan dari offsite dan rebuild image atau VM juga tidak terukur.
 - `backup-restore.md` 7 menyebut target ditetapkan di Tugas 10 dari ukuran terukur. Angka RTO di sini hanya asumsi awal sebelum pengukuran itu.
 
 ## 3. Ketergantungan dan batas
 
 - **R-12:** salinan "offsite" dan kunci privat age ada di laptop yang sama dengan host VM. Kehilangan laptop dapat menghilangkan data, cadangan, dan kunci sekaligus. Tidak ada salinan kunci.
-- **R-12:** pulih produksi (`backup-restore.md` 5 langkah 6-9) **belum teruji**; uji pulih memakai `--no-owner --no-privileges`, sehingga pemulihan peran juga belum terbukti.
+- **R-12:** pulih produksi (`backup-restore.md` 5 langkah 6-9) **teruji satu kali** (`bukti/15-rto-latihan-pulih.txt`), termasuk menjalankan `roles.sql`; uji pulih terisolasi memakai `--no-owner --no-privileges` sehingga tidak membuktikan pemulihan peran. RTO belum terbukti.
 - **R-12:** tidak dicadangkan: `/srv/kyrion/env`, rahasia selain kunci induk HMAC, TLS, konfigurasi compose di VM, image Docker, log, kunci age.
 - **R-12:** timer memicu tetapi servis gagal (`bukti/11-timer-backup-gagal.txt`); penyebab sudah diperbaiki dan teruji (`bukti/13-timer-backup-diperbaiki.txt`), pemantauan kegagalan unit belum ada; rotasi 14 hari belum teruji. Perintah stop dan start `kyrion-vm` untuk pemulihan tidak ada di dokumen.
 - **R-15:** deteksi bergantung pada Alloy, Loki, dan Grafana; tidak ada notifikasi eksternal.

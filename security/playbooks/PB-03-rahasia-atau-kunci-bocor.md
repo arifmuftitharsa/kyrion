@@ -76,7 +76,7 @@ Bila host diduga dikuasai, hentikan layanan (PB-01 P-4, belum diuji) sebelum rot
 
 ## 5. Pemulihan dan penutupan
 
-1. Verifikasi layanan: `https://kyrion.test/masuk` 200, login OTP berhasil, unduh dan verifikasi satu PDF (PB-01 bagian 5 langkah 5).
+1. Verifikasi layanan: `https://kyrion.test/masuk` 200, login OTP berhasil, unduh dan verifikasi satu PDF (harus akun ADMIN: unduh di `/admin/regulasi/<slug>/versi`, periksa berkas di `/admin/verifikasi`; akun Sivitas dijawab 404 menurut desain) (PB-01 bagian 5 langkah 5).
 2. Pastikan nilai lama tidak dapat dipakai (token lama dicabut di Mailtrap, kata sandi lama ditolak DB, kunci dicabut ditolak verifikasi).
 3. Bila data berubah atau rusak, pulihkan dari cadangan menurut PB-01 bagian 5.
 4. Selesai JIKA layanan normal, semua rahasia terpapar sudah dirotasi atau dicabut dan terbukti, serta tidak ada akses tak dikenal baru.

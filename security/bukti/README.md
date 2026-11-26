@@ -17,6 +17,8 @@ Disusun 2026-11-25. Jalur relatif terhadap `security/`. Isi tabel hanya dari ber
 | `10-simulasi-D-1-benign.txt`, `D-1-serangan`, `D-2-benign`, `D-2-serangan`, `D-3-serangan` | 2026-11-25 | sec-0.3 (berdasarkan riwayat git: commit 08c9418) | `10-deteksi-simulasi.ps1 -Skenario <D-n> -Mode <mode>` |
 | `11-timer-backup-gagal.txt` | 2026-11-25 | sec-0.3 | dua perintah `ssh` (`systemctl`, `journalctl`, `ls`) |
 | `13-timer-backup-diperbaiki.txt` | 2026-11-25 | sec-0.3 | `sudo touch` pada stamp timer lalu `sudo reboot`, `sudo docker pause` dengan `systemctl start --no-block`, dan `journalctl -b` |
+| `14-timer-backup-catchup-boot.txt` | 2026-11-26 | sec-0.3 | `ssh kyrion-staging`, lalu `uptime -s`, `sudo journalctl -u kyrion-backup.service -b --no-pager`, `systemctl list-timers kyrion-backup.timer --no-pager` |
+| `15-rto-latihan-pulih.txt` | 2026-11-26 | sec-0.3 | `restore-test.sh` (uji terisolasi), lalu latihan pulih produksi: fase 1 (hentikan layanan, ambil dan verifikasi cadangan), fase 2 (DB lama diganti nama `kyrion_lama`, DB baru, `pg_restore`, `roles.sql`), fase 3a (storage dan kunci), fase 3b (jalankan kembali layanan), dan verifikasi browser; teks perintah per fase tidak tercatat di berkas |
 | `ir-plan.md` | 2026-11-26 | sec-0.3 | tidak tercatat di berkas (dokumen) |
 | `playbooks/PB-02-pemindaian-port.md` | 2026-11-26 | sec-0.3 | tidak tercatat di berkas (dokumen) |
 | `playbooks/PB-03-rahasia-atau-kunci-bocor.md` | 2026-11-26 | sec-0.3 | tidak tercatat di berkas (dokumen) |

@@ -51,7 +51,7 @@ Menit relatif. Kolom "Isi inject" adalah **ringkasan yang direkonstruksi dari ja
 
 - Estimasi operator: 15 + 30 + 20 + 15 = 80 menit. Ini **tebakan tanpa pengukuran**.
 - Langkah yang tidak terhitung dalam rincian estimasi: pemulihan storage PDF; kunci Ed25519, keyring, dan kunci induk HMAC; `roles.sql`; rebuild image atau VM bila perlu.
-- Satu-satunya hasil terukur: pemulihan cadangan 61 KB ke container sementara, sekitar 2 detik. Itu **bukan RTO**. Pulih produksi (`backup-restore.md` 5 langkah 6-9) belum diuji.
+- Hasil terukur saat latihan: pemulihan cadangan 61 KB ke container sementara, sekitar 2 detik. Itu **bukan RTO**. Pembaruan 2026-11-26: pulih produksi (`backup-restore.md` 5 langkah 6-9) teruji satu kali (`bukti/15-rto-latihan-pulih.txt`); angkanya bukan RTO realistis.
 - **RTO 2 jam belum terbukti.**
 
 ## 4. Temuan evaluasi
@@ -76,7 +76,7 @@ Status di bawah adalah status pelaksanaan. Pemilik semua butir: Arif.
 | 1 | Perbaiki kegagalan timer: skrip atau unit harus menunggu database siap (retry atau pemeriksaan kesiapan) dan kegagalan unit harus terlihat (mis. cek status di Grafana atau log); lalu jalankan sekali dan catat bukti | `deploy/backup/kyrion-backup.service`, `deploy/backup/backup.sh` | R-12 | Arif | 2026-11-26 | sebagian, 2026-11-25: skrip menunggu database siap (`pg_isready`, maksimal 120 detik, gagal tertutup) dan teruji lewat boot dengan jadwal terlewat dan lewat database ditahan 6 detik (`bukti/13-timer-backup-diperbaiki.txt`). Kegagalan unit cadangan belum terlihat di Grafana atau aturan deteksi; belum dikerjakan |
 | 2 | Evaluasi pembatas OTP per akun selain per IP. Saat ini di Nginx: `$binary_remote_addr`, zona `kyrion_otp` `rate=10r/m`, `burst=5 nodelay`, untuk endpoint kirim dan sign-in OTP. Di aplikasi: 3 per 60 detik untuk kedua endpoint, `allowedAttempts: 3` per OTP, jeda kirim 60 detik per alamat | `deploy/nginx/kyrion.conf`, `apps/web/lib/auth/index.ts`, `apps/web/lib/auth/jeda.ts` | R-14 | Arif | 2026-11-27 | belum dikerjakan |
 | 3 | Periksa umur cadangan sebelum pemulihan (PB-01 fase 5 langkah 0) dan jadwalkan uji pulih bulanan di staging | PB-01, `deploy/backup/restore-test.sh` | R-12 | Arif | Bulanan; tanggal mulai belum ditetapkan | uji berkala belum dikerjakan; teks langkah 0 ditambahkan ke PB-01 sesudah latihan, belum diuji |
-| 4 | Ukur RTO nyata lewat latihan pulih produksi bertahap di staging | `backup-restore.md` 5 langkah 6-9 | R-12 | Arif | Sebelum v1.0 | belum dikerjakan |
+| 4 | Ukur RTO nyata lewat latihan pulih produksi bertahap di staging | `backup-restore.md` 5 langkah 6-9 | R-12 | Arif | Sebelum v1.0 | sebagian: satu latihan, `bukti/15-rto-latihan-pulih.txt`; RTO realistis belum terbukti |
 
 ## 6. Kesimpulan
 

@@ -1,0 +1,112 @@
+# Bukti latihan pemulihan produksi di VM staging (langkah 6-9 security/backup-restore.md bagian 5) dan pengukuran waktu
+# Tanggal: 2026-11-26
+# Rilis: sec-0.3
+# Lingkungan: VM staging, data SINTETIS. Cadangan yang dipakai: kyrion-backup-20261126T020558Z.tar.age
+# Catatan: disalin dari terminal dan browser Arif; kata sandi sudo dan baris permintaan kata sandi dihilangkan. Email akun uji disamarkan.
+# Catatan tampilan: pada fase 2 teks perintah yang ditempel tampil terpotong di terminal (heredoc tercampur), tetapi keluarannya utuh; keluaran yang disalin di bawah adalah keluaran terminal apa adanya.
+
+===== A. Kondisi awal (09.48 WIB) =====
+# kyrion-vm-nginx-1 Up 42 minutes; kyrion-vm-app-1 Up 42 minutes (healthy); kyrion-vm-db-1 Up 42 minutes (healthy)
+# Cadangan terbaru: kyrion-backup-20261126T020558Z.tar.age (61640 byte, dibuat timer 2026-11-26 02:05 UTC)
+
+===== B. Uji pemulihan terisolasi (restore-test.sh; kunci age dikirim dari laptop lalu dihapus dengan shred) =====
+[2026-11-26T02:54:13Z] MULAI uji pemulihan: 2026-11-26T02:54:13Z; berkas kyrion-backup-20261126T020558Z.tar.age
+[2026-11-26T02:54:13Z] LULUS  checksum berkas terenkripsi
+[2026-11-26T02:54:13Z] LULUS  dekripsi age dan ekstraksi
+[2026-11-26T02:54:13Z] LULUS  checksum komponen (db.dump, storage.tar, keys.tar, kunci induk)
+[2026-11-26T02:54:13Z] LULUS  checksum 2 berkas di storage sama dengan saat backup
+[2026-11-26T02:54:17Z] LULUS  pg_restore selesai tanpa galat
+[2026-11-26T02:54:17Z] LULUS  hitungan baris semua tabel sama dengan saat backup
+[2026-11-26T02:54:17Z] Ringkasan: mulai 2026-11-26T02:54:13Z, selesai 2026-11-26T02:54:17Z, durasi 4 detik, gagal 0
+# real 0m9.742s (termasuk sudo dan memulai container sementara)
+
+===== C. Latihan pemulihan produksi =====
+# Fase 1 (hentikan layanan, ambil dan verifikasi cadangan)
+T0 mulai latihan: 2026-11-26T03:01:43Z
+app dan nginx berhenti: 2026-11-26T03:01:45Z
+cadangan dipakai: kyrion-backup-20261126T020558Z.tar.age
+kyrion-backup-20261126T020558Z.tar.age: OK
+db.dump: OK
+storage.tar: OK
+keys.tar: OK
+kyrion_master_key: OK
+ls: cannot access '/tmp/age-key.txt': No such file or directory      # kunci privat age sudah dihapus
+fase 1 selesai: 2026-11-26T03:01:45Z
+
+# Fase 2 (DB lama diganti nama kyrion_lama, DB baru dibuat, pg_restore, roles.sql)
+fase 2 mulai: 2026-11-26T03:02:45Z
+ALTER DATABASE
+CREATE DATABASE
+DB lama diganti nama, DB baru dibuat: 2026-11-26T03:02:46Z
+pg_restore selesai (kode 0): 2026-11-26T03:02:47Z
+roles.sql selesai
+roles selesai: 2026-11-26T03:02:47Z
+HITUNGAN BARIS SAMA dengan cadangan
+fase 2 selesai: 2026-11-26T03:02:48Z
+
+# Fase 3a (storage dan kunci)
+fase 3a mulai: 2026-11-26T03:04:18Z
+storage dipulihkan: 2026-11-26T03:04:18Z
+./0f887a74-7f7a-4f5b-8131-043e565c338a.pdf: OK
+./6442d7c8-bbd2-43d5-85fa-9a959bb22df4.pdf: OK
+10001:10001 /var/lib/docker/volumes/kyrion-vm_kyrion-storage/_data
+stat: cannot statx '.../_data/*': No such file or directory         # glob dibuka oleh shell non-root, bukan masalah data; lihat ls -ln di fase 3b
+KUNCI Ed25519 dan keyring identik
+KUNCI INDUK identik
+blok 1 selesai: 2026-11-26T03:04:19Z
+
+# Fase 3b (jalankan kembali layanan)
+blok 2 mulai: 2026-11-26T03:04:39Z
+-rw-r--r-- 1 10001 10001 630 Nov 21 13:48 0f887a74-7f7a-4f5b-8131-043e565c338a.pdf
+-rw-r--r-- 1 10001 10001 630 Nov 21 13:52 6442d7c8-bbd2-43d5-85fa-9a959bb22df4.pdf
+app healthy: 2026-11-26T03:04:47Z
+nginx jalan: 2026-11-26T03:06:05Z
+https /masuk: 200
+http port 80: 301
+# Waktu mulai sebenarnya (docker inspect State.StartedAt):
+/kyrion-vm-app-1 mulai: 2026-11-26T03:04:39.687089663Z
+/kyrion-vm-nginx-1 mulai: 2026-11-26T03:04:47.367381133Z
+# Jeda 03:04:47 ke 03:06:05 pada cap "nginx jalan" ada di terminal (antar perintah), bukan di layanan: StartedAt nginx 03:04:47.
+
+===== D. Verifikasi fungsional di browser (diamati Arif) =====
+# Mulai verifikasi: 2026-11-26T03:07:02Z; selesai: 2026-11-26T03:39:10Z
+# Log nginx (baris tanpa _rsc):
+03:10:50 POST /api/auth/email-otp/send-verification-otp  200
+03:11:07 POST /api/auth/sign-in/email-otp                200
+03:11:07 GET  /masuk                                     307
+03:11:07 GET  /                                          200
+# Hasil:
+# 1. Login OTP berhasil pada sistem hasil pemulihan.
+# 2. Akun Sivitas membuka /admin/regulasi/pedoman-akademik/versi -> "Halaman tidak ditemukan" (404). Sesuai desain (lib/sesi.ts: Sivitas pada halaman admin dijawab notFound), bukan kegagalan pemulihan.
+# 3. Perbandingan peran antara kyrion_lama dan kyrion (setelah pemulihan): identik.
+#      [admin-vm]            ADMIN   aktif   dibuat 2026-11-01
+#      [akun-sivitas-uji]    SIVITAS aktif   dibuat 2026-11-21
+# 4. Login sebagai akun ADMIN (admin-vm): unduh PDF dari halaman admin berhasil; berkas terbuka, 630 B, isi "[DATA SINTETIS] Uji pengesahan sec-0.3 - Kyrion staging".
+# 5. Halaman admin Periksa Berkas (/admin/verifikasi): dua berkas yang diunggah masing-masing "Hasil: Asli dan sah" (Pedoman Akademik, versi 2029/2030 dan versi 2028/2029, status Sah). Pemeriksaan mencocokkan SHA-256, tag integritas, dan tanda tangan terhadap keyring hasil pemulihan.
+
+===== E. Pembersihan VM (2026-11-26 03:43-03:44Z) =====
+# Perintah: shred -u semua berkas di /dev/shm/rto-drill, rm -rf folder itu, rm /tmp/roles.sql /tmp/baris.sql /tmp/baris-pulih.tsv
+# Hasil ls: /dev/shm kosong; tidak ada berkas latihan di /tmp.
+# Database kyrion_lama (DB sebelum latihan) masih ada di VM pada saat pencatatan.
+
+===== F. Ringkasan waktu =====
+# T0 (hentikan layanan)                         03:01:43Z
+# app dan nginx berhenti                        03:01:45Z   (+2 s)
+# cadangan terverifikasi dan terdekripsi        03:01:45Z
+# DB baru terisi dan peran diterapkan           03:02:48Z   (+65 s dari T0)
+# storage dan kunci dipulihkan                  03:04:19Z   (+156 s)
+# app healthy                                   03:04:47Z   (+184 s)
+# nginx mulai (StartedAt)                       03:04:47Z   (+184 s)
+# https /masuk 200 (batas atas kesiapan)        03:06:05Z   (+262 s)
+# verifikasi fungsional selesai                 03:39:10Z   (+37 menit 27 detik dari T0)
+#
+# Durasi perintah aktif sekitar 14 detik (fase 1 sampai blok 2); sisanya adalah jeda antar-langkah karena dikerjakan bergantian dengan pemeriksaan.
+# Verifikasi fungsional memakan sekitar 32 menit karena salah halaman (halaman publik tidak punya tombol unduh) dan salah akun (Sivitas, bukan admin).
+# Angka di atas BUKAN RTO yang realistis. Belum terukur: waktu deteksi, keputusan penahanan, mengambil kunci privat age dari laptop,
+# dan latihan oleh orang yang belum pernah menjalankannya. Hanya satu kali percobaan pada data sintetis kecil (arsip cadangan 61.640 byte, berisi dump, storage, dan kunci).
+
+===== G. Temuan =====
+# 1. Rantai pemulihan produksi (decrypt, restore DB, roles.sql, storage, kunci, jalankan ulang layanan) berjalan utuh pada satu percobaan. Login OTP, unduh PDF, dan verifikasi tanda tangan berhasil pada hasil pemulihan.
+# 2. Celah playbook: PB-01 bagian 5 langkah 5 dan PB-03 bagian 5 langkah 1 menyebut "unduh dan verifikasi satu PDF" tanpa halaman (/admin/regulasi/<slug>/versi dan /admin/verifikasi) dan tanpa menyebut harus akun ADMIN. Itu menyebabkan sebagian besar waktu verifikasi.
+# 3. Tabel sessions ikut terpulihkan dari cadangan (2 baris, bagian B). Halaman terproteksi terbuka tanpa login OTP baru sebelum Arif keluar (disimpulkan dari log nginx dan pengamatan di browser, tidak diuji langsung); untuk menguji OTP perlu keluar terlebih dahulu.
+# 4. Keterbatasan: satu percobaan, data kecil, jaringan lokal, operator yang sama dengan penyusun prosedur.

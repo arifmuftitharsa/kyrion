@@ -95,11 +95,11 @@ Pulihkan dari cadangan hanya bila data rusak atau berubah dan tidak dapat dibetu
 0. Periksa umur cadangan terbaru (tanggal-waktu berkas); bila lebih dari 24 jam, catat selisih RPO aktual dan lanjutkan hanya atas keputusan Incident Commander.
 1. Pilih cadangan **sebelum** awal insiden. Ikuti `../backup-restore.md` 5 langkah 1-4 (checksum, dekripsi, periksa komponen): teruji.
 2. Langkah 5, uji ke container sementara dengan `sudo bash restore-test.sh <kunci> [berkas]`: teruji pada data 61 KB.
-3. Langkah 6-9 (produksi: database baru, `roles.sql`, storage, kunci, jalankan app dan nginx): **belum diuji**. Jangan menimpa database lama; simpan sebagai bukti.
-4. Sesudah pulih, periksa kembali sesi dan akun terdampak, karena cadangan dapat memuat sesi yang masih berlaku. Pertimbangkan P-3.
+3. Langkah 6-9 (produksi: database baru, `roles.sql`, storage, kunci, jalankan app dan nginx): **teruji satu kali** (`../bukti/15-rto-latihan-pulih.txt`). Jangan menimpa database lama; simpan sebagai bukti.
+4. Sesudah pulih, periksa kembali sesi dan akun terdampak, karena cadangan dapat memuat sesi yang masih berlaku. Pertimbangkan P-3. Pada latihan `../bukti/15-rto-latihan-pulih.txt`, tabel `sessions` ikut terpulihkan dan halaman terproteksi terbuka tanpa login OTP baru sebelum keluar (disimpulkan dari log nginx dan pengamatan di browser, tidak diuji langsung); untuk menguji OTP, keluar terlebih dahulu.
 5. Verifikasi:
    - Data: hitungan baris dibandingkan dengan cadangan, checksum PDF, verifikasi HMAC dan tanda tangan versi terdampak.
-   - Layanan: `https://kyrion.test/masuk` 200 dan port 80 menjawab 301 (`../firewall-rules.md` 5), login OTP, unduh dan verifikasi satu PDF.
+   - Layanan: `https://kyrion.test/masuk` 200 dan port 80 menjawab 301 (`../firewall-rules.md` 5), login OTP, unduh dan verifikasi satu PDF (harus akun ADMIN: unduh di `/admin/regulasi/<slug>/versi`, periksa berkas di `/admin/verifikasi`; akun Sivitas dijawab 404 menurut desain).
    - Log: log Nginx masuk ke Loki, tiga rule tampil dan tidak Error. Bila app atau nginx dibuat ulang, sertakan overlay journald (`../monitoring/README.md`).
 6. Selesai JIKA semua verifikasi lulus, blok sementara sudah hilang, tidak ada 2xx atau perubahan tidak dikenal baru, dan D-1 serta D-2 tidak Firing selama minimal satu jendela 5 menit dengan log terbukti masuk.
 
